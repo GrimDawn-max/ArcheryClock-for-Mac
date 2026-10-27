@@ -1,0 +1,321 @@
+﻿Série
+Flecha
+A
+Grupo
+Série dupla? (por exemplo, em longas distâncias, quando se atira 2x 3 flechas antes de recolher do alvo). 
+Segundos em Verde
+Segundos em Amarelo
+Segundos em Vermelho
+Segundos Totais
+Arqueiros por alvo 
+Arqueiro
+Ajustes
+Minutos / Segundos?
+Salvar como configuração padrão.
+Ocultar ícones
+Usar autofalantes do PC para o som.
+Tempo de espera.
+Tempo de tiro:
+Shoot-off (para cada flecha):
+[A] 1 arqueiro por vez, 1 grupo por série
+[A-B] 1 arqueiro por vez, 2 grupos por série
+[A-B-C] 1 arqueiro por vez, 3 grupos por série
+[A-B-C-D] 1 arqueiro por vez, 4 grupos por série
+[AB-CD] 2 arqueiros por vez, 2 grupos por série
+1 arqueiro por alvo.
+1 arqueiro por vez, 2 grupos por série
+1 arqueiro por vez, 3 grupos por série
+1 arqueiro por vez, 4 grupos por série
+2 arqueiros por vez, 2 grupos por série. Recolher flechas após cada série
+2 arqueiros por vez, 2 grupos por série. (Recolher flechas a cada 2 séries). Tipicamente usado para distâncias longas, onde 6 flechas são tiradas antes de recolher. Mas, nesse caso, ainda 3 flechas em 2 minutos.
+2 arqueiros por vez, 2 grupos por série, 6 flechas disparadas em 4 minutos. Cada série tem 6 flechas. Aquecimento de 1 série de 6 flechas.
+Final individual (alternando) tempo fixo por flecha.
+Final por equipes (alternando) tempo fixo por série. Tempo pausado enquanto a outra equipe atira.
+Sistema 25m1P com 4 arqueiros por alvo
+Sistema 25m1P com 5 arqueiros por alvo
+Sistema 25m1P com 6 arqueiros por alvo
+Salvar configuração atual como configuração F8.
+Séries de aquecimento
+FITA
+Final FITA (Alternada)
+25m1p
+Tempo
+Tempo de Shoot-off 
+Tempo e sequência
+Tempo duplo
+Séries duplas
+Mostrar: 
+Número do alvo
+Somente a flecha
+Nome
+Lado esquerdo-Lado direito
+Tempo por vez/flecha (round individual)
+Tempo por série (round por equipes)
+Vez por série.
+Usar luzes BCD como luzes VAV no lado direito (Somente para hardware V2)
+Escolha
+Salvar configuração como configuração F1.
+Salvar configuração como configuração F2.
+Salvar configuração como configuração F3.
+Salvar configuração como configuração F4.
+Salvar configuração como configuração F5.
+Salvar configuração como configuração F6.
+Salvar configuração como configuração F7.
+Salvar configuração como configuração F8.
+Salvar configuração como configuração F9.
+Salvar configuração como configuração F10.
+Salvar configuração como configuração F11.
+Salvar configuração como configuração F12.
+Usar luzes ABCD para os primeiros 4 arqueiros.
+A prova começa em:
+Minutos
+min.
+Disposição da tela
+Som
+Cenário
+Contagem regressiva para início da prova
+Idioma
+Semáforo
+Usar semáforo na tela
+Usar dicas
+Som pelo auto-falante do PC
+Teste
+Contagem regressiva antes de iniciar a prova:
+Iniciar
+Menu desaparece após
+Segundos
+Ir para a série anterior
+Ir para a próxima série
+Parar Cronômetro
+Pausar Cronômetro
+Continuar Cronômetro
+Reiniciar Cronômetro
+Próximo arqueiro
+Parar último tiro desta série
+Conectar hardware
+Ir para grupo anterior
+Ir para grupo seguinte
+Resetar a primeira série (aquecimento)
+Ativar Arqueiro A
+Ativar Arqueiro B
+Ativar Arqueiro C
+Ativar Arqueiro D
+Redimensionar
+Fechar programa
+  Usar barra de espaço ou "Iniciar Cronômetro" início contagem regressiva
+  Selecionar o primeiro arqueiro clicando em uma flecha
+Lado Esquerdo
+Lado Direito
+Prova começa em
+selecionar arqueiro do lado direito
+selecionar arqueiro do lado esquerdo
+  Pressionar barra de espaço ou clicar em "Próximo Arqueiro" para finalizar este tiro e começar o seguinte
+  Pressionar barra de espaço ou clicar em "Parar último tiro desta série" para finalizar esta série.
+Conectando
+Conectado
+Cartão não encontrado
+Cartão
+Inicie a contagem regressiva sempre entre séries.
+Inicie toda série com AB....
+Sobre
+Hardware
+selecionar vermelho
+selecionar amarelo
+selecionar verde
+um alarme
+dois alarmes
+três alarmes
+parada de emergência
+sons de alarme
+selecionar ajustes de vermelho
+selecionar ajustes de amarelo
+selecionar ajustes de verde
+controle de hardware externo
+botão 1 (pausa)
+botão 2 (parar)
+botão 3 (seguinte)
+botão 4 (arqueiro)
+botão 5 (arqueiro)
+Manual
+Seguir
+Parar
+Em modo "Seguir", esta tela usa a entrada de um computador/monitor externo mediante conexão serial ou de rede.
+Selecionar o lugar desta tela na área
+Área do lado esquerdo
+Área do lado direito
+Vermelho
+Amarelo
+Verde
+Som de 1 sinal
+Som de 2 sinais
+Som de 3 sinais
+parada de emergência
+tela esquerda
+tela direita
+ambas telas
+Receber sinal de entrada de:
+Serial
+rede (LAN)
+Ativar Arqueiro E
+Ativar Arqueiro F
+[A-B-C-D-E] 1 arqueiro por vez, 5 grupos por série
+[A-B-C-D-E-F] 1 arqueiro por vez, 6 grupos por série
+[AB-CD-EF] 2 arqueiros por vez, 3 grupos por série
+[ABC-DEF] 3 arqueiros por vez, 2 grupos por série
+Sempre começar com arqueiro num. 1.
+Avançado.
+Configuração específica do clube:
+Nome deste computador:
+Usar Rede (LAN)
+Porta número
+USB / Serie
+Serial (Arduino)
+Inicial-Final
+I
+nicial
+F
+inal
+Flechas de Aquecimento
+Selecionar
+Enviar tempo pela rede LAN
+Endereço IP de multidifusão:
+Ajustes de rede (LAN)
+Controle com Laserpointer
+Botão Page Up
+Botão Page Down
+Botão Play
+Botão em branco
+Permitir controle remoto
+Senha
+pin de HW
+Seguinte
+Parar
+Parada de emergência
+Pausa / Play 
+Arqueiro anterior/esquerda
+Arqueiro seguinte/direita
+Série anterior
+Série seguinte
+Tempo de preparação
+Setup do campo esquerdo
+Setup do campo direito
+Cenário seguinte
+Cenário anterior
+Desligar
+Shoot-off de 1 Flecha
+Shoot-off de 2 Flechas
+Shoot-off de 3 Flechas
+Arrow+red time recover
+Arrow no red time recover
+--
+dummy
+dummy
+dummy
+dummy
+dummy
+Cores de tela
+Configuração de entrada USB / serial
+Ajustes de entrada GPIO (Somente Raspberry PI)
+Botão
+Mostrar
+Primário
+Secundário
+Contando flechas
+Rodar séries de aquecimento
+Ampliação do Botão
+Cenários na tela
+Tela sensível ao toque
+Texto na tela em situações de emergência
+Texto Alternativo:
+O comportamento após a parada de emergência é ativado
+Pausar / permanecer em estado de emergência
+Pare / fique na curva atual
+Pare / vá para a próxima volta
+Número mínimo de sinais:
+mantenha sinais quando o estado de emergência estiver ativado
+ajustar tempo
+ajustar cores
+Preparar Partida
+Recolher flechas
+Tempo Vermelho
+Tempo Verde
+Tempo Amarelo
+Próximo:
+Arqueiro:
+Um alarme no amarelo
+Piscar luz vermelha durante:
+Recolhendo flechas.
+Preparar tiro.
+Round Individual
+Round de Equipe
+Round de Equipe Mista
+Grupo por série durante Shoot Off
+Tempo de Shoot off
+Desligar sistema remoto (Cliente)
+Tempo na tela.
+Slides de fundo
+Mostrar imagens grandes durante recolha de flechas
+Tela Cheia
+Adicionar Imagem
+Remover Imagem
+Mudar a cada
+Segundos
+Banner
+Banner Específico
+Escolher
+Permitir que o sistema remoto desligue esse sistema
+Mostrar número da sério junto com os slides. 
+Sound signal when changing archer
+sequence
+Control audio
+IP adress of audio device
+Reconnect
+Retrieve arrows
+Prepare shooting
+Shooting (green)
+Shooting (Yellow)
+Before start match
+Volume
+Action
+Play
+Pause
+Stop
+Start up this system as follow (client) system
+Left Side
+Right Side
+At start up
+Show audio toolbar
+mute
+next track
+previous track
+Actual time / date
+All buttons next function.
+Monday
+Tuesday
+Wednesday
+Thursday
+Friday
+Saturday
+Sunday
+January
+February
+March
+April
+May
+June
+July
+August
+September
+October
+November
+December
+Number of ends repeating this sequence
+Control settings
+Keyboard key settings
+Preference
+Pause in between Turns.
+-
+-
+-
+-
+-

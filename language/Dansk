@@ -1,0 +1,321 @@
+﻿Runde
+Pil
+P
+Omgang
+Dobbelt runde? (For eksempel på lange distancer, hvor 2 gange 3 pile er skudt, før der bliver hentet pile fra målet).
+Sekunder Grøn
+Sekunder Orange
+Sekunder Rød
+Sekunder ialt
+Bueskytter pr. mål
+Skytte
+Indstillinger
+Minutter / sekunder?
+Gem som opstart indstilling.
+Skjul ikoner.
+Bruge PC højttaler til Buzzer.
+Ventetid.
+skyde tid:
+Shoot off tid (per pil):
+[A] 1 bueskytte pr. tur 1 omgang pr. runde
+[A-B] 1 bueskytte pr. tur 2 omgange pr. runde
+[A-B-C] 1 bueskytte pr. tur 3 omgange pr. runde
+[A-B-C-D] 1 bueskytte pr. runde 4 omdrejninger pr. runde
+[AB-CD] 2 bueskytter pr. tur 2 omgange pr. runde
+1 bueskytte pr. mål.
+1 bueskytte pr. tur 2 omgange pr. runde
+1 bueskytte pr. tur 3 vender pr.runde
+1 bueskytte pr. tur 4 vender pr. runde
+2 bueskytter pr. tur 2 omgange pr. slutningen Få pile efter hver runde
+2 bueskytter pr. tur 2 X 2 omgange pr. runde. (Get pile efter hver 2 runder). Typisk bruges på lange distancer, hvor 6 pile er skudt, før det bliver pilene. Men i dette tilfælde stadig 3 pile i 2 minutter.
+2 bueskytter pr. tur 2 omgange pr. runde skydning 6 pile i en række i 4 minutter. Så hver runde har 6 pile. Praksis er kun 1 slutningen af ​​6 pile.
+Individuel sidste runde. (Skiftende) Fast tid pr. pil.
+Team Final runde. (Skiftende) Fast tid pr. runde. På pause timing, når andre hold skyder.
+25m1P-system med 4 bueskytter på et mål.
+25m1P-system med 5 bueskytter på et mål.
+25m1P-system med 6 bueskytter på et mål.
+Gem aktuelle indstillinger som F8-indstillinger.
+Opvarmnings runde
+FITA
+FITA finaler (skiftevis)
+25m1p
+Timing
+Skyde timing
+Timing og sekvens
+Dobbelt tid
+Dobbelt drejninger
+vis:
+Ansigt nummer
+Arrow kun
+Navn
+Venstre side-Højre side
+Tid pr. tur / pil (individuel runde)
+Tid pr. runde (hold runde)
+Tænder pr. runde.
+Brug BCD lys som ROG lys på højre side. (For V2 Hardware kun)
+Vælg
+Gem aktuelle indstillinger som F1-indstillinger.
+Gem aktuelle indstillinger som F2-indstillinger.
+Gem aktuelle indstillinger som F3-indstillinger.
+Gem aktuelle indstillinger som F4 indstillinger.
+Gem aktuelle indstillinger som F5-indstillinger.
+Gem aktuelle indstillinger som F6-indstillinger.
+Gem aktuelle indstillinger som F7-indstillinger.
+Gem aktuelle indstillinger som F8-indstillinger.
+Gem aktuelle indstillinger som F9 indstillinger.
+Gem aktuelle indstillinger som F10-indstillinger.
+Gem aktuelle indstillinger som F11-indstillinger.
+Gem aktuelle indstillinger som F12-indstillinger.
+Brug ABCD lys for 1st 4 bueskytter.
+Match starter i
+Minutter
+min.
+skærm layout
+Lyd
+Scenario
+Nedtælling til start match
+Sprog
+Trafiklys
+Brug lyskryds på skærmen
+Vis hints
+Lyd via PC højttaler
+Prøve
+Nedtælling tid før start af match:
+begyndelse
+Menuen forsvinder efter
+Sekunder
+Skift til forrige runde
+Skift til næste runde
+Stop Timer
+Pause Timer
+Genoptag Timer
+Start Timer
+Næste bueskytte
+Stop sidste tur i denne runde
+Tilslut hardware
+Skift til forrige bueskytte
+Skift til næste bueskytte
+Nulstil til først (Træning) runde.
+Aktiver skytte A
+Aktiver skytte B
+Aktiver skytte C
+Aktiver skytte D
+Resize
+Luk program
+  Tryk mellemrumstasten eller klik på knappen "Start Timer" for at starte nedtællingen
+  Vælg start bueskytte ved at klikke på en pil.
+Venstre side
+Højre side
+Match starter i
+Vælg højre bueskytte
+Vælg venstre bueskytte
+  Tryk mellemrumstasten eller klik på "Næste bueskytte" for at afslutte denne tur og flytte til næste tur.
+  Tryk mellemrumstasten eller klik på "Stop sidste tur i denne omgang" for at afslutte dette runde.
+Tilslutning
+Forbundet
+Card ikke fundet
+Kort
+Start nedtællingen altid mellem enderne.
+Start hver runde med sekvens AB ....
+Om
+Hardware
+Vælg rød
+Vælg orange
+Vælg grøn
+ét signal
+to signaler
+tre signaler
+nødstop
+lydsignaler
+Vælg røde indstillinger
+Vælg orange indstillinger
+vælg grønne indstillinger
+ekstern hardware Controll
+knap 1 (pause)
+knap 2 (stop)
+knap 3 (næste)
+knap 4 (bueskytte)
+knap 5 (bueskytte)
+Manual
+Følg
+Stands
+i følje-tilstand, denne skærm bruger input fra en ekstern skærm / computer via seriel eller netværksforbindelse.
+Vælg placeringen af ​​denne skærm i området
+Venstre side område
+Højre side område
+Rød
+Orange
+Grøn
+1 lydsignal
+2 lydsignaler
+3 lydsignaler
+nødstop
+venstre skærm
+højre skærm
+begge skærme
+Modtag indgangssignal fra:
+seriel
+netværk (LAN)
+Aktiver skytte E
+Aktiver skytte F
+[A-B-C-D-E] 1 bueskytte pr. runde 5 omdrejninger pr. runde
+[A-B-C-D-E-F] 1 bueskytte pr. runde 6 snoninger pr. runde
+[AB-CD-EF] 2 bueskytter pr. runde 3 vender pr. runde
+[ABC-DEF] 3 bueskytter pr. tur 2 omgange pr. runde
+Start altid med bueskytte nr 1.
+Avanceret.
+Club specifikke indstillinger:
+Navn på denne computer:
+Brug Netværk (LAN)
+Portnummer
+USB / Seriel
+Serial (Arduino)
+Top-Bottom
+T
+op
+B
+ottom
+Trænings pile
+Vælg
+Send tid over LAN-netværk
+Multicast-adresse:
+Netværk (LAN) indstillinger
+laser pointer kontrol
+Knap Page Up
+Side ned-knap
+Knappen Afspil
+Screen knappen blanc
+Tillad fjernbetjening
+adgangskode
+HW pin
+næste
+stoppe
+nødstop
+Pause / Play
+Forrige / Venstre bueskytte
+Næste / højre bueskytte
+tidligere serier
+næste serie
+forberedelse Time
+Venstre felt design
+Right felt struktur
+følgende scenario
+foregående scenario
+tæt
+1 Pil Shoot off
+2 Pile Shoot off
+3 Pile Shoot off
+Arrow+red time recover
+Arrow no red time recover
+--
+dummy
+dummy
+dummy
+dummy
+dummy
+skærmfarver
+USB / Seriel indstillinger input
+GPIO input-indstillinger (kun Raspberry PI)
+Knap
+At vise
+Primær
+Sekundær
+tælle pile
+Rotere opvarmnings runde
+knap Forstørrelse
+Scenarier på skærmen
+Touch screen
+Tekst på skærmen i nødsituationer
+Alternativ tekst:
+Adfærd efter nødstop er aktiveret
+Pause / forblive i nødstilstand
+Stop / ophold i den aktuelle tur
+Stop / gå til næste tur
+Mindste antal signaler:
+Hold signaler, når nødstilstand er aktiveret
+juster tid
+justere farver
+Forbered Match
+Hent pile
+Rød tid
+Grøn tid
+Orange Time
+Next:
+Archer:
+one beep on yellow
+Blink red light during:
+Retrieving Arrows.
+Prepare shooting.
+Individual round
+Team Round
+Mixed Team Round
+Turns per end during Shoot Off
+Shootoff Time
+Shutdown remote (Client) system
+Time on screen.
+Background Slides
+Show large screen images when retrieving arrows
+Full Screen
+Add Image
+Remove Image
+Flip every
+Seconds
+Banner
+Specific Banner
+Choose
+Allow remote system to shutdown this system
+Show end number when slides are shown.
+Sound signal when changing archer
+sequence
+Control audio
+IP adress of audio device
+Reconnect
+Retrieve arrows
+Prepare shooting
+Shooting (green)
+Shooting (Yellow)
+Before start match
+Volume
+Action
+Play
+Pause
+Stop
+Start up this system as follow (client) system
+Left Side
+Right Side
+At start up
+Show audio toolbar
+mute
+next track
+previous track
+Actual time / date
+All buttons next function.
+Monday
+Tuesday
+Wednesday
+Thursday
+Friday
+Saturday
+Sunday
+January
+February
+March
+April
+May
+June
+July
+August
+September
+October
+November
+December
+Number of ends repeating this sequence
+Control settings
+Keyboard key settings
+Preference
+Pause in between Turns
+-
+-
+-
+-
+-

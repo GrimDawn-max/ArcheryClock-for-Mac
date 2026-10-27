@@ -1,0 +1,321 @@
+Serie
+Freccia
+P
+Turno
+Doppia serie? (per esempio alle lunghe distanze dove si tirano 2 serie di 3 frecce prima di recuperare)
+Secondi verde
+Secondi giallo
+Secondi rosso
+Secondi totali
+Arcieri per bersaglio
+Arciere
+Impostazioni
+Formato timer
+Salva come impostazioni iniziali
+Nascondi le icone
+Usa l'audio di questo computer per i suoni
+Tempo di attesa
+Tempo di tiro:
+Tempo di spareggio (per freccia):
+[A] 1 arciere per turno, 1 turno per serie
+[A-B] 2 arcieri per turno, 2 turni per serie
+[A-B-C] 1 arciere per turno, 3 turni per serie
+[A-B-C-D] 1 arciere per turno, 4 turni per serie
+[AB-CD] 2 arcieri per turno, 2 turni per serie
+1 arciere per bersaglio
+1 arciere per turno, 2 turni per serie
+1 arciere per turno, 3 turni per serie
+1 arciere per turno, 4 turni per serie
+2 arcieri per turno, 2 turni per serie, recupero dopo ogni serie
+2 arcieri per turno, 2 x 2 turni per serie, recupero ogni due serie, tipicamente usato sulle lunghe distanze dove si tirano 6 frecce prima del recupero, ma in questo caso sempre 3 frecce in 2 minuti
+2 arcieri per turno, 2 turni per serie tirando 6 frecce di fila in 4 minuti. Ogni serie ha 6 frecce, in prova una sola serie di 6 frecce.
+Scontri individuali, tiro alternato, tempo fisso per freccia
+Scontri a squadre, tiro alternato, tempo fisso per freccia
+Sistema 25m1P con 4 arcieri per bersaglio
+Sistema 25m1P con 5 arcieri per bersaglio
+Sistema 25m1P con 6 arcieri per bersaglio
+Salva impostazioni correnti come scenario F8
+Serie di prova
+FITA
+Finali FITA (tiri alternati)
+25m1p
+Tempi
+Tempi spareggio
+Tempi e sequenze
+Tempo doppio
+Turni doppi
+mostra:
+Numero bersaglio
+Solo freccia
+Nome
+Lato sinistro - Lato destro
+Tempo per turno/freccia (individuale)
+Tempo per serie (squadre)
+Turni per serie 
+Usa luci BCD come luci ROG sul lato destro (solo per hardware V2)
+Scegli
+Salva impostazioni correnti come scenario F1
+Salva impostazioni correnti come scenario F2
+Salva impostazioni correnti come scenario F3
+Salva impostazioni correnti come scenario F4
+Salva impostazioni correnti come scenario F5
+Salva impostazioni correnti come scenario F6
+Salva impostazioni correnti come scenario F7
+Salva impostazioni correnti come scenario F8
+Salva impostazioni correnti come scenario F9
+Salva impostazioni correnti come scenario F10
+Salva impostazioni correnti come scenario F11
+Salva impostazioni correnti come scenario F12
+Usa luci ABCD per i primi 4 arcieri
+I tiri iniziano tra
+Minuti
+min.
+Disposizione dello schermo
+Suono
+Scenario
+Conto alla rovescia per inizio tiri
+Lingua
+Semaforo
+Visualizza il semaforo
+Mostra i suggerimenti
+Suono per segnalazioni:
+Test
+Tempo conto alla rovescia:
+inizio
+Il menu scomparirà tra  
+Secondi
+Vai alla serie precedente
+Vai alla serie successiva
+Arresta conteggio
+Pausa conteggio
+Riprendi conteggio
+Avvia conteggio
+Prossimo arciere
+Ferma all'ultimo turno di questa serie
+Collega l'hardware
+Vai all'arciere precedente
+Vai all'arciere successivo
+Torna alla prima serie (tiri di prova)
+Attiva arciere A
+Attiva arciere B
+Attiva arciere C
+Attiva arciere D
+Ridimensiona
+Chiudi programma
+  Premi la barra spaziatrice o clicca sul pulsante "Avvia conteggio" per far partire il conto alla rovescia  
+  Scegli l'arciere che inizia cliccando su una freccia
+Lato sinistro
+Lato destro
+I tiri iniziano tra
+Seleziona l'arciere di destra
+Seleziona l'arciere di sinistra
+  Premi la barra spaziatrice o clicca sul pulsante "Prossimo arciere" per terminare questo turno e saltare al prossimo    
+  Premi la barra spaziatrice o clicca sul pulsante "Ferma ultimo turno" per terminare    
+Collegamento in corso
+Collegato
+Scheda non trovata
+Scheda
+Esegui sempre il conto alla rovescia fra le serie
+Inizia ogni serie con la sequenza AB....
+Informazioni
+Hardware
+Seleziona rosso
+Seleziona giallo
+Seleziona verde
+Un fischio
+Due fischi
+Tre fischi
+Stop di emergenza
+Segnali acustici
+Alla selezione del rosso
+Alla selezione del giallo
+Alla selezione del verde
+Controllo hardware esterno
+Pulsante 1 (pausa)
+Pulsante 2 (stop)
+Pulsante 3 (successivo)
+Pulsante 4 (arciere)
+Pulsante 5 (arciere)
+Manuale
+Segui
+Stop
+Nel modo "Segui", questo computer/schermo usa la temporizzazione ricevuta da un altro computer/schermo via interfaccia seriale o di rete
+Posizione di questo schermo nel campo
+Lato sinistro
+Lato destro
+Rosso
+Giallo
+Verde
+1 segnale acustico
+2 segnali acustici
+3 segnali acustici
+Stop di emergenza
+Schermo di sinistra
+Schermo di destra
+Entrambi gli schermi
+Ricevi il segnale di input da:
+Interfaccia seriale
+Interfaccia di rete locale (LAN)
+Attiva arciere E
+Attiva arciere F
+[A-B-C-D-E] 1 arciere per turno, 5 turni per serie
+[A-B-C-D-E-F] 1 arciere per turno, 6 turni per serie
+[AB-CD-EF] 2 arcieri per turno, 3 turni per serie
+[ABC-DEF] 3 arcieri per turno, 2 turni per serie
+Inizia sempre con l'arciere n. 1
+Avanzate
+Impostazioni specifiche della Compagnia
+Indirizzo IP di questo computer
+Usa le rete locale (LAN)
+Porta numero
+USB / seriale
+Porta seriale (arduino)
+Alto - Basso
+A
+lto
+B
+asso
+Frecce di prova
+Seleziona
+Invia temporizzazione sulla rete locale (LAN) da questo computer
+Indirizzo IP multicast:
+Impostazioni di rete (LAN)
+Controllo puntatore laser
+Pulsante PaginaSu
+Pulsante PaginaGiù
+Pulsante Play
+Pulsante Blank
+Consenti controllo remoto
+Password
+Pin HW
+Prossimo
+Stop
+Arresto di emergenza
+Pausa / Avvio
+Arciere precedente/sinistro
+Arciere successivo/destro
+Serie precedente
+Serie successiva
+Tempo di preparazione
+Left field setup
+Right field setup
+Scenario successivo
+Scenario precedente
+Spegni
+Spareggio a 1 freccia
+Spareggio a 2 frecce
+Spareggio a 3 frecce
+Arrow+red time recover
+Arrow no red time recover
+--
+dummy
+dummy
+dummy
+dummy
+dummy
+Colori dello schermo
+Impostazioni ingresso USB/Seriale
+Impostazioni ingressi GPIO (solo Raspberry PI)
+Pulsante
+Mostra
+Primario
+Secondario
+Conteggio frecce
+Ruota turni nelle serie di prova
+Ingrandimento pulsanti
+Mostra pulsanti scenari
+Schermo tattile
+Testo visualizzato in situazioni di emergenza
+Testo alternativo:
+Comportamento dopo l'arresto di emergenza
+Pausa / rimani in stato di emergenza
+Arresto / rimani al turno corrente
+Arresto / vai al turno successivo
+Numero minimo di fischi:
+Mantieni segnali con emergenza attiva
+Regolazione ora
+Regolazione colori
+Preparazione
+Recupero
+Conteggio rosso
+Conteggio verde
+Conteggio giallo
+Next:
+Archer:
+one beep on yellow
+Blink red light during:
+Retrieving Arrows.
+Prepare shooting.
+Individual round
+Team Round
+Mixed Team Round
+Turns per end during Shoot Off
+Shootoff Time
+Shutdown remote (Client) system
+Time on screen.
+Background Slides
+Show large screen images when retrieving arrows
+Full Screen
+Add Image
+Remove Image
+Flip every
+Seconds
+Banner
+Specific Banner
+Choose
+Allow remote system to shutdown this system
+Show end number when slides are shown.
+Sound signal when changing archer
+sequence
+Control audio
+IP adress of audio device
+Reconnect
+Retrieve arrows
+Prepare shooting
+Shooting (green)
+Shooting (Yellow)
+Before start match
+Volume
+Action
+Play
+Pause
+Stop
+Start up this system as follow (client) system
+Left Side
+Right Side
+At start up
+Show audio toolbar
+mute
+next track
+previous track
+Actual time / date
+All buttons next function.
+Monday
+Tuesday
+Wednesday
+Thursday
+Friday
+Saturday
+Sunday
+January
+February
+March
+April
+May
+June
+July
+August
+September
+October
+November
+December
+Number of ends repeating this sequence
+Control settings
+Keyboard key settings
+Preference
+Pause in between Turns.
+-
+-
+-
+-
+-

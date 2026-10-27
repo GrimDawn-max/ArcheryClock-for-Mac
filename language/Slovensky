@@ -1,0 +1,321 @@
+Sada
+Šíp
+T
+Rad
+Dvojité sady? (napríklad pre veľké vzdialenosti kde sa strieľa 2 krát 3 šípy pred tým než sa vytiahnu z terčovníc) 
+sekúnd Zelená
+sekúnd Oranžová
+sekúnd Červená
+sekúnd Spolu
+strelci na terčovnici
+Strelec
+Nastavenia
+Minúty / Sekundy
+Uložiť ako prednastavené.
+Zobraziť ikony
+Použiť reproduktory PC pre Buzzer
+Čas čakania.
+Čas streľby:
+Čas rozstrelu (na šíp):
+[A] 1 strelec za rad 1 rad za sadu
+[A-B] 1 strelec za rad 2 rady za sadu
+[A-B-C] 1 strelec za rad 3 rady za sadu
+[A-B-C-D] 1 strelec za rad 4 rady za sadu
+[AB-CD] 2 strelci za rad 2 rady za sadu
+1 strelec na terč.
+1 strelec za rad, 2 rady za sadu
+1 strelec za rad, 3 rady za sadu
+1 strelec za rad, 4 rady za sadu
+2 strelci za rad, 2 rady za sadu Vyberte šípy po každej sade
+2 strelci za rad, 2 X 2 rady za sadu. (Vyberte šípy po každých 2 sadách). Zvyčajne sa používa pre veľké vzdialenosti kde sa strieľa 6 šípov pred ich vytiahnutím. Ale v tomto prípade stále 3 šípy za 2 minúty.
+2 strelci za rad, 2 rady za sadu strieľajúc 6 šípov v rade za 4 minúty. Takže každá sada má 6 šípov. Tréningová sada je iba 1-den zo 6-tich šípov.
+Individuálne kolo. (Striedavo) Fixný čas za šíp. 
+Tímové Finálne kolo. (Striedavo) Fixný čas za sadu. Pozastavený časovač keď strieľa druhý tím.
+25m1P systém so 4 strelcami na terčovnicu.
+25m1P systém so 5 strelcami na terčovnicu.
+25m1P systém so 6 strelcami na terčovnicu.
+Uložiť aktuálne nastavenia ako nastavenia F8.
+tréningové sady
+FITA
+FITA Finále (Striedavo)
+25m1p
+Časovač
+Časovač pre rozstrel
+Časovač a sekvencia
+Dvojitý čas
+Dvojité rady
+zobraziť:
+Číslo terčovnice
+Iba šípy
+Meno
+ľavá strana - pravá strana
+Čas za radu /šíp (individuálne kolo)
+Čas za sadu (tímové kolo)
+Zmien za sadu 
+Použiť BCD svetlá ako ROG svetlá na pravej strane. (Iba pre V2 Hardvér)
+Zvoliť
+Uložiť aktuálne nastavenie ako nastavenie pre F1.
+Uložiť aktuálne nastavenie ako nastavenie pre F2.
+Uložiť aktuálne nastavenie ako nastavenie pre F3.
+Uložiť aktuálne nastavenie ako nastavenie pre F4.
+Uložiť aktuálne nastavenie ako nastavenie pre F5.
+Uložiť aktuálne nastavenie ako nastavenie pre F6.
+Uložiť aktuálne nastavenie ako nastavenie pre F7.
+Uložiť aktuálne nastavenie ako nastavenie pre F8.
+Uložiť aktuálne nastavenie ako nastavenie pre F9.
+Uložiť aktuálne nastavenie ako nastavenie pre F10.
+Uložiť aktuálne nastavenie ako nastavenie pre F11.
+Uložiť aktuálne nastavenie ako nastavenie pre F12.
+použiť ABCD svetlá pre prvých 4 strelcov
+Pretek začne za
+minút
+min.
+Rozloženie obrazovky
+Zvuk
+Scenár
+Odpočet do začatia preteku
+Jazyk
+Semafor
+Zobraziť semafor na obrazovke
+Zobraziť nápoveď
+Zvuk cez reproduktory PC
+Test
+Odpočet času pred začatím preteku:
+štart
+Menu zmizne za  
+sekúnd
+Prepnúť na predchádzajúcu sadu
+Prepnúť na ďalšiu sadu
+Zastaviť časovač
+Pozastaviť časovač
+Pokračovať v časovači
+Spustiť časovač
+Ďalší strelec
+Zastaviť poslednú radu tejto sady
+Pripojiť hardvér
+Prepnúť na predchádzajúceho strelca
+Prepnúť na ďalšieho strelca
+Vynulovať na prvú (tréning) sadu.
+Spustiť strelca A
+Spustiť strelca B
+Spustiť strelca C
+Spustiť strelca D
+Zmeniť veľkosť
+Zavrieť aplikáciu
+  Pre začatie odpočtu stlačte medzerník alebo kliknite na tlačidlo "Spustiť časovač"  
+  Kliknutím na šípku zvoľte začínajúceho strelca.  
+Ľavá strana
+Pravá strana
+Pretek začne za
+Zvoliť strelca na pravej strane
+Zvoliť strelca na ľavej strane
+  Pre ukončenie tejto rady a posunutie sa na ďalšiu radu stlačte medzerník alebo kliknite na tlačidlo "Ďalší strelec".    
+  Pre ukončenie tejto sady stlačte medzerník alebo kliknite na tlačidlo "Zastaviť poslednú radu tejto sady".    
+Spájam...
+Spojené
+Karta nenájdená
+Karta
+Vždy spustiť odpočítavanie medzi sadami
+Začať každú sadu sekvenciou AB...
+O aplikácii
+Hardvér
+zvoliť červenú
+zvoliť oranžovú
+zvoliť zelenú
+jeden signál
+dva signály
+tri signály
+Núdzové zastavenie
+zvukové signály
+Zvoliť nastavenia červenej
+Zvoliť nastavenia oranžovej
+Zvoliť nastavenia zelenej
+Ovládanie externým hardvérom
+tlačidlo 1 (pozastaviť)
+tlačidlo 2 (zastaviť)
+tlačidlo 3 (nasledujúci)
+tlačidlo 4 (strelec)
+tlačidlo 5 (strelec)
+Manuálne
+Nasledovať
+Zastaviť!
+V režime nasledovať, táto obrazovka použije vstup z externej obrazovky/počítača cez sériový port alebo sieťové spojenie.
+zvoľte umiestnenie tejto obrazovky
+oblasť ľavej strany
+oblasť pravej strany
+Červená
+Oranžová
+Zelená
+1 zvukový signál
+2 zvukové signály
+3 zvukové signály
+núdzové zastavenie
+ľavú obrazovku
+pravú obrazovku
+obidve obrazovky
+Prijímať vstupný signál z:
+sériový
+sieť (LAN)
+Aktivovať strelca E
+Aktivovať strelca F
+[A-B-C-D-E] 1 strelec za rad, 5 rad za sadu
+[A-B-C-D-E-F] 1 strelec za rad, 6 rad za sadu
+[AB-CD-EF] 2 strelci za rad, 3 rady za sadu
+[ABC-DEF] 3 strelci za rad, 2 rady za sadu
+Vždy začať strelcom číslo 1
+Pokročilý.
+Špecifické nastavenia klubu:
+Meno(IP) tohto počítača:
+Použiť sieť (LAN)
+Číslo portu
+USB / Sériovo
+Sériový (arduino)
+Horný-Dolný
+H
+orný
+D
+olný
+tréningových šípov
+Zvoliť
+Vysielať čas cez sieť LAN
+Multicast adresa:
+Sieťové nastavenia(LAN)
+Ovládanie laserovým ukazovátkom
+tlačidlo strana hore  
+tlačidlo strana dole
+tlačidlo Prehrať
+prázdne tlačidlo
+Povoliť vzdialené ovládanie
+Heslo
+HW pin
+Ďalší
+Zastaviť
+Núdzové zastavenie
+Pozastaviť/Prehrať
+Predchádzajúci/ľavý strelec
+Nasledujúci/pravý strelec
+Predchádzajúca sada
+Nasledujúca sada
+Čas prípravy
+Nastavenie ľavého poľa
+Nastavenie pravého poľa
+Nasledujúci scenár
+Predchádzajúci scenár
+Vypnúť
+rozstrel na 1 šíp
+rozstrel na 2 šípy
+rozstrel na 3 šípy
+Arrow+red time recover
+Arrow no red time recover
+--
+dummy
+dummy
+dummy
+dummy
+dummy
+Farby obrazovky
+Nastavenia USB / Sériový vstup
+Nastavenia GPIO vstupu (iba Raspberry PI)
+Tlačidlo
+Zobraziť
+primárne
+sekundárne
+počítanie šípov
+Rotovať tréningové sady
+Zväčšenie tlačidiel
+Scenáre na obrazovke
+Dotyková obrazovka
+Text na obrazovke v núdzových situáciách
+Vlastný text:
+Správanie po aktivácii núdzového zastavenia
+Pauza / zostať v núdzovom režime
+Stop / zostať v aktuálnej rade
+Stop / preskočiť na ďalšiu radu
+Minimálny počet signálov:
+zachovať signály v núdzovom režime
+Nastavenie času
+Nastavenie farieb
+Priprava preteku
+Vyťahovanie šípov
+Čas červenej
+Čas zelenej
+Čas oranžovej
+Nasleduje:
+Strelec:
+jedno pípnutie pri žltej
+Blikať červenou počas:
+vyťahovania šípov
+prípravy na streľbu
+Individuálne kolo
+Tímové kolo
+Kolo Mix tímov 
+Radov za sadu počas Rozstrelu
+Čas rozstrelu
+Zastaviť vzdialený (Klientský) systém
+Čas na obrazovke
+Snímky pozadia
+Počas vyťahovania šípov zobrazovať na pozadí
+Na celú obrazovku
+Pridať obrázok
+Odstrániť obrázok
+Zmeniť každých
+sekúnd
+Banner
+Vlastný Banner
+Vybrať
+Povoliť vzdialenému systému zastaviť tento systém
+Zobrazovať číslo sady ak sa zobrazujú snímky
+Zvukový signál pri zmene strelca
+Sekvencia
+Ovládať zvuky
+IP adresa zvukového zariadenia
+Pripojiť
+Vyťahovanie šípov
+Príprava streľby
+Streľba (zelená)
+Streľba (žltá)
+Pred začiatkom preteku
+Hlasitosť
+Akcia
+Prehrať
+Pauza
+Zastaviť
+Spustiť tento systém ako klienta
+Ľavá strana
+Pravá strana
+Po spustení
+Zobraziť audio lištu
+stlmiť
+nasledujúca skladba
+predchádzajúca skladba
+Aktuálny čas / dátum
+Všetky tlačidlá nastaviť na: Ďalší!
+Pondelok
+Utorok
+Streda
+Štvrtok
+Piatok
+Sobota
+Nedeľa
+Január
+Február
+Marec
+Apríl
+Máj
+Jún
+Júl
+August
+September
+Október
+November
+December
+Počet sád opakujúcich túto postupnosť
+Nastavenia ovládania
+Nastavenia kláves
+Prednosť
+Pause in between Turns
+-
+-
+-
+-
+-

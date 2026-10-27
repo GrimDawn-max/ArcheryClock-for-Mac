@@ -1,0 +1,321 @@
+Serie
+Pil
+U
+Skjutlag
+Dubbla serier? (6-pilsserie. Till exempel på långa avstånd där 2 * 3 pilar skjuts innan du hämtar dem).
+Sekunder grön
+Sekunder gul
+Sekunder röd
+Sekunder totalt
+Skyttar per tavla
+Skytt 
+Inställningar
+Minuter / Sekunder
+Spara som startinställning
+Dölj ikoner
+Använd PC högtalare för summer.
+Väntetid.
+Skjuttid:
+Shoot off tid (per pil):
+[A] en skytt per skjutlag 1 gång per serie.
+[A-B] en skytt per skjutlag 2 skjutlag per serie.
+[A-B-C] en skytt per skjutlag 3 skjutlag per serie.
+[A-B-C-D] en skytt per skjutlag 4 skjutlag per serie.
+[AB-CD] 2 skyttar per skjutlag 2 skjutlag per serie.
+[A] 1 skytt per tavla.
+[A-B] 1 skytt per skjutlag 2 skjutlag per serie.
+[A-B-C] 1 skytt per skjutlag 3 skjutlag per serie.
+[A-B-C-D] 1 skytt per skjutlag 4 skjutlag per serie.
+[AB-CD] 2 skyttar per skjutlag 2 skjutlag per serie. Hämta pilar efter varje serie.
+[AB-CD-AB-CD] 2 skyttar per skjutlag 2 x 2 skjutlag per serie. (Hämta pilar efter 2 serier). Vanligtvis används på långa sträckor där 6 pilar skjuts innan du hämtar pilarna. Men i detta fall fortfarande 3 pilar på 2 minuter.
+[AB-CD] 2 skyttar per skjutlag 2 skjutlag per serie skjuta 6 pilar på 4 minuter. Så varje serie har sex pilar. Övningsrunda: 1 serie med 6 pilar.
+Individuell finalrond (3 pilar). (Växlande) Fast tid per pil.
+Lag finalrond. (Växlande) Fast tid per slutet. Paus timing när andra laget skjuter.
+25m1P 4 skyttar per tavla.
+25m1P 5 skyttar per en tavla.
+25m1P 6 skyttar per en tavla.
+Spara aktuella inställningar som F8 inställningar.
+Uppvärmningsserie
+FITA
+FITA Finaler (växlande)
+25m1p
+Tidsinställningar
+Shoot off tider
+Timing och sekvens
+Dubbel tid
+Dubbla skjutlag
+visa:
+Tavelnummer
+Endast pil
+Namn
+Vänster sida / Höger sida
+Tid per skjutlag / pil (enskild omgång)
+Tid per serie (lagserie)
+Pilar per serie
+Använd BCD lampor som ROG lampor på höger sida. (För V2 Hårdvara endast)
+Välj
+Spara aktuella inställningar som F1.
+Spara aktuella inställningar som F2.
+Spara aktuella inställningar som F3.
+Spara aktuella inställningar som F4.
+Spara aktuella inställningar som F5.
+Spara aktuella inställningar som F6.
+Spara aktuella inställningar som F7.
+Spara aktuella inställningar som F8.
+Spara aktuella inställningar som F9.
+Spara aktuella inställningar som F10.
+Spara aktuella inställningar som F11.
+Spara aktuella inställningar som F12.
+Använd ABCD lampor för de första 4 skyttar.
+Start om
+minuter
+min.
+Skärmlayout
+Ljud
+Scenario
+Nedräkning till start
+Språk
+Trafikljus
+Använd trafikljus på skärmen
+Visa tips
+Ljud via PC-högtalare
+Test
+Nedräkning före start:
+Start
+Menyn försvinner om
+sekunder
+Växla till föregående serie
+Växla till nästa serie
+Stoppa klockan
+Pausa klockan
+Återstarta klockan
+Starta klockan
+Nästa skytt
+Avsluta serie
+Anslut enhet
+Växla till föregående skytt
+Växla till nästa skytt
+Återställ första (uppvärmnings) serie.
+Aktivera Skytt A
+Aktivera Skytt B
+Aktivera Skytt C
+Aktivera Skytt D
+Ändra storlek
+Avsluta programmet
+  Tryck på mellanslag eller klicka på "Starta Klockan" för att starta nedräkningen
+  Välj startande skytt genom att klicka på motsvarande pil eller använd piltangenterna.
+Vänster sida
+Höger sida
+Start om
+Välj höger skytt
+Välj vänster skytt
+  Tryck på mellanslag eller klicka på "Nästa skjutlag" för att avsluta detta skjutlag och starta nästa.
+  Tryck på mellanslag eller klicka på "Avsluta serien” för att avsluta serien.
+Anslut
+Ansluten
+Enhet hittades inte
+Enhet
+Starta alltid nedräkningen mellan omgångarna
+Börja varje serie med sekvens AB....
+Om
+Hårdvara
+Välj Rött
+Välj Gult
+Välj Grönt
+En signal
+Två signaler
+Tre signaler
+Nödstopp
+ljudsignaler
+Röd inställning
+Gul inställning
+Grön inställning
+extern hårdvarukontroll
+Knapp 1 (paus)
+Knapp 2 (stopp)
+Knapp 3 (nästa)
+Knapp 4 (skytt)
+Knapp 5 (skytt)
+Manuell
+Följ
+Avbryt
+i läge 'Följ' används den här skärmen via externt ansluten skärm/dator via seriell eller LAN.
+Välj placering av skärm
+Vänster sida
+Höger sida
+Röd
+Gul
+Grön
+1 ljudsignal
+2 ljudsignaler
+3 ljudsignaler
+Stopp / Avbryt
+Vänster skärm
+Höger skärm
+Båda skärmarna
+Ta emot signalen från:
+Seriell (COM)
+Nätverk (LAN)
+Aktivera Skytt E
+Aktivera Skytt F
+[A-B-C-D-E] en skytt per skjutlag 5 skjutlag per serie.
+[A-B-C-D-E-F] en skytt per skjutlag 6 skjutlag per serie.
+[AB-CD-EF] 2 skyttar per skjutlag 3 skjutlag per serie.
+[ABC-DEF] 3 skyttar per skjutlag 2 skjutlag per serie.
+Börja alltid med skytt nr 1.
+Avancerad
+Klubbspecifika inställningar:
+Namnet på den här datorn:
+Använd nätverk (LAN)
+Portnummer
+USB / Seriell
+Seriell (Arduino)
+Övre - Nedre
+Ö
+vre
+N
+edre
+Uppvärmnings pilar
+Välj 
+Sänd tid över nätverk (LAN)
+Multicastadress:
+Nätverksinställningar (LAN)
+Laserpekarkontroll
+Page up knapp
+Page down knapp
+Play knapp
+Blank knapp
+Tillåt fjärrstyrning
+Lösenord
+HW pin
+Nästa
+Stop
+Nödstopp
+Paus/Spela
+Föregående/vänster skytt
+Nästa/höger skytt
+Föregående serie
+Nästa serie
+Förberedelsetid
+Vänster skärm
+Höger skärm
+Nästa scenario
+Föregående scenario
+Stäng av
+1 Pil Shoot off
+2 Pilar Shoot off 
+3 Pilar Shoot off 
+Arrow+red time recover
+Arrow no red time recover
+--
+dummy
+dummy
+dummy
+dummy
+dummy
+Skärmfärger
+USB / Seriell inmatningsinställningar
+GPIO inmatningsinställningar (enbart Raspberry PI)
+Knapp
+Visa
+Primär
+Sekundär
+Räknar pilar
+Rotera startordning under uppvärmningsomgångar
+Förstora knappar
+Scenarier på skärmen
+Touchskärm
+Text på skärmen vid nödstopp
+Alternativ text:
+Beteende efter nödstopp har aktiverats
+Paus / stanna i nödstoppsläge
+Stop / stanna i nuvarande omgång
+Stop / gå till nästa skjutlag
+Minsta antal signaler:
+Fortsätt signalera så länge som nödstop är aktivt
+justera tid
+Justera färger
+Förbered match
+Hämta pilar
+Röd tid
+Grön tid
+Gul tid
+Nästa:
+Skytt:
+En signal vid gul
+Blinkande rött ljus:
+Hämtar pilar.
+Förbereder skjutning.
+Individuell rond
+Lag rond
+Mixlag rond
+Antal pilar per serie vid Shoot off
+Shoot off tid
+Stäng ner fjärrklienter
+Klockslag på skärmen.
+Bakgrundsbilder
+Visa bakgrundsbilder under pilhämtning
+Fullskärm
+Lägg till bild
+Ta bort bild
+Byt bild var
+sekund
+Banner
+Egen banner
+Välj 
+Tillåt fjärrsystem att stänga ner detta system
+Visa serie när bakgrundsbilder visas.
+Ljudsignal vid byte av skytt
+sekvens
+Ljudkontroll
+IP adress för ljudenhet
+Återanslut
+Hämta pilar
+Förbered skjutning
+Skjutning (grön)
+Skjutning (gul)
+Före matchstart
+Volym
+Åtgärd
+Play
+Pause
+Stop
+Starta upp detta system som slav.
+Vänster sida
+Höger sida
+Vid uppstart
+Visa ljudkontroller
+tyst
+nästa spår
+föregående spår
+Visa datum och tid
+Sätt alla knappar till ”Nästa”
+Måndag
+Tisdag
+Onsdag
+Torsdag
+Fredag
+Lördag
+Söndag
+januari
+februari
+mars
+april
+maj
+juni
+juli
+augusti
+september
+oktober
+november
+december
+Antal serier innan sekvensen repeteras
+Fjärrkontroll inst.
+Tangentbordsinställningar
+Förinställning
+Pause in between Turns
+-
+-
+-
+-
+-
