@@ -29,12 +29,12 @@ uses
   MMSystem, windows,
   {$ENDIF}
   {$IFDEF Unix}
-  UTF8Process, sdl, sdl_mixer, unix, BaseUnix, Regexpr, Process, mouse, CRT,
+  UTF8Process, {$IFDEF Darwin}macsound,{$ELSE}sdl, sdl_mixer,{$ENDIF} unix, BaseUnix, Regexpr, Process, mouse, CRT,
   {$ENDIF}
   LCLIntf, LCLType, Synaser, SysUtils, Variants, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, ComCtrls, Spin, dateutils, DBCtrls,
   StrUtils, Menus, Grids, IniPropStorage, maskedit, ColorBox, ExtDlgs, ActnList,
-  SdpoSerial, lNetComponents, FileUtil, SynEdit, lNet, blcksock, synsock,
+  SdpoSerial, lNetComponents, FileUtil, LazFileUtils, SynEdit, lNet, blcksock, synsock,
   {$IFDEF Windows}
   Winsock,
   {$ENDIF}
@@ -1823,7 +1823,7 @@ var
   monthname: array[1..12] of string;
   dayname: array[1..7] of string;
   endtimebuzzer: boolean; // to indicate in finalrounds if sound is needed because alternating time is up
-  {$IFDEF Unix}
+  {$IFDEF Unix}{$IFNDEF Darwin}
   //SDL Stuff
   audio_rate: integer;
   audio_format: Uint16;
@@ -1831,7 +1831,7 @@ var
   audio_buffers : integer;
   wave: PMix_Chunk;
   channel : integer;
-  {$ENDIF}
+  {$ENDIF}{$ENDIF}
 
 
 implementation
@@ -6870,7 +6870,10 @@ begin
     {$IFDEF Windows}
     sndPlaySound(WavFilename, snd_Async or snd_NoDefault);
     {$ENDIF}
-    {$IFDEF Unix}
+    {$IFDEF Darwin}
+    if not MacPlayWav(WavFilename) then ShowMessage('Unable to play WAV file');
+    {$ENDIF}
+    {$IFDEF Unix}{$IFNDEF Darwin}
     begin
       /// SDL Stuff
       wave := Nil;
@@ -6889,7 +6892,7 @@ begin
      //END SDL Stuf
     end;
 
-    {$ENDIF}
+    {$ENDIF}{$ENDIF}
   end;
   buzzertimer.Enabled:=true;
   switchbox;
@@ -11998,7 +12001,7 @@ procedure TCountdownform.initialize;
 var dummy:string;
 Mousepos: TPoint;
 begin
-  {$IFDEF Unix}
+  {$IFDEF Unix}{$IFNDEF Darwin}
  //SDL Stuff
 
   if ((SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)) then
@@ -12018,10 +12021,10 @@ begin
 	ShowMessage('Unable to initialize audio');
   end;
   // END SDL Stuff
-  {$ENDIF}
+  {$ENDIF}{$ENDIF}
   linuxHW:='';
   {$IFDEF Unix}
-  linuxHW:='RPI';
+  {$IFNDEF Darwin}linuxHW:='RPI';{$ENDIF}  // Mac: no Raspberry Pi hardware
 
   If linuxHW='RPI' then RPIinputbox.Enabled:=true;
   If linuxHW='RPI' then LOWRES:=true else LOWRES:=false;
@@ -14493,7 +14496,10 @@ begin  //buzzeron
     {$IFDEF Windows}
     sndPlaySound(WavFilename, snd_Async or snd_NoDefault);
     {$ENDIF}
-    {$IFDEF Unix}
+    {$IFDEF Darwin}
+    if not MacPlayWav(WavFilename) then ShowMessage('Unable to play WAV file');
+    {$ENDIF}
+    {$IFDEF Unix}{$IFNDEF Darwin}
     begin
 
            /// SDL Stuff
@@ -14512,7 +14518,7 @@ begin  //buzzeron
     end
     end;
 
-    {$ENDIF}
+    {$ENDIF}{$ENDIF}
     end;
   end;
   switchbox;

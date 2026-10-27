@@ -1,0 +1,11 @@
+*.o
+*.or
+*.ppu
+*.compiled
+lib/
+backup/
+archeryclock26
+*.app/
+link*.res
+linkfiles*.res
+ppas.sh
