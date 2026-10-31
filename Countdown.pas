@@ -5423,6 +5423,15 @@ Begin
     end;
   end;
   closefile(fl);  *)
+  {$IFDEF Darwin}
+  // Mac: interfaces are en0, en1...; use the one carrying the default route
+  re:= TRegExpr.Create;
+  re.Expression:='interface: (\S+)';
+  if RunCommand('/sbin/route', ['-n', 'get', 'default'], response) and re.Exec(response) then
+    if RunCommand('/usr/sbin/ipconfig', ['getifaddr', re.Match[1]], dummy) then
+      HOSTNAME.caption:=Trim(dummy);
+  re.Free;
+  {$ELSE}
   RunCommand('/sbin/ifconfig', ['wlan0'], response);
   re:= TRegExpr.Create;
  // If linuxHW='RPI' then re.Expression:='inet ([^ ]+)' else re.Expression:='inet addr:([^ ]+)';
@@ -5453,6 +5462,7 @@ Begin
     re.Exec(response);
     HOSTNAME.caption:=copy(re.Match[0],6,25);
   end;
+  {$ENDIF}
    if HOSTNAME.caption='' then HOSTNAME.caption:='1.1.1.1';
   // if response='' then RunCommand('/sbin/ifconfig', ['eth0'], response);
  //  if response='' then RunCommand('/sbin/ifconfig', ['wlan1'], response);
