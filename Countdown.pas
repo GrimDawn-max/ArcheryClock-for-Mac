@@ -7963,7 +7963,7 @@ begin
     end;
   end;
   timevssheet;
-  if imagecount<>-1 then
+  if (imagecount<>-1) and (imagecount<imagesListBox.Items.Count) then  // the list can be empty
   begin
     if FileExists(imagesListBox.Items.Strings[imagecount])then background1.Picture.LoadFromFile(imagesListBox.Items.Strings[imagecount] );
   end;
@@ -12152,6 +12152,10 @@ begin
   Filespath:=(ParamStr(0));
   Delete(Filespath,LastDelimiter('/',Filespath),25);
   Filespath:=Filespath+'/';
+  {$IFDEF Darwin}
+  // Mac: an app opened from Finder starts in '/'; the slideshow list and its pictures are relative names
+  SetCurrentDir(Filespath);
+  {$ENDIF}
   mag:=0.83;
   screenwidth:=Countdownform.Width;
   menuwidth:=420;
