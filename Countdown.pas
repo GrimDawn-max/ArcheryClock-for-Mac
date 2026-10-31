@@ -8069,8 +8069,8 @@ var dummy:string;
 begin
   if (shutdownsystem=true) then
   begin
-    {$IFDEF Unix}
-    RunCommand('sudo shutdown now', dummy);
+    {$IFDEF Unix}{$IFNDEF Darwin}  // Mac: never shut the computer down, just close
+    RunCommand('sudo shutdown now', dummy);{$ENDIF}
     {$ENDIF}
   end;
   Close;
@@ -8100,10 +8100,12 @@ begin
 
   {$IFDEF Unix}
 
+  {$IFNDEF Darwin}  // Raspberry Pi access point only
   RunCommand('sudo cp '+Filespath+'dhcpcd.confx /etc/dhcpcd.conf', dummy);
   RunCommand('sudo systemctl disable systemd-networkd', dummy);
   RunCommand('sudo systemctl disable hostapd', dummy);
   RunCommand('sudo systemctl reboot', dummy);
+  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -8139,6 +8141,7 @@ begin
 
   {$IFDEF Unix}
 
+  {$IFNDEF Darwin}  // Raspberry Pi access point only
   RunCommand('sudo cp '+Filespath+'hostapd.conf /etc/hostapd/hostapd.conf', dummy);
   RunCommand('sudo cp '+Filespath+'dhcpcd.conf0 /etc/dhcpcd.conf', dummy);
   RunCommand('sudo systemctl enable systemd-networkd', dummy);
@@ -8148,7 +8151,7 @@ begin
   disableaccesspointpanel.Enabled:=true;
 
   RunCommand('sudo systemctl reboot', dummy);
-  {$ENDIF}
+  {$ENDIF}{$ENDIF}
 end;
 
 procedure TCountdownform.renewserialbuttonClick(Sender: TObject);
@@ -9967,8 +9970,8 @@ begin
   begin
 
 
-    {$IFDEF Unix}
-    RunCommand('sudo shutdown now', dummy);
+    {$IFDEF Unix}{$IFNDEF Darwin}  // Mac: never shut the computer down, just close
+    RunCommand('sudo shutdown now', dummy);{$ENDIF}
 
 
     {$ENDIF}
@@ -13016,9 +13019,14 @@ begin
 
   {$IFDEF Unix}
     If linuxHW='RPI' then initaccesspointmenu;
+    {$IFDEF Darwin}
+    // Mac: no xset; keep the display awake while the clock runs
+    MacKeepDisplayAwake;
+    {$ELSE}
     RunCommand('sudo xset s off', dummy);
     RunCommand('sudo xset -dpms',dummy);
     RunCommand('sudo xset s noblank',dummy);
+    {$ENDIF}
 
 
     nexthelp.Color:=clinfoBK;

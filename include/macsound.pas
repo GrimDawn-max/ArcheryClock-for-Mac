@@ -1,7 +1,8 @@
 unit macsound;
 
-{ macOS sound playback for Archery Clock, replacing SDL_mixer on Darwin.
-  Uses AppKit's NSSound, so the Mac build needs no SDL libraries. }
+{ macOS helpers for Archery Clock.
+  Sound playback replaces SDL_mixer on Darwin: AppKit's NSSound, so the Mac build needs no SDL libraries.
+  MacKeepDisplayAwake replaces the Linux 'xset' calls: caffeinate keeps the display on until the clock quits. }
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
@@ -9,11 +10,12 @@ unit macsound;
 interface
 
 function MacPlayWav(const FileName: string): Boolean;
+procedure MacKeepDisplayAwake;
 
 implementation
 
 uses
-  CocoaAll;
+  CocoaAll, SysUtils, Process;
 
 const
   KeepCount = 8; // sounds may overlap; keep the last few alive until they finish
@@ -39,6 +41,26 @@ begin
   Playing[NextSlot] := Sound;
   NextSlot := (NextSlot + 1) mod KeepCount;
   Result := Sound.play;
+end;
+
+var
+  Caffeinate: TProcess = nil;
+
+procedure MacKeepDisplayAwake;
+begin
+  if Caffeinate <> nil then
+    Exit;
+  // -w: caffeinate exits by itself when this process ends, even after a crash
+  Caffeinate := TProcess.Create(nil);
+  Caffeinate.Executable := '/usr/bin/caffeinate';
+  Caffeinate.Parameters.Add('-di');
+  Caffeinate.Parameters.Add('-w');
+  Caffeinate.Parameters.Add(IntToStr(GetProcessID));
+  try
+    Caffeinate.Execute;
+  except
+    FreeAndNil(Caffeinate);
+  end;
 end;
 
 end.
