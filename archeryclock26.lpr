@@ -8,6 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
 
   Forms, Interfaces,
+  {$IFDEF Darwin} macerrorlog, {$ENDIF}
   Countdown in 'Countdown.pas' {Countdownform};
 
 {$R *.res}
