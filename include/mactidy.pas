@@ -17,7 +17,7 @@ procedure MacTidyTimingPage;
 implementation
 
 uses
-  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Spin, Graphics, Countdown;
+  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Spin, Graphics, Math, Countdown;
 
 const
   TextHeight = -14;  // pixels; Windows used -9 and -11, which reads as tiny on a Mac
@@ -26,6 +26,14 @@ const
   RowGap = 5;        // between rows of the same group
   GroupGap = 12;     // between groups
   Margin = 8;
+
+function IsDarkish(Color: TColor): Boolean;
+var
+  RGB: LongInt;
+begin
+  RGB := ColorToRGB(Color);
+  Result := (0.299 * Red(RGB) + 0.587 * Green(RGB) + 0.114 * Blue(RGB)) < 150;
+end;
 
 function Bottom(C: TControl): Integer;
 begin
@@ -76,6 +84,149 @@ procedure BesideSpin(Spin: TSpinEdit; Lbl: TLabel);
 begin
   Lbl.Left := Spin.Left + Spin.Width + 8;
   Lbl.Top := Spin.Top + (Spin.Height - Lbl.Height) div 2;
+end;
+
+{ The general tidy for a panel laid out by hand: keeps its order and its rows (controls whose tops were within
+  a few pixels of each other share a row), sizes text and fields consistently, spaces the rows evenly, stretches
+  boxes that were meant to span the panel, and fits each box's height to what's in it. Hidden controls take no
+  room, so it is run again whenever what shows can change. }
+procedure Reflow(Box: TWinControl; Top: Integer);
+const
+  SameRow = 8;
+var
+  Kids: TFPList;
+  I, J, Y, RowStart, RowH, Right: Integer;
+  C, Prev: TControl;
+  Row: array of TControl;
+
+  function Before(A, B: Pointer): Integer;
+  begin
+    Result := TControl(A).Top - TControl(B).Top;
+    if Abs(Result) <= SameRow then Result := TControl(A).Left - TControl(B).Left;
+  end;
+
+  procedure Size(C: TControl);
+  var
+    W, H: Integer;
+  begin
+    if C is TSpinEdit then
+    begin
+      C.SetBounds(C.Left, C.Top, SpinW, SpinH);
+      // light digits on the dark green/olive/maroon timing fields; the Windows black is hard to read on them
+      if (C.Color <> clDefault) and (C.Color <> clWhite) and IsDarkish(C.Color) then
+        C.Font.Color := clWhite;
+    end
+    else if C is TCustomComboBox then
+    begin
+      // as wide as the panel allows, so the choice isn't cut off
+      if C.Left + C.Width < Box.ClientWidth - Margin then
+        C.Width := Box.ClientWidth - C.Left - Margin;
+    end
+    else if (C is TLabel) and (TLabel(C).Alignment <> taLeftJustify) then
+    begin
+      // centred or right-aligned text keeps its width (that's what positions it); only its height fits
+      W := 0; H := 0;
+      C.GetPreferredSize(W, H);
+      C.Height := H;
+    end
+    else if (C is TLabel) and TLabel(C).WordWrap then
+    begin
+      C.Width := Box.ClientWidth - C.Left - Margin;
+      FitToText(C);
+    end
+    else if (C is TLabel) or (C is TCustomCheckBox) then
+      FitToText(C)
+    else if (C is TGroupBox) or (C is TPanel) then
+    begin
+      // a box that spanned most of its parent spans all of it now
+      if C.Width >= Box.ClientWidth * 6 div 10 then
+        C.Width := Box.ClientWidth - C.Left - Margin;
+      Reflow(TWinControl(C), 4);
+    end;
+  end;
+
+begin
+  Kids := TFPList.Create;
+  try
+    for I := 0 to Box.ControlCount - 1 do
+      if Box.Controls[I].Visible then
+        Kids.Add(Box.Controls[I]);
+    // a check box with no caption of its own and a label just beside it are one row: the label is its caption
+    for I := 0 to Kids.Count - 1 do
+      if (TControl(Kids[I]) is TCustomCheckBox) and (TControl(Kids[I]).Caption = '') then
+        for J := 0 to Kids.Count - 1 do
+          if (TControl(Kids[J]) is TLabel) and (Abs(TControl(Kids[J]).Top - TControl(Kids[I]).Top) <= 24)
+            and (TControl(Kids[J]).Left > TControl(Kids[I]).Left) then
+            TControl(Kids[J]).Top := TControl(Kids[I]).Top;
+    // simple insertion sort by row, then left to right
+    for I := 1 to Kids.Count - 1 do
+    begin
+      J := I;
+      while (J > 0) and (Before(Kids[J], Kids[J - 1]) < 0) do
+      begin
+        Kids.Exchange(J, J - 1);
+        Dec(J);
+      end;
+    end;
+
+    Y := Top;
+    I := 0;
+    while I < Kids.Count do
+    begin
+      // gather one row
+      RowStart := TControl(Kids[I]).Top;
+      SetLength(Row, 0);
+      while (I < Kids.Count) and (Abs(TControl(Kids[I]).Top - RowStart) <= SameRow) do
+      begin
+        SetLength(Row, Length(Row) + 1);
+        Row[High(Row)] := TControl(Kids[I]);
+        Inc(I);
+      end;
+      RowH := 0;
+      for C in Row do
+      begin
+        Size(C);
+        RowH := Max(RowH, C.Height);
+      end;
+      // centre the row's controls on one line, and keep them from overlapping sideways
+      Prev := nil;
+      for C in Row do
+      begin
+        C.Top := Y + (RowH - C.Height) div 2;
+        if Prev <> nil then
+        begin
+          Right := Prev.Left + Prev.Width + 6;
+          if C.Left < Right then C.Left := Right;
+        end;
+        Prev := C;
+      end;
+      if (Row[0] is TGroupBox) or (Row[0] is TPanel) then
+        Inc(Y, RowH + GroupGap)
+      else
+        Inc(Y, RowH + RowGap);
+    end;
+    if (Box is TGroupBox) or (Box is TPanel) then
+      Box.ClientHeight := Y + 4;
+  finally
+    Kids.Free;
+  end;
+end;
+
+{ Drop-down lists on a dark panel: Cocoa draws the app's black text on the dark button; use the system's. }
+procedure SystemTextOnCombos(Root: TWinControl);
+var
+  I: Integer;
+begin
+  for I := 0 to Root.ControlCount - 1 do
+  begin
+    if Root.Controls[I] is TCustomComboBox then
+    begin
+      Root.Controls[I].Font.Color := clDefault;
+      Root.Controls[I].Font.Height := TextHeight;
+    end;
+    if Root.Controls[I] is TWinControl then
+      SystemTextOnCombos(TWinControl(Root.Controls[I]));
+  end;
 end;
 
 { One column of timing rows: green, orange, total, red; each value beside its label. }
@@ -244,10 +395,24 @@ begin
   F.stopinbetweenturnsfitacheckbox.Top := Bottom(F.orangebeepfitacheckbox) + RowGap;
 end;
 
-procedure MacTidyTimingPage;
+procedure TidyOtherPanel(Panel: TWinControl);
 begin
+  SetTextSize(Panel);
+  SystemTextOnCombos(Panel);
+  Reflow(Panel, 6);
+end;
+
+procedure MacTidyTimingPage;
+var
+  F: TCountdownform;
+begin
+  F := Countdownform;
   TidyPanels(TidyShootingSystems);
   TidyFitaPanel;
+  TidyOtherPanel(F.FitaFinScrollBox);
+  TidyOtherPanel(F.onearrowScrollBox);
+  TidyOtherPanel(F.manualScrollBox);
+  TidyOtherPanel(F.FollowScrollBox);
 end;
 
 end.

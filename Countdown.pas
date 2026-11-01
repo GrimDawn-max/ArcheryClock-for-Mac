@@ -3016,6 +3016,7 @@ begin
       tdown.hint:=selectleft;
       tup.hint:=selectright;
     end;
+  {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: the shooting system changed: lay out its panel
 end;
 procedure TCountdownform.changecolorscheme;
 
@@ -13281,6 +13282,7 @@ begin
   viewturnchange;
   viewstateone;
 
+  {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: a menu just opened: lay out what it shows now
 end;
 
 
