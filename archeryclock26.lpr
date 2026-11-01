@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
 
   Forms, Interfaces,
-  {$IFDEF Darwin} macerrorlog, macdisplaychooser, {$ENDIF}
+  {$IFDEF Darwin} macerrorlog, macdisplaychooser, macappearance, {$ENDIF}
   Countdown in 'Countdown.pas' {Countdownform};
 
 {$R *.res}
@@ -21,6 +21,7 @@ begin
   Application.Initialize;
   Application.Title := 'Countdown Archery Clock';
   {$IFDEF Darwin}
+  MacUseLightAppearance; // same colours as Windows whatever the system's light/dark setting
   // Mac: ask which display shows the clock when more than one is connected
   ClockDisplay := MacChooseDisplay;
   if ClockDisplay < 0 then
@@ -29,6 +30,7 @@ begin
   Application.CreateForm(TCountdownform, Countdownform);
   {$IFDEF Darwin}
   MacPlaceOnDisplay(Countdownform, ClockDisplay);
+  MacDarkenDarkPanels(Countdownform);
   {$ENDIF}
   Application.Run;
 end.

@@ -6347,6 +6347,18 @@ begin
   iconpanel.Width:=82;
   IconScrollBox.Width:=72;
   {$ENDIF}
+  {$IFDEF Darwin}
+  // Cocoa group boxes have a wider border than Windows ones: place the close crosses by the inside width.
+  // The cross is also stretched into a 14 x 29 slot; make the slot square so it isn't squashed.
+  closeimage1.Width:=closeimage1.Height;
+  closeimage2.Width:=closeimage2.Height;
+  closeimage1.Proportional:=true;
+  closeimage2.Proportional:=true;
+  closeimage1.Left:=timeseqpanel.ClientWidth-closeimage1.Width-4;
+  closeimage2.Left:=savesettings.ClientWidth-closeimage2.Width-4;
+  closeimage1.BringToFront; // the system pictures reach the right edge here and covered it
+  closeimage2.BringToFront;
+  {$ENDIF}
 
   ShutdownremoteButton.Top:=savesettings.Height-55;
   timeseqpanel.Height:=(trunc(Countdownform.Height-iconsize-iconsize));
