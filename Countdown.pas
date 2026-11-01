@@ -5376,6 +5376,7 @@ begin
   end
   else
   begin
+    networktimestamp.Enabled:=false;  // a follow screen never sends; before this it kept sending if Broadcast had been on
     if LANinput.Checked=true then
     begin
        rcvmcasttimer.Enabled:=true;
