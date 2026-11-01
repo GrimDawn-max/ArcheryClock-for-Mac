@@ -20,6 +20,8 @@ uses
 procedure MacUseLightAppearance;
 { Containers of AForm with a dark background of their own get the dark appearance (their children inherit it). }
 procedure MacDarkenDarkPanels(AForm: TForm);
+{ No focus ring on C (a blue outline that otherwise lingers on whichever button the app last focused). }
+procedure MacNoFocusRing(C: TObject);
 
 implementation
 
@@ -51,6 +53,12 @@ end;
 procedure MacUseLightAppearance;
 begin
   SetAppearance(NSApplication.sharedApplication, 'NSAppearanceNameAqua');
+end;
+
+procedure MacNoFocusRing(C: TObject);
+begin
+  if (C is TWinControl) and TWinControl(C).HandleAllocated then
+    NSView(TWinControl(C).Handle).setFocusRingType(NSFocusRingTypeNone);
 end;
 
 procedure MacDarkenDarkPanels(AForm: TForm);

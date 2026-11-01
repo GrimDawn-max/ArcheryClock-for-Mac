@@ -17,7 +17,7 @@ procedure MacTidyTimingPage;
 implementation
 
 uses
-  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Spin, Graphics, Math, Countdown;
+  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Spin, Graphics, Math, macappearance, Countdown;
 
 const
   TextHeight = -14;  // pixels; Windows used -9 and -11, which reads as tiny on a Mac
@@ -53,6 +53,23 @@ begin
     C.SetBounds(C.Left, C.Top, W, H);
 end;
 
+function Capitalised(const S: string): string;
+begin
+  Result := S;
+  if (Result <> '') and (Result[1] in ['a'..'z']) then
+    Result[1] := UpCase(Result[1]);
+end;
+
+function TitleCase(const S: string): string;
+var
+  I: Integer;
+begin
+  Result := S;
+  for I := 1 to Length(Result) do
+    if ((I = 1) or (Result[I - 1] = ' ')) and (Result[I] in ['a'..'z']) then
+      Result[I] := UpCase(Result[I]);
+end;
+
 { Readable text everywhere under Root; captions size themselves so nothing clips; headings start with a capital. }
 procedure SetTextSize(Root: TWinControl);
 var
@@ -68,12 +85,11 @@ begin
       if not ((C is TLabel) and TLabel(C).WordWrap) and not (C is TSpinEdit) then
         FitToText(C);
     end
-    else if C is TGroupBox then
-    begin
+    else if (C is TGroupBox) or (C is TButton) then
       C.Font.Height := TextHeight;
-      if C.Caption <> '' then
-        C.Caption := UpperCase(Copy(C.Caption, 1, 1)) + Copy(C.Caption, 2, MaxInt);
-    end;
+    // every caption starts with a capital ("left screen", "in follow mode, ..." read as unfinished otherwise)
+    if (C is TLabel) or (C is TCustomCheckBox) or (C is TGroupBox) or (C is TButton) then
+      C.Caption := Capitalised(C.Caption);
     if C is TWinControl then
       SetTextSize(TWinControl(C));
   end;
@@ -95,7 +111,8 @@ const
   SameRow = 8;
 var
   Kids: TFPList;
-  I, J, Y, RowStart, RowH, Right: Integer;
+  I, J, Y, RowStart, RowH, Right, W: Integer;
+  AllButtons, AfterParagraph: Boolean;
   C, Prev: TControl;
   Row: array of TControl;
 
@@ -138,9 +155,9 @@ var
       FitToText(C)
     else if (C is TGroupBox) or (C is TPanel) then
     begin
-      // a box that spanned most of its parent spans all of it now
+      // a box that spanned most of its parent starts at the margin and spans all of it now
       if C.Width >= Box.ClientWidth * 6 div 10 then
-        C.Width := Box.ClientWidth - C.Left - Margin;
+        C.SetBounds(6, C.Top, Box.ClientWidth - 6 - Margin, C.Height);
       Reflow(TWinControl(C), 4);
     end;
   end;
@@ -170,6 +187,7 @@ begin
     end;
 
     Y := Top;
+    AfterParagraph := False;
     I := 0;
     while I < Kids.Count do
     begin
@@ -188,12 +206,33 @@ begin
         Size(C);
         RowH := Max(RowH, C.Height);
       end;
+      // a row of buttons only: share the full width equally
+      AllButtons := Length(Row) > 1;
+      for C in Row do
+        if not (C is TButton) then AllButtons := False;
+      if AllButtons then
+      begin
+        W := (Box.ClientWidth - 2 * 6 - (Length(Row) - 1) * 6) div Length(Row);
+        for J := 0 to High(Row) do
+        begin
+          Row[J].Font.Height := -12; // three captions across one panel: a size that fits "Mixed Team Round"
+          Row[J].Caption := TitleCase(Row[J].Caption); // side-by-side choices read alike: "Individual Round"
+          Row[J].SetBounds(6 + J * (W + 6), Row[J].Top, W, 28);
+        end;
+        RowH := 28;
+      end;
+      // a box gets a clear gap above it, as below it; a wider one after a paragraph of text
+      if (Y > Top) and ((Row[0] is TGroupBox) or (Row[0] is TPanel)) then
+      begin
+        Inc(Y, GroupGap - RowGap);
+        if AfterParagraph then Inc(Y, GroupGap);
+      end;
       // centre the row's controls on one line, and keep them from overlapping sideways
       Prev := nil;
       for C in Row do
       begin
         C.Top := Y + (RowH - C.Height) div 2;
-        if Prev <> nil then
+        if (Prev <> nil) and not AllButtons then
         begin
           Right := Prev.Left + Prev.Width + 6;
           if C.Left < Right then C.Left := Right;
@@ -204,6 +243,7 @@ begin
         Inc(Y, RowH + GroupGap)
       else
         Inc(Y, RowH + RowGap);
+      AfterParagraph := (Length(Row) = 1) and (Row[0] is TLabel) and TLabel(Row[0]).WordWrap;
     end;
     if (Box is TGroupBox) or (Box is TPanel) then
       Box.ClientHeight := Y + 4;
@@ -407,6 +447,11 @@ var
   F: TCountdownform;
 begin
   F := Countdownform;
+  // Follow: "At start up" introduces the Left Side / Right Side buttons, so it goes above them, at the left
+  F.atstartuplabel.Alignment := taLeftJustify;
+  F.atstartuplabel.Top := F.leftsideclientbutton.Top - 20;
+  MacNoFocusRing(F.FITA); MacNoFocusRing(F.FITAFIN); MacNoFocusRing(F.onepijl);
+  MacNoFocusRing(F.follow); MacNoFocusRing(F.Manual);
   TidyPanels(TidyShootingSystems);
   TidyFitaPanel;
   TidyOtherPanel(F.FitaFinScrollBox);
