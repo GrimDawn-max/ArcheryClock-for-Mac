@@ -1836,6 +1836,8 @@ var
 
 implementation
 
+{$IFDEF Darwin}uses mactidy;{$ENDIF}
+
 {$R *.lfm}
 {$IFDEF Windows}       //at this moment only supported for Windows
 function OpenDevice(CardAddress: Longint): Longint; stdcall; external 'K8055D.dll';
@@ -6607,6 +6609,7 @@ begin
   nexthelp.Left:=trunc (Countdownform.Width*0.5)-250;
   chooselabel.Left:=trunc (Countdownform.Width*0.5)-250;
   {$ENDIF}
+  {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: the sizes above are for Windows' group boxes
 
 end;
 
@@ -13066,6 +13069,7 @@ begin
   {$ENDIF}
  // if FileExists('backgroundimages') then  imagesListBox.Items.LoadFromFile('backgroundimages');
   Startuplabel.Visible:=false;
+  {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: lay the timing page out again after the fonts above are set
 
 end;
 
@@ -15715,6 +15719,7 @@ begin
   showtime;
   startupscenario.Text:='--';
   viewturnchange;
+  {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: make room for the double ends choices, or close the gap
 end;
 
 procedure TCountdownform.resizeiconClick(Sender: TObject);

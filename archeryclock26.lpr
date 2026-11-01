@@ -9,7 +9,7 @@ uses
 
   Forms, Interfaces,
   {$IFDEF Darwin} macerrorlog, macdisplaychooser, macappearance, {$ENDIF}
-  Countdown in 'Countdown.pas' {Countdownform};
+  Countdown in 'Countdown.pas' {Countdownform}{$IFDEF Darwin}, macdevpage{$ENDIF};
 
 {$R *.res}
 
@@ -31,6 +31,7 @@ begin
   {$IFDEF Darwin}
   MacPlaceOnDisplay(Countdownform, ClockDisplay);
   MacDarkenDarkPanels(Countdownform);
+  MacDevShowPage; // development only: AC_DEVPAGE opens a settings page for screenshots
   {$ENDIF}
   Application.Run;
 end.
