@@ -17,7 +17,7 @@ procedure MacTidyTimingPage;
 implementation
 
 uses
-  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Spin, Graphics, Math, macappearance, Countdown;
+  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Forms, Spin, Graphics, Math, macappearance, Countdown;
 
 const
   TextHeight = -14;  // pixels; Windows used -9 and -11, which reads as tiny on a Mac
@@ -33,6 +33,19 @@ var
 begin
   RGB := ColorToRGB(Color);
   Result := (0.299 * Red(RGB) + 0.587 * Green(RGB) + 0.114 * Blue(RGB)) < 150;
+end;
+
+function TextWidth(const S: string; Font: TFont): Integer;
+var
+  B: TBitmap;
+begin
+  B := TBitmap.Create;
+  try
+    B.Canvas.Font := Font;
+    Result := B.Canvas.TextWidth(S);
+  finally
+    B.Free;
+  end;
 end;
 
 function Bottom(C: TControl): Integer;
@@ -111,7 +124,7 @@ const
   SameRow = 8;
 var
   Kids: TFPList;
-  I, J, Y, RowStart, RowH, Right, W: Integer;
+  I, J, Y, RowStart, RowSpan, RowH, Right, W: Integer;
   AllButtons, AfterParagraph: Boolean;
   C, Prev: TControl;
   Row: array of TControl;
@@ -128,13 +141,21 @@ var
   begin
     if C is TSpinEdit then
     begin
-      C.SetBounds(C.Left, C.Top, SpinW, SpinH);
+      C.SetBounds(C.Left, C.Top, Max(C.Width, 56), SpinH);
       // light digits on the dark green/olive/maroon timing fields; the Windows black is hard to read on them
       if (C.Color <> clDefault) and (C.Color <> clWhite) and IsDarkish(C.Color) then
         C.Font.Color := clWhite;
     end
+    else if C is TCustomEdit then
+      C.Font.Height := TextHeight
+    else if C is TScrollBox then
+    begin
+      C.SetBounds(0, C.Top, Box.ClientWidth, C.Height);
+      Reflow(TWinControl(C), 6);
+    end
     else if C is TCustomComboBox then
     begin
+      C.Font.Height := TextHeight;
       // as wide as the panel allows, so the choice isn't cut off
       if C.Left + C.Width < Box.ClientWidth - Margin then
         C.Width := Box.ClientWidth - C.Left - Margin;
@@ -152,9 +173,21 @@ var
       FitToText(C);
     end
     else if (C is TLabel) or (C is TCustomCheckBox) then
-      FitToText(C)
+    begin
+      FitToText(C);
+      // a caption longer than the panel is set smaller, rather than cut off
+      while (C is TCustomCheckBox) and (C.Font.Height < -10) and (C.Left + C.Width > Box.ClientWidth - 4) do
+      begin
+        C.Font.Height := C.Font.Height + 1;
+        FitToText(C);
+      end;
+    end
     else if (C is TGroupBox) or (C is TPanel) then
     begin
+      // a heading longer than its box is set smaller, rather than cut off
+      while (C is TGroupBox) and (C.Font.Height < -10)
+        and (TextWidth(C.Caption, C.Font) > Box.ClientWidth - C.Left - 24) do
+        C.Font.Height := C.Font.Height + 1;
       // a box that spanned most of its parent starts at the margin and spans all of it now
       if C.Width >= Box.ClientWidth * 6 div 10 then
         C.SetBounds(6, C.Top, Box.ClientWidth - 6 - Margin, C.Height);
@@ -191,15 +224,22 @@ begin
     I := 0;
     while I < Kids.Count do
     begin
-      // gather one row
+      // gather one row: the controls that start beside the first one (within its first line or so)
       RowStart := TControl(Kids[I]).Top;
+      RowSpan := Max(SameRow, Min(TControl(Kids[I]).Height - 6, 30));
       SetLength(Row, 0);
-      while (I < Kids.Count) and (Abs(TControl(Kids[I]).Top - RowStart) <= SameRow) do
+      while (I < Kids.Count) and (TControl(Kids[I]).Top - RowStart <= RowSpan) do
       begin
         SetLength(Row, Length(Row) + 1);
         Row[High(Row)] := TControl(Kids[I]);
         Inc(I);
       end;
+      for J := 1 to High(Row) do
+        for W := J downto 1 do
+          if Row[W].Left < Row[W - 1].Left then
+          begin
+            C := Row[W]; Row[W] := Row[W - 1]; Row[W - 1] := C;
+          end;
       RowH := 0;
       for C in Row do
       begin
@@ -238,6 +278,14 @@ begin
           if C.Left < Right then C.Left := Right;
         end;
         Prev := C;
+      end;
+      // a row that now runs past the right edge moves left, as far as the margin allows
+      Right := Row[High(Row)].Left + Row[High(Row)].Width - (Box.ClientWidth - 4);
+      if Right > 0 then
+      begin
+        Right := Min(Right, Row[0].Left - 6);
+        if Right > 0 then
+          for C in Row do C.Left := C.Left - Right;
       end;
       if (Row[0] is TGroupBox) or (Row[0] is TPanel) then
         Inc(Y, RowH + GroupGap)
@@ -442,6 +490,50 @@ begin
   Reflow(Panel, 6);
 end;
 
+{ Captions only, for pages whose layout is built around pictures and must not move. }
+procedure CapitaliseAll(Root: TWinControl);
+var
+  I: Integer;
+  C: TControl;
+begin
+  for I := 0 to Root.ControlCount - 1 do
+  begin
+    C := Root.Controls[I];
+    if (C is TLabel) or (C is TCustomCheckBox) or (C is TGroupBox) or (C is TButton) then
+      C.Caption := Capitalised(C.Caption);
+    if C is TWinControl then
+      CapitaliseAll(TWinControl(C));
+  end;
+end;
+
+{ The settings pages (the menu behind the gear icon). Pages that are forms get the general tidy; pages built
+  around pictures (laser pointer diagram, scenarios, screen colours, touch screen) keep their layout. Sections
+  for hardware a Mac can't have are hidden. }
+procedure TidySettingsPages;
+var
+  F: TCountdownform;
+begin
+  F := Countdownform;
+  F.AccesspointGroupBox.Visible := False; // Raspberry Pi access point
+  F.RPIinputbox.Visible := False;         // Raspberry Pi GPIO inputs
+  F.K8055select.Visible := False;         // Velleman K8055 relay board: Windows-only driver
+  // the pages end where the icon column starts; on Windows they ran on underneath it
+  F.SettingsTabs.Width := F.iconpanel.Left - F.SettingsTabs.Left - 4;
+  F.am24.Top := F.timecheckbox.Top; // its 12/24 choice belongs beside "Time on screen", not "Show hints"
+  TidyOtherPanel(F.tabscr);
+  TidyOtherPanel(F.tabsound);
+  TidyOtherPanel(F.TabNetwork);
+  TidyOtherPanel(F.tabprecnt);
+  TidyOtherPanel(F.tabEmergency);
+  TidyOtherPanel(F.hardwaretab);
+  CapitaliseAll(F.controltab);
+  CapitaliseAll(F.tabscen);
+  CapitaliseAll(F.screencolor);
+  CapitaliseAll(F.tablang);
+end;
+
+
+
 procedure MacTidyTimingPage;
 var
   F: TCountdownform;
@@ -458,6 +550,7 @@ begin
   TidyOtherPanel(F.onearrowScrollBox);
   TidyOtherPanel(F.manualScrollBox);
   TidyOtherPanel(F.FollowScrollBox);
+  TidySettingsPages;
 end;
 
 end.
