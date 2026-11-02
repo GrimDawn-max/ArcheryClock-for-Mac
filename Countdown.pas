@@ -10449,6 +10449,13 @@ begin
  {Start up WinSock}
   wVersionRequested := MAKEWORD(1, 1);
   WSAStartup(wVersionRequested, wsaData);
+  {$IFDEF Darwin}
+  // Mac: Cocoa draws the window as soon as it opens, before the clock has worked out its sizes, so every
+  // control would sit bunched up at the top left until preparation ends. Windows doesn't draw it until then.
+  // Keep it fully transparent while preparing, as Windows effectively does; FormActivate shows it when laid out.
+  AlphaBlend := True;
+  AlphaBlendValue := 0;
+  {$ENDIF}
 end;
 procedure  TCountdownform.refreshserial;
 begin
@@ -13137,7 +13144,19 @@ procedure TCountdownform.FormActivate(Sender: TObject);
 var
   fileDesc, fileDesc2: integer;
 begin
+  {$IFDEF Darwin}
+  try
+    initialize;
+  finally
+    if AlphaBlend then
+    begin
+      AlphaBlendValue := 255; // laid out now (or stopped by an error): show the window, see FormCreate
+      AlphaBlend := False;
+    end;
+  end;
+  {$ELSE}
   initialize;
+  {$ENDIF}
   {$IFDEF Unix}
   inputtimer.enabled:=true;
   { Prepare pins for access: }
