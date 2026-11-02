@@ -512,6 +512,7 @@ end;
 procedure TidySettingsPages;
 var
   F: TCountdownform;
+  AudioShown: Boolean;
 begin
   F := Countdownform;
   F.AccesspointGroupBox.Visible := False; // Raspberry Pi access point
@@ -521,7 +522,12 @@ begin
   F.SettingsTabs.Width := F.iconpanel.Left - F.SettingsTabs.Left - 4;
   F.am24.Top := F.timecheckbox.Top; // its 12/24 choice belongs beside "Time on screen", not "Show hints"
   TidyOtherPanel(F.tabscr);
+  // the music settings (shown by Control audio) are rows of pictures and buttons that must keep their layout;
+  // they are left out the same way whether Control audio was on at start-up or ticked later
+  AudioShown := F.audiovolumebox.Visible;
+  F.audiovolumebox.Visible := False;
   TidyOtherPanel(F.tabsound);
+  F.audiovolumebox.Visible := AudioShown;
   TidyOtherPanel(F.TabNetwork);
   TidyOtherPanel(F.tabprecnt);
   TidyOtherPanel(F.tabEmergency);

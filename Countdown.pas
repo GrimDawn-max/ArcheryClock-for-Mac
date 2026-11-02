@@ -1625,6 +1625,8 @@ var
   DisableOtherFunctionCall:boolean;
   Countdownform: TCountdownform;
   Filespath:string;  //location of files
+  Datapath:string;   //location of the files the app writes (settings, scenarios); Filespath except on the Mac
+  Bglistfile:string; //the slideshow list
   labelnr:integer;  //depending on the number a different text is shown during wat time
   aspectratio:real; //aspect ratio. Depending on TL on screen or not
   nrofSOarrows:integer;  //aantal naschiet / shootoffpijlen
@@ -1836,7 +1838,7 @@ var
 
 implementation
 
-{$IFDEF Darwin}uses mactidy, macserial;{$ENDIF}
+{$IFDEF Darwin}uses mactidy, macserial, macdatadir;{$ENDIF}
 
 {$R *.lfm}
 {$IFDEF Windows}       //at this moment only supported for Windows
@@ -7947,12 +7949,12 @@ begin
       //flipsecondslabel.Caption:=OpenPictureDialog1.FileName;
       imagesListBox.Items.Add(OpenPictureDialog1.FileName);
       {$IFDEF Windows}
-      imagesListBox.Items.SaveToFile('backgroundimages');
+      imagesListBox.Items.SaveToFile(Bglistfile);
       {$ENDIF}
 
 
       {$IFDEF Unix}
-      if linuxHW='RPI' then imagesListBox.Items.SaveToFile('/home/pi/archeryclock/backgroundimages') else imagesListBox.Items.SaveToFile('backgroundimages');
+      if linuxHW='RPI' then imagesListBox.Items.SaveToFile('/home/pi/archeryclock/backgroundimages') else imagesListBox.Items.SaveToFile(Bglistfile);
       {$ENDIF}
       //flipsecondslabel.Caption:=inttostr(imagesListBox.Items.Count);
     end;
@@ -9629,11 +9631,11 @@ begin
   largeimagecheckbox.Checked:=false;
   imagesListBox.Items.Delete(imagesListBox.ItemIndex);
   {$IFDEF Windows}
-  imagesListBox.Items.SaveToFile('backgroundimages');
+  imagesListBox.Items.SaveToFile(Bglistfile);
   {$ENDIF}
 
   {$IFDEF Unix}
-  if linuxHW='RPI' then imagesListBox.Items.SaveToFile('/home/pi/archeryclock/backgroundimages') else imagesListBox.Items.SaveToFile('backgroundimages');
+  if linuxHW='RPI' then imagesListBox.Items.SaveToFile('/home/pi/archeryclock/backgroundimages') else imagesListBox.Items.SaveToFile(Bglistfile);
   {$ENDIF}
   if wasimagesselected then largeimagecheckbox.Checked:=true;
 end;
@@ -12174,12 +12176,17 @@ begin
 
   {$ENDIF}
   Filespath:='';
+  Datapath:='';
+  Bglistfile:='backgroundimages';
   {$IFDEF Unix}
 
   Filespath:=(ParamStr(0));
   Delete(Filespath,LastDelimiter('/',Filespath),25);
   Filespath:=Filespath+'/';
+  Datapath:=Filespath;
   {$IFDEF Darwin}
+  Datapath:=MacDataFolder(Filespath);
+  Bglistfile:=Datapath+'backgroundimages';
   // Mac: an app opened from Finder starts in '/'; the slideshow list and its pictures are relative names
   SetCurrentDir(Filespath);
   {$ENDIF}
@@ -12351,9 +12358,9 @@ begin
   begin
     //Startuplabel.Caption:='Load Scenario'+inttostr(mode);
     Scenario:='F'+inttostr(mode);
-    if FileExistsUTF8(Filespath+'scenarios/'+scenario)=true then  //if Fx scenario is stored from an earlier session, get the details from file and store in program
+    if FileExistsUTF8(Datapath+'scenarios/'+scenario)=true then  //if Fx scenario is stored from an earlier session, get the details from file and store in program
     begin
-      AssignFile(scenariotextfile, Filespath+'scenarios/'+scenario) ;
+      AssignFile(scenariotextfile, Datapath+'scenarios/'+scenario) ;
       getsetting;
     end
     else              //Doesnt exist from previous sessions, so use defoults (F1 uses shift F1, F2 uses shift F2, etc.)
@@ -12380,9 +12387,9 @@ begin
     //next section is about the default settings at startup. The file 'settings' is read that contains the initial settings of the user.
   //First a check will be done if the settings file exist. if it doesnt exist, it mean it is the first time the program is used.
   //in that case a file with default settings will be created.
-  if FileExistsUTF8(Filespath+'settings')=false then
+  if FileExistsUTF8(Datapath+'settings')=false then
   begin
-     AssignFile(settingsfile, Filespath+'settings') ;
+     AssignFile(settingsfile, Datapath+'settings') ;
      ReWrite(settingsfile) ;
      if dutchlang='no' then writeln(settingsfile,'English') else writeln(settingsfile,'Nederlands');
      writeln(settingsfile,'Sec') ;   //show seconds, not minutes
@@ -12567,7 +12574,7 @@ begin
 
   //load startup settings and initialyze the program with these settings
   begin
-    AssignFile(settingsfile, Filespath+'settings') ;
+    AssignFile(settingsfile, Datapath+'settings') ;
     Reset(settingsfile) ;
     ReadLn(settingsfile, buffer) ;
     lang.Text:=buffer;
@@ -13008,7 +13015,7 @@ begin
   SettingsTabs.ActivePage:=tablang;
 
   {$IFDEF Windows}
-  if FileExists('backgroundimages') then  imagesListBox.Items.LoadFromFile('backgroundimages');
+  if FileExists(Bglistfile) then  imagesListBox.Items.LoadFromFile(Bglistfile);
   {$ENDIF}
 
 
@@ -13019,7 +13026,7 @@ begin
   end
   else
   begin
-    if FileExists('backgroundimages') then  imagesListBox.Items.LoadFromFile('backgroundimages');
+    if FileExists(Bglistfile) then  imagesListBox.Items.LoadFromFile(Bglistfile);
   end;
 
   {$ENDIF}
@@ -13076,7 +13083,7 @@ begin
     //Mouse.SetMouseXY(1000,1000);
     //mouse.DoneMouse;
   {$ENDIF}
- // if FileExists('backgroundimages') then  imagesListBox.Items.LoadFromFile('backgroundimages');
+ // if FileExists(Bglistfile) then  imagesListBox.Items.LoadFromFile(Bglistfile);
   Startuplabel.Visible:=false;
   {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: lay the timing page out again after the fonts above are set
 
@@ -13256,9 +13263,9 @@ begin
     if buffer ='shiftF'+inttostr(mode) then Setsettings;
     if buffer ='F'+inttostr(mode) then
     begin
-      if FileExistsUTF8(Filespath+'scenarios/'+scenario)=true then
+      if FileExistsUTF8(Datapath+'scenarios/'+scenario)=true then
       begin
-        AssignFile(scenariotextfile, Filespath+'scenarios/'+scenario) ;
+        AssignFile(scenariotextfile, Datapath+'scenarios/'+scenario) ;
         getsetting;
       end
       else
@@ -13269,9 +13276,9 @@ begin
   end;
   if buffer ='--' then
   begin
-    if FileExistsUTF8(Filespath+'scenarios/'+'gen') =true then
+    if FileExistsUTF8(Datapath+'scenarios/'+'gen') =true then
     begin
-      AssignFile(scenariotextfile, Filespath+'scenarios/'+'gen') ;
+      AssignFile(scenariotextfile, Datapath+'scenarios/'+'gen') ;
       getsetting;
     end;
   end;
@@ -15778,7 +15785,7 @@ begin
 end;
 Procedure TCountdownform.Setsystemsettings;
 begin
-  AssignFile(settingsfile, Filespath+'settings') ;
+  AssignFile(settingsfile, Datapath+'settings') ;
   ReWrite(settingsfile) ;
   writeln(settingsfile,lang.text) ;
   if minsec.itemindex=0 then writeln(settingsfile,'Sec')else Writeln(settingsfile,'Min');
@@ -16347,9 +16354,9 @@ begin
 end;
 procedure TCountdownform.getscenario;
 begin
-  if FileExistsUTF8(Filespath+'scenarios/'+scenario)=true then
+  if FileExistsUTF8(Datapath+'scenarios/'+scenario)=true then
   begin
-    AssignFile(scenariotextfile, Filespath+'scenarios/'+scenario) ;
+    AssignFile(scenariotextfile, Datapath+'scenarios/'+scenario) ;
     getsetting;
   end;
 end;
@@ -18580,7 +18587,7 @@ end;
 
 procedure TCountdownform.storeF;
 begin
-   AssignFile(settingsfile, Filespath+'scenarios/'+Fstore) ;
+   AssignFile(settingsfile, Datapath+'scenarios/'+Fstore) ;
    ReWrite(settingsfile) ;
 
    writeln(settingsfile,archerysystem) ; //fita or 25m1p
@@ -19539,9 +19546,9 @@ end;
 
 Procedure  TCountdownform.setvarsettings;
 begin
-  if FileExistsUTF8(Filespath+'scenarios/'+scenario)=true then
+  if FileExistsUTF8(Datapath+'scenarios/'+scenario)=true then
   begin
-    AssignFile(scenariotextfile, Filespath+'scenarios/'+scenario) ;
+    AssignFile(scenariotextfile, Datapath+'scenarios/'+scenario) ;
     getsetting;
   end
   else
