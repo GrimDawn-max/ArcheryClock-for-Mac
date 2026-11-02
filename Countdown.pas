@@ -1836,7 +1836,7 @@ var
 
 implementation
 
-{$IFDEF Darwin}uses mactidy;{$ENDIF}
+{$IFDEF Darwin}uses mactidy, macserial;{$ENDIF}
 
 {$R *.lfm}
 {$IFDEF Windows}       //at this moment only supported for Windows
@@ -12413,7 +12413,7 @@ begin
      writeln(settingsfile,'COM1') ;       //serial port arduino
      {$ENDIF}
      {$IFDEF Unix}
-     writeln(settingsfile,'/dev/ttyACM0') ;
+     writeln(settingsfile,{$IFDEF Darwin}''{$ELSE}'/dev/ttyACM0'{$ENDIF}) ; // Mac: chosen from its own ports
      {$ENDIF}
      writeln(settingsfile,'nonarduino1'); //Arduino is not selected by default because it is not plug and play
      writeln(settingsfile,'noPRECOUNT') ;   //countdown to start match is not starting after every end
@@ -12427,7 +12427,7 @@ begin
      writeln(settingsfile,'COM2') ;       //serial port arduino
      {$ENDIF}
      {$IFDEF Unix}
-     writeln(settingsfile,'/dev/ttyUSB0') ;
+     writeln(settingsfile,{$IFDEF Darwin}''{$ELSE}'/dev/ttyUSB0'{$ENDIF}) ; // Mac: chosen from its own ports
      {$ENDIF}
      writeln(settingsfile,'nonarduino2');
      writeln(settingsfile,'2');
@@ -12520,7 +12520,12 @@ begin
      CloseFile(settingsfile) ;
 
   end;
-   {$IFDEF Unix}
+   {$IFDEF Darwin}
+  connect_switch_delay.Enabled:=true;
+  MacSerialPortMenu(serialport1); // the Mac's own ports, not Linux names
+  MacSerialPortMenu(serialport2);
+  {$ELSE}
+  {$IFDEF Unix}
   connect_switch_delay.Enabled:=true;
   serialport1.Items.Add('/dev/ttyACM0');
   serialport1.Items.Add('/dev/ttyUSB0');
@@ -12528,6 +12533,7 @@ begin
   serialport2.Items.Add('/dev/ttyACM0');
   serialport2.Items.Add('/dev/ttyUSB0');
   serialport2.Items.Add('/dev/ttyAMA0');
+  {$ENDIF}
   {$ENDIF}
   {$IFDEF Windows}
   serialport1.Items.Add('COM1');
@@ -12647,6 +12653,7 @@ begin
         K8055select.Checked := false;
       end;
       ReadLn(settingsfile, buffer) ;
+      {$IFDEF Darwin}buffer:=MacPortName(buffer);{$ENDIF} // Mac: settings from Windows name COM ports
       serialport1.Text:=buffer;
       serial.Device:=buffer;
       ReadLn(settingsfile, buffer) ;
@@ -12709,6 +12716,7 @@ begin
     begin
 
       ReadLn(settingsfile, buffer) ;
+      {$IFDEF Darwin}buffer:=MacPortName(buffer);{$ENDIF} // Mac: settings from Windows name COM ports
       serialport2.Text:=buffer;
       serial2.Device:=buffer;
 
@@ -15026,6 +15034,7 @@ end;
 Procedure TCountdownform.connect;
 var h,i,j,m:longint;
   lanstringg, RPIstringg:string;
+  PortsMissing:string; //Mac: serial ports that could not be opened
 begin
 
   h:=-1;
@@ -15072,13 +15081,16 @@ begin
   begin
 
 
+    PortsMissing:='';
     if arduinoselect1.Checked=true then
     begin
-     serial.open;
+     {$IFDEF Darwin}if not MacOpenPort(serial) then PortsMissing:=PortsMissing+' '+serial.Device;{$ELSE}
+     serial.open;{$ENDIF}
     end;
     if arduinoselect2.Checked=true then
     begin
-     serial2.open;
+     {$IFDEF Darwin}if not MacOpenPort(serial2) then PortsMissing:=PortsMissing+' '+serial2.Device;{$ELSE}
+     serial2.open;{$ENDIF}
     end;
 
     serialtimestamp.Enabled:=true;
@@ -15089,6 +15101,9 @@ begin
 
     if ((h= -1) and (arduinoselect1.Checked=true)) then  USBconnect.Caption:=RPIstringg+lanstringg+Cardstring+' v3 '+Connectedstring;
     if ((h<>-1) and (arduinoselect1.Checked=true)) then  USBconnect.Caption:=RPIstringg+lanstringg+Cardstring+' v2.'+inttostr(h)+', v3 '+Connectedstring;
+    {$IFDEF Darwin}
+    if PortsMissing<>'' then USBconnect.Caption:='Serial port not found:'+PortsMissing; // Mac: unplugged or wrong port
+    {$ENDIF}
 
   end
   else

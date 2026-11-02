@@ -4,6 +4,8 @@ unit macdevpage;
   open, so the page can be screenshotted without anyone clicking through the menus. 'timing' opens Timing and
   sequence; anything else names a settings tab (tablang, tabscr, screencolor, tabsound, TabNetwork, tabprecnt,
   tabEmergency, tabscen, hardwaretab, Touchscreentab, abouttab, controltab).
+  AC_DEVSYSTEM selects a shooting system first. AC_DEVCLICK presses buttons on the timing page
+  (name,name,...) or, on a settings tab, opens a menu and prints its items.
   Without AC_DEVPAGE nothing happens. }
 
 {$mode objfpc}{$H+}
@@ -52,6 +54,14 @@ begin
       Exit;
     Countdownform.settingsClick(nil);
     Countdownform.SettingsTabs.ActivePage := TTabSheet(Tab);
+    // on a settings tab AC_DEVCLICK names a menu to open (e.g. serialport1: the Arduino port list)
+    Tab := Countdownform.FindComponent(GetEnvironmentVariable('AC_DEVCLICK'));
+    if Tab is TComboBox then
+    begin
+      TComboBox(Tab).OnDropDown(Tab); // what opening it would do; then list it, since a capture can't show it
+      WriteLn(Tab.Name, ': ', TComboBox(Tab).Items.CommaText);
+      TComboBox(Tab).DroppedDown := True;
+    end;
   end;
   menuremovesec := MaxInt div 2; // the menus normally close themselves after 10 s
   Timer.Enabled := False; // once only; freeing a timer inside its own event is unsafe, and this is dev-only
