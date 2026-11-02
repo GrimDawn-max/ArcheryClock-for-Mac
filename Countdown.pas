@@ -19311,6 +19311,7 @@ begin
   startupscenario.Text:='--';
   serienumber:=1;
   viewturnchange;
+  {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: other timing boxes are shown now: lay them out
 end;
 
 procedure TCountdownform.timeperturnClick(Sender: TObject);
@@ -19325,6 +19326,7 @@ begin
   startupscenario.Text:='--';
   serienumber:=1;
   viewturnchange;
+  {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: other timing boxes are shown now: lay them out
 end;
 
 procedure TCountdownform.greenfinalChange(Sender: TObject);

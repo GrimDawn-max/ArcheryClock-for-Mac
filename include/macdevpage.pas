@@ -25,7 +25,7 @@ type
 
 procedure TDevPage.Show(Sender: TObject);
 var
-  Page: string;
+  Page, Name: string;
   Tab: TComponent;
 begin
   Page := GetEnvironmentVariable('AC_DEVPAGE');
@@ -34,7 +34,17 @@ begin
   if Tab is TRadioButton then
     TRadioButton(Tab).Checked := True;
   if SameText(Page, 'timing') then
-    Countdownform.timingsettingsClick(nil)
+  begin
+    Countdownform.timingsettingsClick(nil);
+    // AC_DEVCLICK names buttons on the page to press in turn once it is open, separated by commas
+    // (e.g. reamfindefbutton,indfindefbutton: team round, then back to individual)
+    for Name in GetEnvironmentVariable('AC_DEVCLICK').Split(',') do
+    begin
+      Tab := Countdownform.FindComponent(Name);
+      if Tab is TButton then
+        TButton(Tab).Click;
+    end;
+  end
   else
   begin
     Tab := Countdownform.FindComponent(Page);
