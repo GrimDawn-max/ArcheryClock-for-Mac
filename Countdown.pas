@@ -10179,7 +10179,7 @@ begin
   pwnr:=inttostr(tmp1);
   if aSocket.GetMessage(rectcpstring)>0 then
   begin
-    if ((rectcpstring[1]='c')and(rectcpstring[2]='t')and(rectcpstring[3]='r')and (rectcpstring[8]=pwnr[1])and (rectcpstring[9]=pwnr[2])and (rectcpstring[10]=pwnr[3])and (rectcpstring[11]=pwnr[4])and (rectcpstring[12]=pwnr[5]) and (Lanremoteselect.Checked=true))then
+    if (length(rectcpstring)>=12) and ((rectcpstring[1]='c')and(rectcpstring[2]='t')and(rectcpstring[3]='r')and (rectcpstring[8]=pwnr[1])and (rectcpstring[9]=pwnr[2])and (rectcpstring[10]=pwnr[3])and (rectcpstring[11]=pwnr[4])and (rectcpstring[12]=pwnr[5]) and (Lanremoteselect.Checked=true))then
     begin
       if ((rectcpstring[4]='n')and(rectcpstring[5]='e')and(rectcpstring[6]='x')and(rectcpstring[7]='t'))then next;
       if ((rectcpstring[4]='p')and(rectcpstring[5]='l')and(rectcpstring[6]='a')and(rectcpstring[7]='y'))then playpauze;
