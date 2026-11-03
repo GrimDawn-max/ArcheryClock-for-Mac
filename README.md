@@ -3,9 +3,8 @@
 A Mac version of [Archery Clock](http://www.archeryclock.com), the countdown timer used at archery matches.
 
 Archery Clock is written by Henk Jegers, who makes the Windows and Linux versions available at
-[archeryclock.com](http://www.archeryclock.com). This Mac version is a separate derivative work, ported from his
-2.6.18 source by a different developer. It runs natively on Apple silicon and Intel Macs (macOS 11 or later), with
-no Wine, CrossOver or external monitor needed.
+[archeryclock.com](http://www.archeryclock.com). This Mac version was ported from his 2.6.18. It runs natively on
+Apple silicon and Intel Macs (macOS 11 or later), with no Wine, CrossOver or external monitor needed.
 
 Archery Clock is free software under the GNU General Public License version 3 (`COPYING.txt`). This repository
 holds the full source of the Mac version: Henk Jegers' 2.6.18 source plus the Mac changes. The changes are kept
