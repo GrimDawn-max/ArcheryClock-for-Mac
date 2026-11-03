@@ -1845,7 +1845,7 @@ var
 
 implementation
 
-{$IFDEF Darwin}uses mactidy, macserial, macdatadir, macpicture, macsettingswin;
+{$IFDEF Darwin}uses mactidy, macserial, macdatadir, macpicture, macsettingswin, macpages;
 
 var
   MacContentGraphic: TGraphic = nil; // the picture and background MacContentRow was worked out for
@@ -6610,6 +6610,9 @@ begin
   closeimage2.BringToFront;
   {$ENDIF}
 
+  {$IFDEF Darwin}
+  if not MacSettingsWindowed then // in the settings window the button sits on the Network page
+  {$ENDIF}
   ShutdownremoteButton.Top:=savesettings.Height-55;
   timeseqpanel.Height:=(trunc(Countdownform.Height-iconsize-iconsize));
   blinkredgroupbox.Top:=timeseqpanel.Height-77;
@@ -9195,6 +9198,9 @@ end;
 procedure TCountdownform.LANselectChange(Sender: TObject);
 begin
   connectports;
+  {$IFDEF Darwin}
+  if MacSettingsWindowed then MacShutdownButtonState;
+  {$ENDIF}
 end;
 
 procedure TCountdownform.largeimagecheckboxChange(Sender: TObject);
@@ -18969,6 +18975,9 @@ end;
 procedure TCountdownform.initsystemtype;   //change systemtype (Fita, fitafin,etc
 begin
    NETWORK1.Disconnect;
+  {$IFDEF Darwin}
+  if MacSettingsWindowed then MacShutdownButtonState; // a following clock has no clients to shut down
+  {$ENDIF}
 
   serienumber:=1;
   turnnumber:=1;

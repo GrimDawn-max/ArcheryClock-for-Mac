@@ -320,12 +320,6 @@ begin
   SaveButton.AutoSize := True;
   SaveButton.OnClick := @SaveClick;
 
-  // the "shut down the client systems" button belongs to the network settings, but upstream kept it at the
-  // bottom of the panel; keep it at the bottom of the window, beside the save button
-  F.ShutdownremoteButton.Parent := BottomBar;
-  F.ShutdownremoteButton.Font.Height := -14;
-  F.ShutdownremoteButton.AutoSize := True;
-
   Scroll := NewScroll(Self);
 
   // the settings pages: the page control moves in whole, without its row of tabs (the sidebar replaces it)
@@ -445,15 +439,10 @@ begin
 end;
 
 procedure TSettingsWindow.WindowResize(Sender: TObject);
-var
-  Shutdown: TButton;
 begin
-  // save under the list of sections, shutting down the clients beside it
+  // save under the list of sections (shutting down the clients is on the Network page)
   SaveButton.Left := Max(8, (Sidebar.Width - SaveButton.Width) div 2);
   SaveButton.Top := (BottomBar.ClientHeight - SaveButton.Height) div 2;
-  Shutdown := Countdownform.ShutdownremoteButton;
-  Shutdown.Left := Sidebar.Width + 16;
-  Shutdown.Top := (BottomBar.ClientHeight - Shutdown.Height) div 2;
   if Pages.Count > 0 then LayOutPage;
 end;
 

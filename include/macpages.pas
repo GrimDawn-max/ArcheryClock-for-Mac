@@ -14,6 +14,7 @@ uses
 
 { Lay out Page (one of the settings window's pages) for the width it has now. }
 procedure MacStylePage(Page: TWinControl);
+procedure MacShutdownButtonState;
 
 implementation
 
@@ -318,8 +319,13 @@ begin
     F.Lanremoteselect.Parent := NetRemoteBox;
     F.pwlabel.Parent := NetRemoteBox;
     F.pwstring.Parent := NetRemoteBox;
+    // upstream kept "shut down the client systems" below every settings page; it only reaches the clocks that
+    // follow this one over the network, so it sits here, beside the box that lets this clock be shut down
     NetShutdownBox := NewSection(Area, 'Shut down');
     F.RemshutdownCheckBox.Parent := NetShutdownBox;
+    F.ShutdownremoteButton.Parent := NetShutdownBox;
+    F.ShutdownremoteButton.Font.Height := -14;
+    F.ShutdownremoteButton.AutoSize := True;
   end;
 
   NetLinkBox.Width := W;
@@ -351,11 +357,23 @@ begin
 
   NetShutdownBox.Width := W;
   F.RemshutdownCheckBox.SetBounds(10, 6, W - 20, RowH);
-  NetShutdownBox.ClientHeight := 6 + RowH + 10;
+  F.ShutdownremoteButton.Left := 10;
+  F.ShutdownremoteButton.Top := 6 + RowH + 8;
+  MacShutdownButtonState;
+  NetShutdownBox.ClientHeight := F.ShutdownremoteButton.Top + F.ShutdownremoteButton.Height + 10;
 
   Area.BorderStyle := bsNone;
   Stack(Area, [NetLinkBox, NetRemoteBox, NetShutdownBox], W);
   PlainInside(NetLinkBox); PlainInside(NetRemoteBox); PlainInside(NetShutdownBox);
+end;
+
+{ The shut-down signal goes out only in the network broadcast of a clock that leads, so the button works only then. }
+procedure MacShutdownButtonState;
+var
+  F: TCountdownform;
+begin
+  F := Countdownform;
+  F.ShutdownremoteButton.Enabled := F.LANselect.Checked and (archerysystem <> 'follow');
 end;
 
 { ---- Touch screen ---- }
