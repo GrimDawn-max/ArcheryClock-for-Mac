@@ -93,6 +93,11 @@ confirm. After that it opens normally.
 
 If you link clocks over the network, allow "Local Network" when macOS asks.
 
+Displays: with more than one display connected (a projector or TV for the archers, say), the clock
+asks at start which one to show the clock on. Tick "Remember my choice" and it opens there without
+asking whenever that display is connected; if it isn't, the clock asks again. Hold Option while
+opening the clock to be asked again. With a single display there is no question.
+
 Settings: everything the clock saves is in the folder
   ~/Library/Application Support/Archery Clock
 To open it, in Finder choose Go > Go to Folder (Shift-Command-G) and paste that path.
