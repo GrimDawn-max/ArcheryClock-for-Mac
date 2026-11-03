@@ -154,10 +154,48 @@ begin
     end;
 end;
 
-{ The width a page is laid out at, for a scrolling area of this width. }
+const
+  ScenarioGap = 8;
+
+{ The width a page is laid out at, for a scrolling area of this width. The scenario page may be wider: its
+  boxes stand in columns, as many as fit. }
 function PageWidth(Scroll: TScrollBox): Integer;
+var
+  Wide: Integer;
 begin
-  Result := EnsureRange(Scroll.ClientWidth, PageMinWidth, PageMaxWidth);
+  Wide := PageMaxWidth;
+  if Countdownform.SettingsTabs.ActivePage = Countdownform.tabscen then
+    Wide := Max(PageMaxWidth, 3 * (Countdownform.F1Group.Width + ScenarioGap) + 40);
+  Result := EnsureRange(Scroll.ClientWidth, PageMinWidth, Wide);
+end;
+
+{ The 24 scenario boxes (F1 to F12, then shift-F1 to shift-F12) in columns, filled a row at a time
+  (F1 F2 / F3 F4 ...), as many columns as the list is wide enough for. Upstream stacks them in one column for its
+  narrow panel. Its names are the other way round: varF1Group is F1, F1Group is shift-F1. }
+procedure ScenariosInColumns;
+var
+  F: TCountdownform;
+  Box: TScrollBox;
+  G: TControl;
+  I, Cols, N: Integer;
+begin
+  F := Countdownform;
+  Box := F.ScenarioScrollBox;
+  // the page control's width: the page itself only takes it on when it is next laid out
+  Box.Width := Max(F.F1Group.Width + 2 * ScenarioGap, F.SettingsTabs.ClientWidth - Box.Left - 8);
+  Cols := Max(1, (Box.Width - 16 - ScenarioGap) div (F.F1Group.Width + ScenarioGap)); // 16: its scroll bar
+  N := 0;
+  for I := 1 to 24 do
+  begin
+    if I <= 12 then
+      G := TControl(F.FindComponent('varF' + IntToStr(I) + 'Group'))
+    else
+      G := TControl(F.FindComponent('F' + IntToStr(I - 12) + 'Group'));
+    if (G = nil) or not G.Visible then Continue;
+    G.SetBounds(ScenarioGap + (N mod Cols) * (G.Width + ScenarioGap),
+      ScenarioGap + (N div Cols) * (G.Height + ScenarioGap) - Box.VertScrollBar.Position, G.Width, G.Height);
+    Inc(N);
+  end;
 end;
 
 { The clock-screen panels never show in this version. }
@@ -337,22 +375,38 @@ end;
   it scrolls. }
 procedure TSettingsWindow.LayOutPage;
 var
+  F: TCountdownform;
   Tabs: TPageControl;
   Page: TTabSheet;
   I, Need: Integer;
+  Lists: array[0..2] of TControl;
+
+  function SelfScrolling(C: TControl): Boolean;
+  begin
+    Result := (C = Lists[0]) or (C = Lists[1]) or (C = Lists[2]);
+  end;
+
 begin
-  Tabs := Countdownform.SettingsTabs;
+  F := Countdownform;
+  // lists that scroll themselves (scenarios, slideshow pictures, screen colours): upstream sizes them from the
+  // clock window's height; here they end at the bottom of this window, and don't make the page taller
+  Lists[0] := F.ScenarioScrollBox;
+  Lists[1] := F.BGScrollBox;
+  Lists[2] := F.SCRcolScrollBox;
+  Tabs := F.SettingsTabs;
   Tabs.SetBounds(0, 0, PageWidth(Scroll), Max(Tabs.Height, Scroll.ClientHeight));
   MacTidySettings;
   Page := Tabs.ActivePage;
   Need := 0;
-  // the scenario page scrolls its own list: it just fits the window
-  if Page = Countdownform.tabscen then Page := nil;
   if Page <> nil then
     for I := 0 to Page.ControlCount - 1 do
-      if Page.Controls[I].Visible then
+      if Page.Controls[I].Visible and not SelfScrolling(Page.Controls[I]) then
         Need := Max(Need, Page.Controls[I].Top + Page.Controls[I].Height);
   Tabs.Height := Max(Scroll.ClientHeight, Need + 24 + (Tabs.Height - Tabs.ClientHeight));
+  for I := 0 to High(Lists) do
+    if Lists[I].Parent = Page then
+      Lists[I].Height := Max(120, Tabs.ClientHeight - Lists[I].Top - 12);
+  if Page = F.tabscen then ScenariosInColumns;
 end;
 
 procedure TSettingsWindow.SidebarClick(Sender: TObject);
