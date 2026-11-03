@@ -24,8 +24,8 @@ procedure MacShowSettings;
 implementation
 
 uses
-  Math, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, CocoaAll, Countdown, mactidy,
-  macappearance;
+  Math, Classes, SysUtils, Types, IniFiles, Controls, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, CocoaAll,
+  Countdown, mactidy, macappearance;
 
 const
   { A page is laid out at the window's width, but not wider than a comfortable column, nor narrower than the
@@ -41,9 +41,11 @@ type
     Scroll: TScrollBox;
     Host: TPanel;
     procedure WindowResize(Sender: TObject);
+    procedure WindowHide(Sender: TObject);
     procedure LayOut;
   public
     constructor CreateWindow;
+    destructor Destroy; override;
   end;
 
   { Settings: a sidebar of sections, the page for the one chosen, and the buttons along the bottom. }
@@ -58,6 +60,7 @@ type
     procedure SidebarClick(Sender: TObject);
     procedure SaveClick(Sender: TObject);
     procedure WindowResize(Sender: TObject);
+    procedure WindowHide(Sender: TObject);
     procedure ShowPage(Index: Integer);
     procedure LayOutPage;
   public
@@ -100,6 +103,55 @@ begin
     NSScrollView(Result.Handle).setScrollerStyle(NSScrollerStyleLegacy);
     NSScrollView(Result.Handle).setAutohidesScrollers(True);
   end;
+end;
+
+{ Each window's size and place, kept between runs in windows.ini in the data folder. }
+function BoundsFile: string;
+begin
+  Result := Datapath + 'windows.ini';
+end;
+
+procedure SaveBounds(W: TForm; const Name: string);
+var
+  Ini: TIniFile;
+begin
+  if Datapath = '' then Exit;
+  Ini := TIniFile.Create(BoundsFile);
+  try
+    Ini.WriteInteger(Name, 'Left', W.Left);
+    Ini.WriteInteger(Name, 'Top', W.Top);
+    Ini.WriteInteger(Name, 'Width', W.Width);
+    Ini.WriteInteger(Name, 'Height', W.Height);
+  finally
+    Ini.Free;
+  end;
+end;
+
+{ The saved place, if there is one and it is still on a connected display; otherwise the window keeps the place
+  SetUpWindow gave it. }
+procedure LoadBounds(W: TForm; const Name: string);
+var
+  Ini: TIniFile;
+  R: TRect;
+  Middle: TPoint;
+  I: Integer;
+begin
+  if (Datapath = '') or not FileExists(BoundsFile) then Exit;
+  Ini := TIniFile.Create(BoundsFile);
+  try
+    if not Ini.SectionExists(Name) then Exit;
+    R := Bounds(Ini.ReadInteger(Name, 'Left', W.Left), Ini.ReadInteger(Name, 'Top', W.Top),
+      Ini.ReadInteger(Name, 'Width', W.Width), Ini.ReadInteger(Name, 'Height', W.Height));
+  finally
+    Ini.Free;
+  end;
+  Middle := Point((R.Left + R.Right) div 2, R.Top + 10); // the title bar must be reachable
+  for I := 0 to Screen.MonitorCount - 1 do
+    if PtInRect(Screen.Monitors[I].WorkareaRect, Middle) then
+    begin
+      W.SetBounds(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
+      Exit;
+    end;
 end;
 
 { The width a page is laid out at, for a scrolling area of this width. }
@@ -154,6 +206,19 @@ begin
   MacTimingHost := Host;
   F.closeimage1.Visible := False; // the window's own close button does this
   OnResize := @WindowResize;
+  OnHide := @WindowHide;
+  LoadBounds(Self, 'Timing');
+end;
+
+destructor TTimingWindow.Destroy;
+begin
+  SaveBounds(Self, 'Timing'); // still open when the app quits
+  inherited Destroy;
+end;
+
+procedure TTimingWindow.WindowHide(Sender: TObject);
+begin
+  SaveBounds(Self, 'Timing');
 end;
 
 procedure TTimingWindow.LayOut;
@@ -225,10 +290,18 @@ begin
   F.SettingsTabs.ShowTabs := False;
 
   OnResize := @WindowResize;
+  OnHide := @WindowHide;
+  LoadBounds(Self, 'Settings');
+end;
+
+procedure TSettingsWindow.WindowHide(Sender: TObject);
+begin
+  SaveBounds(Self, 'Settings');
 end;
 
 destructor TSettingsWindow.Destroy;
 begin
+  SaveBounds(Self, 'Settings'); // still open when the app quits
   Pages.Free;
   inherited Destroy;
 end;
