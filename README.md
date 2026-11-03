@@ -26,7 +26,24 @@ Download a disk image from Releases and drag the app to Applications. It is not 
 Apple developer certificate, so the first time: open it, click Done, then System Settings > Privacy &
 Security > Open Anyway.
 
-Support: the feedback address on [archeryclock.com](http://www.archeryclock.com).
+Support: the feedback address on [archeryclock.com](http://www.archeryclock.com); see below for what to send.
+
+## Settings, problems and starting over
+
+Everything the app saves is in `~/Library/Application Support/Archery Clock`: the settings, the scenarios, the
+list of background slides, the window positions and the remembered display. Errors the clock reports are also
+written to `~/Library/Logs/ArcheryClock.log`.
+
+To open either location: in Finder choose Go > Go to Folder (Shift-Command-G) and paste the path.
+
+**Reporting a problem:** email the feedback address on [archeryclock.com](http://www.archeryclock.com), say
+what you did and what happened, and attach `ArcheryClock.log` if it exists. Open the log first if you like: it is
+plain text, and an error message can name a file on your Mac.
+
+**Starting over:** quit the clock and move the `Archery Clock` folder in Application Support to the Bin. The
+next time the clock opens it starts with the default settings. Saved scenarios and the slide list go
+with it, so keep a copy of the folder if you may want them back. To be asked again which display to use,
+without resetting anything else, hold Option while opening the clock.
 
 ## Languages
 

@@ -93,10 +93,21 @@ confirm. After that it opens normally.
 
 If you link clocks over the network, allow "Local Network" when macOS asks.
 
-Settings are kept in your Library/Application Support/Archery Clock folder.
+Settings: everything the clock saves is in the folder
+  ~/Library/Application Support/Archery Clock
+To open it, in Finder choose Go > Go to Folder (Shift-Command-G) and paste that path.
+
+Problems: email the feedback address on http://www.archeryclock.com, say what you did and what
+happened, and attach this file if it exists (it lists the errors the clock reported; it is plain text):
+  ~/Library/Logs/ArcheryClock.log
+
+Starting over: quit the clock and move the "Archery Clock" folder in Application Support to the Bin.
+The next time it opens it starts with the default settings (saved scenarios and the slide list go
+too, so keep a copy if you may want them back). To be asked again which display to use, hold Option
+while opening the clock.
 
 Archery Clock is free software under the GNU General Public License version 3 (COPYING.txt).
-More info and support: http://www.archeryclock.com
+More info: http://www.archeryclock.com
 EOF
 DMG="$OUT/${NAME// /-}-$VER-$KIND.dmg" # dashes: file names with spaces break in links and mail; rm -f "$DMG"
 hdiutil create -quiet -volname "$NAME" -srcfolder "$STAGE" -fs HFS+ -format UDZO "$DMG"
