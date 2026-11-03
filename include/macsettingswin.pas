@@ -382,7 +382,8 @@ end;
 procedure TSettingsWindow.FillSidebar;
 var
   F: TCountdownform;
-  I: Integer;
+  I, W: Integer;
+  Bmp: TBitmap;
 begin
   F := Countdownform;
   Sidebar.Items.Clear;
@@ -393,6 +394,17 @@ begin
       Sidebar.Items.Add(MacCapitalised(Trim(F.SettingsTabs.Pages[I].Caption)));
       Pages.Add(F.SettingsTabs.Pages[I]);
     end;
+  // wide enough for this language's longest section name, within reason
+  Bmp := TBitmap.Create;
+  try
+    Bmp.Canvas.Font.Height := Sidebar.Font.Height;
+    W := 220;
+    for I := 0 to Sidebar.Items.Count - 1 do
+      W := Max(W, Bmp.Canvas.TextWidth(Sidebar.Items[I]) + 40);
+    Sidebar.Width := Min(W, 320);
+  finally
+    Bmp.Free;
+  end;
 end;
 
 procedure TSettingsWindow.ShowPage(Index: Integer);

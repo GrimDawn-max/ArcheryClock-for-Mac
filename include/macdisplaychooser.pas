@@ -23,7 +23,7 @@ procedure MacPlaceOnDisplay(AForm: TForm; AIndex: Integer);
 implementation
 
 uses
-  SysUtils, Classes, Controls, StdCtrls, IniFiles, CocoaAll;
+  SysUtils, Classes, Controls, StdCtrls, Graphics, IniFiles, CocoaAll, maclang;
 
 function CGDisplayIsBuiltin(Display: UInt32): UInt32; cdecl; external name 'CGDisplayIsBuiltin';
 function CGDisplayPixelsWide(Display: UInt32): PtrUInt; cdecl; external name 'CGDisplayPixelsWide';
@@ -85,29 +85,31 @@ var
   Prompt: TLabel;
   List: TListBox;
   RememberBox: TCheckBox;
+  AgainNote: TLabel;
   OpenButton, QuitButton: TButton;
   I: Integer;
   Kind: string;
 begin
+  MacLanguageFromSettings; // the clock isn't up yet: the language its settings were saved in
   Dlg := TForm.CreateNew(nil);
   try
     Dlg.Caption := 'Archery Clock';
     Dlg.BorderStyle := bsDialog;
     Dlg.Position := poScreenCenter;
     Dlg.ClientWidth := 440;
-    Dlg.ClientHeight := 250;
+    Dlg.ClientHeight := 274;
 
     Prompt := TLabel.Create(Dlg);
     Prompt.Parent := Dlg;
     Prompt.SetBounds(20, 16, 400, 20);
-    Prompt.Caption := 'Show the clock on:';
+    Prompt.Caption := MacText('ShowClockOn', 'Show the clock on:');
 
     List := TListBox.Create(Dlg);
     List.Parent := Dlg;
     List.SetBounds(20, 42, 400, 110);
     for I := 0 to High(Displays) do
     begin
-      if Displays[I].Builtin then Kind := 'built-in' else Kind := 'external';
+      if Displays[I].Builtin then Kind := MacText('BuiltIn', 'built-in') else Kind := MacText('External', 'external');
       List.Items.Add(Format('%s  (%s, %d × %d)',
         [Displays[I].Name, Kind, Displays[I].PixelWidth, Displays[I].PixelHeight]));
     end;
@@ -116,19 +118,28 @@ begin
     RememberBox := TCheckBox.Create(Dlg);
     RememberBox.Parent := Dlg;
     RememberBox.SetBounds(20, 162, 400, 22);
-    RememberBox.Caption := 'Remember my choice (hold Option while opening to choose again)';
+    RememberBox.Caption := MacText('RememberChoice', 'Remember my choice');
+    // how to get this question back, in small type under the box; it wraps, as some languages need two lines
+    AgainNote := TLabel.Create(Dlg);
+    AgainNote.Parent := Dlg;
+    AgainNote.AutoSize := False;
+    AgainNote.WordWrap := True;
+    AgainNote.SetBounds(42, 186, 378, 32);
+    AgainNote.Font.Height := -11;
+    AgainNote.Font.Color := clGrayText;
+    AgainNote.Caption := MacText('ChooseAgain', 'Hold Option ⌥ while opening to choose again');
 
     QuitButton := TButton.Create(Dlg);
     QuitButton.Parent := Dlg;
-    QuitButton.SetBounds(200, 202, 100, 30);
-    QuitButton.Caption := 'Quit';
+    QuitButton.SetBounds(200, 226, 100, 30);
+    QuitButton.Caption := MacText('Quit', 'Quit');
     QuitButton.ModalResult := mrCancel;
     QuitButton.Cancel := True;
 
     OpenButton := TButton.Create(Dlg);
     OpenButton.Parent := Dlg;
-    OpenButton.SetBounds(310, 202, 110, 30);
-    OpenButton.Caption := 'Open Clock';
+    OpenButton.SetBounds(310, 226, 110, 30);
+    OpenButton.Caption := MacText('OpenClock', 'Open Clock');
     OpenButton.ModalResult := mrOK;
     OpenButton.Default := True;
 

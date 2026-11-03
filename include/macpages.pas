@@ -19,7 +19,7 @@ procedure MacShutdownButtonState;
 implementation
 
 uses
-  Classes, SysUtils, Math, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, Countdown, mactidy;
+  Classes, SysUtils, Math, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, Countdown, mactidy, maclang;
 
 const
   Pad = 16;          // page margin
@@ -112,12 +112,12 @@ begin
   begin
     GeneralBox := TGroupBox.Create(F);
     GeneralBox.Parent := Area;
-    GeneralBox.Caption := 'General';
     F.hideicons.Parent := GeneralBox;
     F.showhints.Parent := GeneralBox;
     F.timecheckbox.Parent := GeneralBox;
     F.am24.Parent := GeneralBox;
   end;
+  GeneralBox.Caption := MacText('General', 'General'); // each time: the language may have changed
 
   RoomyOptions(F.minsec);
   RoomyOptions(F.am24);
@@ -214,13 +214,33 @@ end;
 
 { A label and its field on one row: the label in a column of LabelW, the field after it, both centred on the
   row. }
+{ The label column for these labels: at least MinW, wider when a language's labels need it. }
+function LabelColumn(const Lbls: array of TLabel; MinW: Integer): Integer;
+var
+  L: TLabel;
+  Bmp: TBitmap;
+begin
+  Result := MinW;
+  Bmp := TBitmap.Create;
+  try
+    Bmp.Canvas.Font.Height := -14;
+    for L in Lbls do
+      Result := Max(Result, Bmp.Canvas.TextWidth(L.Caption) + 16);
+  finally
+    Bmp.Free;
+  end;
+end;
+
 procedure LabelledRow(Lbl: TLabel; Field: TControl; X, Y, LabelW, FieldW: Integer);
 begin
   Lbl.Alignment := taLeftJustify; // upstream right-aligned some, against a field below them
   Lbl.AutoSize := True;
   Lbl.Font.Height := -14;
+  Lbl.Constraints.MinWidth := 0; // upstream fixed some at 150 pixels, which cuts longer languages off
+  Lbl.Constraints.MaxWidth := 0;
   Field.SetBounds(X + LabelW, Y, FieldW, Field.Height);
-  Lbl.SetBounds(X, Y + (Field.Height - Lbl.Height) div 2, Lbl.Width, Lbl.Height);
+  // its own text's width: some keep the width upstream gave them, too narrow for longer languages
+  Lbl.SetBounds(X, Y + (Field.Height - Lbl.Height) div 2, LabelColumn([Lbl], 0) - 16 + 4, Lbl.Height);
 end;
 
 procedure StyleSound;
@@ -242,15 +262,15 @@ begin
   begin
     BuzzerBox := TGroupBox.Create(F);
     BuzzerBox.Parent := Area;
-    BuzzerBox.Caption := 'Buzzer';
     F.speaker.Parent := BuzzerBox;
     F.selectsoundlabel.Parent := BuzzerBox;
     F.soundselect.Parent := BuzzerBox;
     F.testsound.Parent := BuzzerBox;
   end;
+  BuzzerBox.Caption := MacText('Buzzer', 'Buzzer'); // each time: the language may have changed
   BuzzerBox.SetBounds(Pad, Pad div 2, W, BuzzerBox.Height);
   F.speaker.SetBounds(10, 6, W - 20, RowH);
-  LabelledRow(F.selectsoundlabel, F.soundselect, 10, 6 + RowH + 8, 180, 160);
+  LabelledRow(F.selectsoundlabel, F.soundselect, 10, 6 + RowH + 8, LabelColumn([F.selectsoundlabel], 180), 160);
   F.testsound.AutoSize := True;
   F.testsound.SetBounds(F.soundselect.Left + F.soundselect.Width + 12, F.soundselect.Top, F.testsound.Width,
     F.testsound.Height);
@@ -264,13 +284,18 @@ begin
   Inc(Y, RowH + 8);
   if F.audiovolumebox.Visible then
   begin
-    if F.audiovolumebox.Caption = '' then F.audiovolumebox.Caption := 'Music';
+    if (F.audiovolumebox.Caption = '') or (F.audiovolumebox.Tag = 1) then
+    begin
+      F.audiovolumebox.Caption := MacText('Music', 'Music');
+      F.audiovolumebox.Tag := 1; // the caption is this unit's, so it follows the language
+    end;
     F.audiovolumebox.Font.Style := [fsBold];
     PlainInside(F.audiovolumebox);
     F.audiovolumebox.SetBounds(Pad, Y, W, F.audiovolumebox.Height);
     F.VLCradiobutton.SetBounds(10, 6, 200, RowH);
-    LabelledRow(F.AudioIPlabel, F.AudioIPedit, 10, 6 + RowH + 8, 200, 180);
-    LabelledRow(F.audioportlabel, F.Audioportnumber, 10, F.AudioIPedit.Top + F.AudioIPedit.Height + 8, 200, 100);
+    I := LabelColumn([F.AudioIPlabel, F.audioportlabel], 200);
+    LabelledRow(F.AudioIPlabel, F.AudioIPedit, 10, 6 + RowH + 8, I, 180);
+    LabelledRow(F.audioportlabel, F.Audioportnumber, 10, F.AudioIPedit.Top + F.AudioIPedit.Height + 8, I, 100);
     F.reconnectbutton.AutoSize := True;
     F.reconnectbutton.SetBounds(10 + 200, F.Audioportnumber.Top + F.Audioportnumber.Height + 8,
       F.reconnectbutton.Width, F.reconnectbutton.Height);
@@ -300,37 +325,41 @@ begin
 end;
 
 procedure StyleNetwork;
-const
-  LabelW = 190;
 var
   F: TCountdownform;
   Area: TScrollBox;
-  W, Y, X, I: Integer;
+  W, Y, X, I, LabelW: Integer;
   Part: TControl;
 begin
   F := Countdownform;
   Area := F.networkScrollBox;
+  // one field column for both sections, as wide as this language's labels need
+  LabelW := LabelColumn([F.multicastlabel, F.serverportlabel1, F.PCnameLabel, F.pwlabel], 190);
   W := Min(Area.ClientWidth - 2 * Pad, SectionMax);
   if NetLinkBox = nil then
   begin
     // linking clocks: the network on, its address and port, and how this computer is named on it
-    NetLinkBox := NewSection(Area, 'Linking clocks');
+    NetLinkBox := NewSection(Area, '');
     for Part in [F.LANselect, F.multicastlabel, F.IP1, F.IP2, F.IP3, F.IP4, F.dot1, F.dot2, F.dot3,
       F.serverportlabel1, F.portnumber1, F.PCnameLabel, F.HOSTNAME] do
       Part.Parent := NetLinkBox;
-    NetRemoteBox := NewSection(Area, 'Remote control');
+    NetRemoteBox := NewSection(Area, '');
     F.Lanremoteselect.Parent := NetRemoteBox;
     F.pwlabel.Parent := NetRemoteBox;
     F.pwstring.Parent := NetRemoteBox;
     // upstream kept "shut down the client systems" below every settings page; it only reaches the clocks that
     // follow this one over the network, so it sits here, beside the box that lets this clock be shut down
-    NetShutdownBox := NewSection(Area, 'Shut down');
+    NetShutdownBox := NewSection(Area, '');
     F.RemshutdownCheckBox.Parent := NetShutdownBox;
     F.ShutdownremoteButton.Parent := NetShutdownBox;
     F.ShutdownremoteButton.Font.Height := -14;
     F.ShutdownremoteButton.AutoSize := True;
   end;
 
+  // the headings each time: the language may have changed
+  NetLinkBox.Caption := MacText('LinkingClocks', 'Linking clocks');
+  NetRemoteBox.Caption := MacText('RemoteControl', 'Remote control');
+  NetShutdownBox.Caption := MacText('ShutDown', 'Shut down');
   NetLinkBox.Width := W;
   F.LANselect.SetBounds(10, 6, W - 20, RowH);
   Y := 6 + RowH + 8;
@@ -391,7 +420,7 @@ begin
   F.Fbutonscreenbox.SetBounds(Pad, Pad, 400, RowH);
   F.magnification.Font.Height := -14;
   F.magnification.Height := 26;
-  LabelledRow(F.MagText, F.magnification, Pad, Pad + RowH + 12, 190, 70);
+  LabelledRow(F.MagText, F.magnification, Pad, Pad + RowH + 12, LabelColumn([F.MagText], 190), 70);
 end;
 
 { ---- Language ---- }
