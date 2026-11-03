@@ -1,0 +1,42 @@
+--- a/lcl/interfaces/cocoa/cocoatabcontrols.pas	2026-11-02 21:29:51
++++ b/lcl/interfaces/cocoa/cocoatabcontrols.pas	2026-11-02 21:33:03
+@@ -173,6 +173,9 @@
+   end;
+ 
+ implementation
++
++var
++  TabsOverflow: Boolean = false; // set by ReviseTabs: the tabs don't all fit, so the arrows are in use
+ 
+ const
+   ARROW_HORZ_OFFSET = 12;
+@@ -269,6 +272,7 @@
+ begin
+   ShowPrev := false;
+   ShowNext := false;
++  TabsOverflow := false;
+ 
+   // ReviseTabs() supports tpTop and tpBottom only
+   if (aview.tabViewType=NSLeftTabsBezelBorder) or (aview.tabViewType=NSRightTabsBezelBorder) then exit;
+@@ -287,6 +291,7 @@
+ 
+   minw := aview.minimumSize.width;
+   if (minw<aview.frame.size.width) then Exit;
++  TabsOverflow := true;
+ 
+   arr := aview.tabViewItems;
+ 
+@@ -385,6 +390,13 @@
+ 
+   ReviseTabs(aview, showPrev, showNExt);
+   aview.updateVariousIndex;
++  // While the arrows are in use (the tabs don't all fit), they step through every tab: keep each one until
++  // the first or last tab is selected, not just until the tabs at that end fit in the strip.
++  if TabsOverflow then
++  begin
++    showPrev := aview.currentIndex > 0;
++    showNext := aview.currentIndex < Integer(aview.fulltabs.count) - 1;
++  end;
+   if Assigned(aview.prevarr) then
+   begin
+     PlaceButton(true, aview.prevarr, aview);

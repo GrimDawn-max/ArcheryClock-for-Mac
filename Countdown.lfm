@@ -40792,7 +40792,7 @@ object Countdownform: TCountdownform
             'http://www.gnu.org/licenses/ .'
             ''
             'For source code see: '
-            'https://github.com/hjegers/archeryclock24124_dev'
+            'https://github.com/GrimDawn-max/ArcheryClock-for-Mac'
             ''
             'this software uses Lazarus Free Pascal, SDPO serial, SDL, '
             'LNET, Synapse and MMSystem '

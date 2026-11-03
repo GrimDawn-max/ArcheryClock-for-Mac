@@ -1,0 +1,20 @@
+diff --git a/lcl/interfaces/cocoa/cocoawsforms.pas b/lcl/interfaces/cocoa/cocoawsforms.pas
+index 7880133c..fc66b40f 100644
+--- a/lcl/interfaces/cocoa/cocoawsforms.pas
++++ b/lcl/interfaces/cocoa/cocoawsforms.pas
+@@ -683,10 +683,15 @@ end;
+ 
+ class procedure TCocoaWSCustomForm.UpdateWindowMask(AWindow: NSWindow;
+   ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
++const
++  NSFullScreenWindowMask = 1 shl 14; // NSWindowStyleMaskFullScreen
+ var
+   StyleMask: NSUInteger;
+ begin
+   StyleMask := GetStyleMaskFor(ABorderStyle, ABorderIcons);
++  // keep the full-screen bit: AppKit throws if it is cleared outside a full-screen transition
++  if (AWindow.styleMask and NSFullScreenWindowMask) <> 0 then
++    StyleMask := StyleMask or NSFullScreenWindowMask;
+   AWindow.setStyleMask(StyleMask);
+   UpdateWindowIcons(AWindow, ABorderStyle, ABorderIcons);
+ end;
