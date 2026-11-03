@@ -369,6 +369,8 @@ begin
 end;
 
 procedure TSettingsWindow.ShowPage(Index: Integer);
+var
+  I: Integer;
 begin
   if (Index < 0) or (Index >= Pages.Count) then Index := 0;
   if Pages.Count = 0 then Exit;
@@ -376,10 +378,9 @@ begin
   Countdownform.SettingsTabs.ActivePage := TTabSheet(Pages[Index]);
   LayOutPage;
   // a page opens at its top (its own scrolling list included)
-  Countdownform.ScenarioScrollBox.VertScrollBar.Position := 0;
-  Countdownform.BGScrollBox.VertScrollBar.Position := 0;
-  Countdownform.SCRcolScrollBox.VertScrollBar.Position := 0;
-  Countdownform.soundScrollBox.VertScrollBar.Position := 0;
+  for I := 0 to Countdownform.SettingsTabs.ActivePage.ControlCount - 1 do
+    if Countdownform.SettingsTabs.ActivePage.Controls[I] is TScrollBox then
+      TScrollBox(Countdownform.SettingsTabs.ActivePage.Controls[I]).VertScrollBar.Position := 0;
   Scroll.VertScrollBar.Position := 0;
 end;
 
@@ -391,21 +392,18 @@ var
   Tabs: TPageControl;
   Page: TTabSheet;
   I, Need: Integer;
-  Lists: array[0..3] of TControl;
+  C: TControl;
 
+  { A page's content in one box or text that scrolls itself (most pages, and the scenario, slideshow and screen
+    colour lists): upstream sizes it from the clock window's height; here it ends at the bottom of this window,
+    has no frame of its own, and doesn't make the page taller. }
   function SelfScrolling(C: TControl): Boolean;
   begin
-    Result := (C = Lists[0]) or (C = Lists[1]) or (C = Lists[2]) or (C = Lists[3]);
+    Result := (C is TScrollBox) or (C is TCustomMemo);
   end;
 
 begin
   F := Countdownform;
-  // lists that scroll themselves (scenarios, slideshow pictures, screen colours): upstream sizes them from the
-  // clock window's height; here they end at the bottom of this window, and don't make the page taller
-  Lists[0] := F.ScenarioScrollBox;
-  Lists[1] := F.BGScrollBox;
-  Lists[2] := F.SCRcolScrollBox;
-  Lists[3] := F.soundScrollBox;
   Tabs := F.SettingsTabs;
   Tabs.Constraints.MaxHeight := 0;
   Tabs.SetBounds(0, 0, PageWidth(Scroll), Max(Tabs.Height, Scroll.ClientHeight));
@@ -420,9 +418,19 @@ begin
   Tabs.Height := Max(Scroll.ClientHeight, Need + 24);
   // the clock's own resize code sets this height from the clock window's: keep it to what the page needs
   Tabs.Constraints.MaxHeight := Tabs.Height;
-  for I := 0 to High(Lists) do
-    if Lists[I].Parent = Page then
-      Lists[I].Height := Max(120, Tabs.ClientHeight - Lists[I].Top - 12);
+  if Page <> nil then
+    for I := 0 to Page.ControlCount - 1 do
+    begin
+      C := Page.Controls[I];
+      if not SelfScrolling(C) then Continue;
+      C.Height := Max(120, Tabs.ClientHeight - C.Top - 12);
+      if C is TScrollBox then
+      begin
+        TScrollBox(C).BorderStyle := bsNone;
+        C.Width := Max(C.Width, Page.ClientWidth - C.Left);
+        MacVisibleScrollBars(C);
+      end;
+    end;
   if Page = F.tabscen then ScenariosInColumns;
 end;
 

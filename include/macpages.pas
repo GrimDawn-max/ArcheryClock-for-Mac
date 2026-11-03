@@ -29,6 +29,7 @@ const
 var
   GeneralBox: TGroupBox = nil; // Screen layout's "General" section (the loose tick boxes)
   BuzzerBox: TGroupBox = nil;  // Sound's "Buzzer" section
+  NetLinkBox, NetRemoteBox, NetShutdownBox: TGroupBox; // Network's sections
 
 { A tick box or option button reads as a label: no full stop at the end (Mac style). }
 procedure NoFullStops(Root: TWinControl);
@@ -211,6 +212,7 @@ end;
   row. }
 procedure LabelledRow(Lbl: TLabel; Field: TControl; X, Y, LabelW, FieldW: Integer);
 begin
+  Lbl.Alignment := taLeftJustify; // upstream right-aligned some, against a field below them
   Lbl.AutoSize := True;
   Lbl.Font.Height := -14;
   Field.SetBounds(X + LabelW, Y, FieldW, Field.Height);
@@ -284,6 +286,78 @@ begin
   end;
 end;
 
+{ ---- Network ---- }
+
+function NewSection(AParent: TWinControl; const ACaption: string): TGroupBox;
+begin
+  Result := TGroupBox.Create(Countdownform);
+  Result.Parent := AParent;
+  Result.Caption := ACaption;
+end;
+
+procedure StyleNetwork;
+const
+  LabelW = 190;
+var
+  F: TCountdownform;
+  Area: TScrollBox;
+  W, Y, X, I: Integer;
+  Part: TControl;
+begin
+  F := Countdownform;
+  Area := F.networkScrollBox;
+  W := Min(Area.ClientWidth - 2 * Pad, SectionMax);
+  if NetLinkBox = nil then
+  begin
+    // linking clocks: the network on, its address and port, and how this computer is named on it
+    NetLinkBox := NewSection(Area, 'Linking clocks');
+    for Part in [F.LANselect, F.multicastlabel, F.IP1, F.IP2, F.IP3, F.IP4, F.dot1, F.dot2, F.dot3,
+      F.serverportlabel1, F.portnumber1, F.PCnameLabel, F.HOSTNAME] do
+      Part.Parent := NetLinkBox;
+    NetRemoteBox := NewSection(Area, 'Remote control');
+    F.Lanremoteselect.Parent := NetRemoteBox;
+    F.pwlabel.Parent := NetRemoteBox;
+    F.pwstring.Parent := NetRemoteBox;
+    NetShutdownBox := NewSection(Area, 'Shut down');
+    F.RemshutdownCheckBox.Parent := NetShutdownBox;
+  end;
+
+  NetLinkBox.Width := W;
+  F.LANselect.SetBounds(10, 6, W - 20, RowH);
+  Y := 6 + RowH + 8;
+  // the multicast address: four number fields with dots between, after its label
+  LabelledRow(F.multicastlabel, F.IP1, 10, Y, LabelW, 64);
+  X := F.IP1.Left;
+  for I := 0 to 3 do
+  begin
+    Part := TControl(F.FindComponent('IP' + IntToStr(I + 1)));
+    Part.SetBounds(X + I * 78, Y, 64, Part.Height);
+    if I < 3 then
+    begin
+      Part := TControl(F.FindComponent('dot' + IntToStr(I + 1)));
+      Part.SetBounds(X + I * 78 + 67, Y + 4, 8, Part.Height);
+    end;
+  end;
+  Inc(Y, F.IP1.Height + 8);
+  LabelledRow(F.serverportlabel1, F.portnumber1, 10, Y, LabelW, 100);
+  Inc(Y, F.portnumber1.Height + 8);
+  LabelledRow(F.PCnameLabel, F.HOSTNAME, 10, Y, LabelW, 180);
+  NetLinkBox.ClientHeight := Y + F.HOSTNAME.Height + 10;
+
+  NetRemoteBox.Width := W;
+  F.Lanremoteselect.SetBounds(10, 6, W - 20, RowH);
+  LabelledRow(F.pwlabel, F.pwstring, 10, 6 + RowH + 8, LabelW, 180);
+  NetRemoteBox.ClientHeight := F.pwstring.Top + F.pwstring.Height + 10;
+
+  NetShutdownBox.Width := W;
+  F.RemshutdownCheckBox.SetBounds(10, 6, W - 20, RowH);
+  NetShutdownBox.ClientHeight := 6 + RowH + 10;
+
+  Area.BorderStyle := bsNone;
+  Stack(Area, [NetLinkBox, NetRemoteBox, NetShutdownBox], W);
+  PlainInside(NetLinkBox); PlainInside(NetRemoteBox); PlainInside(NetShutdownBox);
+end;
+
 { ---- Language ---- }
 
 procedure StyleLanguage;
@@ -309,7 +383,8 @@ begin
   if Page = F.tablang then StyleLanguage
   else if Page = F.tabscr then StyleScreenLayout
   else if Page = F.screencolor then StyleScreenColours
-  else if Page = F.tabsound then StyleSound;
+  else if Page = F.tabsound then StyleSound
+  else if Page = F.TabNetwork then StyleNetwork;
 end;
 
 end.

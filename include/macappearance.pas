@@ -22,6 +22,9 @@ procedure MacUseLightAppearance;
 procedure MacDarkenDarkPanels(AForm: TForm);
 { No focus ring on C (a blue outline that otherwise lingers on whichever button the app last focused). }
 procedure MacNoFocusRing(C: TObject);
+{ Scroll bars on the scroll box C that show whenever its contents don't fit (macOS otherwise hides them until
+  you scroll, so nothing tells you there is more). }
+procedure MacVisibleScrollBars(C: TObject);
 
 implementation
 
@@ -59,6 +62,17 @@ procedure MacNoFocusRing(C: TObject);
 begin
   if (C is TWinControl) and TWinControl(C).HandleAllocated then
     NSView(TWinControl(C).Handle).setFocusRingType(NSFocusRingTypeNone);
+end;
+
+procedure MacVisibleScrollBars(C: TObject);
+begin
+  if not (C is TWinControl) then Exit;
+  TWinControl(C).HandleNeeded;
+  if NSObject(TWinControl(C).Handle).isKindOfClass(NSScrollView) then
+  begin
+    NSScrollView(TWinControl(C).Handle).setScrollerStyle(NSScrollerStyleLegacy);
+    NSScrollView(TWinControl(C).Handle).setAutohidesScrollers(True);
+  end;
 end;
 
 procedure MacDarkenDarkPanels(AForm: TForm);
