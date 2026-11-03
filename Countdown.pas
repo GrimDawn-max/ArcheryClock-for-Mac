@@ -15367,6 +15367,9 @@ begin
       inputtimer.enabled:=false;
      {$ENDIF}
       if (RPIstringg='') and (lanstringg='') then USBconnect.Caption:=Cardnotfoundstring else USBconnect.Caption:=RPIstringg+lanstringg;
+      // Mac: "Card not found" is about the K8055 board, which the Mac can't use (its option is hidden); with
+      // nothing set up there is simply nothing to report
+      {$IFDEF Darwin}if (RPIstringg='') and (lanstringg='') then USBconnect.Caption:='';{$ENDIF}
       if Copy(USBconnect.Caption, Length(USBconnect.Caption)-1, 2)=', ' then // nothing follows the list: no dangling comma
         USBconnect.Caption:=Copy(USBconnect.Caption, 1, Length(USBconnect.Caption)-2);
     end
