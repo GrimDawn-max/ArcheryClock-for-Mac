@@ -29,7 +29,7 @@ if [ -n "$INTEL" ]; then
 fi
 # what the program reads beside itself: upstream's default settings, languages, sounds and pictures
 for f in settings accessp language scenarios backgroundimages sounds background1.png background2.png banner.png banner2.png; do
-  cp -R "$SRC/$f" "$M/"
+  if [ -e "$SRC/$f" ]; then cp -R "$SRC/$f" "$M/"; else mkdir -p "$M/$f"; fi # git keeps no empty folders
 done
 find "$APP" -name .DS_Store -delete
 cp "$SRC/COPYING.txt" "$R/"
@@ -98,6 +98,6 @@ Settings are kept in your Library/Application Support/Archery Clock folder.
 Archery Clock is free software under the GNU General Public License version 3 (COPYING.txt).
 More info and support: http://www.archeryclock.com
 EOF
-DMG="$OUT/$NAME-$VER-mac-$KIND.dmg"; rm -f "$DMG"
+DMG="$OUT/${NAME// /-}-$VER-$KIND.dmg" # dashes: file names with spaces break in links and mail; rm -f "$DMG"
 hdiutil create -quiet -volname "$NAME" -srcfolder "$STAGE" -fs HFS+ -format UDZO "$DMG"
 echo "$APP"; echo "$DMG"
