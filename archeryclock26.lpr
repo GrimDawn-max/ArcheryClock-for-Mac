@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
 
   Forms, Interfaces,
-  {$IFDEF Darwin} macerrorlog, macdisplaychooser, macappearance, {$ENDIF}
+  {$IFDEF Darwin} macerrorlog, macdisplaychooser, macappearance, machints, {$ENDIF}
   Countdown in 'Countdown.pas' {Countdownform}{$IFDEF Darwin}, macdevpage{$ENDIF};
 
 {$R *.res}

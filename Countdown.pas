@@ -1309,6 +1309,7 @@ type
     procedure resizewindowlabelsiconsmenu;
     {$IFDEF Darwin}procedure MacPlaceHints;
     procedure MacHintTop;
+    procedure MacFitNextCircle;
     function MacHintHeight: Integer;{$ENDIF}
     procedure resizewindowTL;
     procedure restorestate;
@@ -3362,6 +3363,87 @@ begin
   nexthelp.BringToFront; // in front of a picture's border, which can reach up behind it
   chooselabel.BringToFront;
 end;
+
+// Mac: the "Next:" circle under the traffic lights was larger than the lights (0.29 against 0.22) and set
+// further in, so it ran over the picture and past the bottom corner. Give it the lights' size and line, and fit
+// its letters inside it. The three circles touched; with the third the lights' size there is room below, so
+// the top one stays and the other two move down to space all three evenly down to the icon row.
+procedure TCountdownform.MacFitNextCircle;
+var
+  top1, top2, top3: Integer;
+
+  procedure FitSide(bg: TImage; nexttxt, archertxt, abcdtxt: TLabel; lightleft: Integer);
+  var
+    size, fh: Integer;
+  begin
+    size:=trunc(referencesize*0.22);
+    bg.Width:=size;
+    bg.Height:=size;
+    bg.Left:=lightleft;
+    bg.Top:=top3;
+    nexttxt.Font.Height:=trunc((referencesize*0.042)*mag*mag*0.22/0.29);
+    archertxt.Font.Height:=nexttxt.Font.Height;
+    nexttxt.Constraints.MinWidth:=size;
+    archertxt.Constraints.MinWidth:=size;
+    abcdtxt.Constraints.MinWidth:=size;
+    nexttxt.Width:=size;
+    archertxt.Width:=size;
+    abcdtxt.Width:=size;
+    nexttxt.Left:=lightleft;
+    archertxt.Left:=lightleft;
+    abcdtxt.Left:=lightleft;
+    nexttxt.Top:=bg.Top+size*14 div 100;
+    archertxt.Top:=nexttxt.Top;
+    // the letters: as large as fits in the circle's dark middle, centred on the middle
+    // upstream's sizes for one, two or more letters, scaled to the smaller circle (worked out afresh here, as
+    // this also runs on a resize, when the label still has the size from last time)
+    case Length(abcdtxt.Caption) of
+      0, 1: fh:=trunc((referencesize*0.25)*mag*0.22/0.29);
+      2: fh:=trunc((referencesize*0.22)*mag*0.22/0.29);
+    else
+      fh:=trunc((referencesize*0.15)*mag*0.22/0.29);
+    end;
+    Canvas.Font.Assign(abcdtxt.Font);
+    Canvas.Font.Height:=fh;
+    while (fh>8) and (Canvas.TextWidth(abcdtxt.Caption)>size*74 div 100) do
+    begin
+      fh:=fh*95 div 100;
+      Canvas.Font.Height:=fh;
+    end;
+    abcdtxt.Font.Height:=fh;
+    abcdtxt.Height:=fh;
+    abcdtxt.Top:=bg.Top+size*48 div 100-fh div 2;
+  end;
+
+begin
+  if usetraffic.Checked=false then exit; // without the lights it sits in the bottom corner, as upstream
+  top1:=trunc(referencesize*0.01)+topmarge;
+  top3:=Countdownform.Height-iconsize-trunc(referencesize*0.01)-trunc(referencesize*0.22);
+  if top3<trunc(referencesize*0.45)+topmarge then top3:=trunc(referencesize*0.45)+topmarge;
+  top2:=(top1+top3) div 2;
+  // the middle circle, with its end number ("P1") and the number under it, as upstream places them on it
+  TLorangelefton.Top:=top2;
+  TLorangeleftoff.Top:=top2;
+  TLorangerighton.Top:=top2;
+  TLorangerightoff.Top:=top2;
+  leftyelcircle.Top:=top2;
+  rightyelcircle.Top:=top2;
+  L_EndBG.Top:=top2;
+  R_EndBG.Top:=top2;
+  LENDtxt.Top:=top2+trunc(referencesize*0.03);
+  RENDtxt.Top:=top2+trunc(referencesize*0.03);
+  LTRNtxt.Top:=top2+trunc(referencesize*0.16);
+  RTRNtxt.Top:=top2+trunc(referencesize*0.16);
+  // the bottom circle: the green light, and the "Next:" circle in its place
+  TLgrnlefton.Top:=top3;
+  TLgrnleftoff.Top:=top3;
+  TLgrnrighton.Top:=top3;
+  TLgrnrightoff.Top:=top3;
+  leftgrncircle.Top:=top3;
+  rightgrncircle.Top:=top3;
+  FitSide(Rnextturnbg, Rnexttxt, Rarchertxt, RABCDtxt, trunc(leftmarge+(referencesize*1.01)));
+  FitSide(Lnextturnbg, Lnexttxt, Larchertxt, LABCDtxt, trunc(leftmarge-(referencesize*0.23)));
+end;
 {$ENDIF}
 
 procedure TCountdownform.viewstateone; //State one is depending on yes or no commercialview
@@ -4433,6 +4515,7 @@ begin
   RTRNtxt.Font.height:=trunc ((referencesize*0.05)*mag*mag);
   LTRNtxt.top:=(trunc (referencesize*0.39)+topmarge);
   LTRNtxt.Font.height:=trunc ((referencesize*0.05)*mag*mag);
+  {$IFDEF Darwin}MacFitNextCircle;{$ENDIF}
 
   //set correct help text to shooters
   If shooter1.caption='A'then shooter1.Hint:=ActAtxt;
@@ -6902,7 +6985,7 @@ begin
   RTRNtxt.Constraints.MinWidth:=trunc (referencesize*0.29);
   RTRNtxt.Width:=trunc (referencesize*0.29);
   RTRNtxt.height:=trunc (referencesize*0.2);
-
+  {$IFDEF Darwin}MacFitNextCircle;{$ENDIF}
 
 end;
 
@@ -14698,8 +14781,15 @@ procedure TCountdownform.windowsize;
 begin
 if countdownform.borderstyle=bsSizeable then
 begin
+  {$IFDEF Darwin}
+  // Mac: maximise while the window still has its title bar, then remove it, as at start-up (startupdelay).
+  // A window without a title bar can't be maximised on the Mac, so the other order left it small.
+  countdownform.WindowState:=wsMaximized;
+  countdownform.borderstyle:=bsnone;
+  {$ELSE}
   countdownform.borderstyle:=bsnone;
   countdownform.WindowState:=wsMaximized;
+  {$ENDIF}
 end
 else
 begin

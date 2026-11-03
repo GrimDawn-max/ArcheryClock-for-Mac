@@ -36148,7 +36148,7 @@ object Countdownform: TCountdownform
           object danger2: TImage
             Left = 136
             Height = 48
-            Hint = 'emergency stop'
+            Hint = 'Emergency stop'
             Top = 8
             Width = 50
             OnClick = dangerClick
@@ -52317,7 +52317,7 @@ object Countdownform: TCountdownform
   object danger: TImage
     Left = 416
     Height = 25
-    Hint = 'emergency stop'
+    Hint = 'Emergency stop'
     Top = 501
     Width = 25
     OnClick = dangerClick
