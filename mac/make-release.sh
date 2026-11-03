@@ -1,11 +1,12 @@
 #!/bin/bash
-# mac/make-release.sh APPNAME BUNDLEID: packages the clock built in this repository (lazbuild first)
-# as dist/APPNAME.app and dist/APPNAME-2.6.18-mac-arm64.dmg, for other people's Macs.
+# mac/make-release.sh APPNAME BUNDLEID [INTEL]: packages the clock built in this repository (lazbuild first)
+# as dist/APPNAME.app and a disk image, for other people's Macs. INTEL, an x86_64 build of the same source
+# (lazbuild --cpu=x86_64 with an Intel Free Pascal), makes it one app for Apple silicon and Intel Macs.
 # Signed ad hoc (no Apple developer certificate): people open it the first time with System Settings >
 # Privacy & Security > Open Anyway, as the READ ME in the disk image explains.
 # Nothing personal goes in: no debug symbols (they hold build paths), no settings but upstream's defaults.
 set -euo pipefail
-NAME=${1:?app name}; ID=${2:?bundle id}
+NAME=${1:?app name}; ID=${2:?bundle id}; INTEL=${3:-}
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 SRC="$ROOT"; OUT="$ROOT/dist"; VER=2.6.18
 APP="$OUT/$NAME.app"; M="$APP/Contents/MacOS"; R="$APP/Contents/Resources"
@@ -15,6 +16,17 @@ mkdir -p "$M" "$R"
 # the program, without its symbols
 cp "$SRC/archeryclock26" "$M/"
 strip -S -x "$M/archeryclock26"
+KIND=arm64
+if [ -n "$INTEL" ]; then
+  # FPC's aarch64 link records SDK 10.21, which keeps AppKit's classic control metrics the layouts were made
+  # for; the x86_64 link records the real SDK, and macOS 26 then draws larger controls. Same record for both.
+  X=$(mktemp -d)/x86_64
+  xcrun vtool -set-build-version macos 11.0 10.21 -replace -output "$X" "$INTEL"
+  strip -S -x "$X"
+  lipo -create "$M/archeryclock26" "$X" -output "$M/archeryclock26.u"
+  mv "$M/archeryclock26.u" "$M/archeryclock26"
+  KIND=universal
+fi
 # what the program reads beside itself: upstream's default settings, languages, sounds and pictures
 for f in settings accessp language scenarios backgroundimages sounds background1.png background2.png banner.png banner2.png; do
   cp -R "$SRC/$f" "$M/"
@@ -70,7 +82,7 @@ cp -R "$APP" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
 cp "$SRC/COPYING.txt" "$STAGE/COPYING.txt"
 cat > "$STAGE/READ ME.txt" <<EOF
-$NAME $VER for Mac (Apple silicon: M1 and later)
+$NAME $VER for Mac ($( [ $KIND = universal ] && echo "Apple silicon and Intel" || echo "Apple silicon: M1 and later"))
 
 Install: drag $NAME to Applications.
 
@@ -86,6 +98,6 @@ Settings are kept in your Library/Application Support/Archery Clock folder.
 Archery Clock is free software under the GNU General Public License version 3 (COPYING.txt).
 More info and support: http://www.archeryclock.com
 EOF
-DMG="$OUT/$NAME-$VER-mac-arm64.dmg"; rm -f "$DMG"
+DMG="$OUT/$NAME-$VER-mac-$KIND.dmg"; rm -f "$DMG"
 hdiutil create -quiet -volname "$NAME" -srcfolder "$STAGE" -fs HFS+ -format UDZO "$DMG"
 echo "$APP"; echo "$DMG"

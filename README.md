@@ -1,8 +1,8 @@
 # Archery Clock for Mac
 
 A native macOS build of [Archery Clock](http://www.archeryclock.com) 2.6.18 by Henk Jegers: the countdown
-timer used at archery matches. It runs natively on Apple silicon Macs (M1 and later), with no Wine, CrossOver or
-external monitor needed.
+timer used at archery matches. It runs natively on Apple silicon and Intel Macs (macOS 11 or later), with no Wine,
+CrossOver or external monitor needed.
 
 Archery Clock is free software under the GNU General Public License version 3 (`COPYING.txt`). This repository
 holds the full source of the Mac build: the author's 2.6.18 source, plus the Mac changes, made with
@@ -44,5 +44,9 @@ file or key falls back to English.
 lazbuild --ws=cocoa --cpu=aarch64 --os=darwin --opt=-k-ld_classic archeryclock26.lpi
 ```
 
-`-k-ld_classic`: Apple's current linker rejects FPC 3.2.2's Objective-C method lists. `mac/make-release.sh`
-packages a build as an app and disk image.
+`-k-ld_classic`: Apple's current linker rejects FPC 3.2.2's Objective-C method lists.
+
+For Intel, build the same source with the x86_64 compiler from the official Free Pascal 3.2.2 Mac installer
+(`--cpu=x86_64 --compiler=<ppcx64>`, with `-XR<macOS SDK>` and `-WM11.0` in its `fpc.cfg`).
+`mac/make-release.sh "Archery Clock" <bundle id> [<x86_64 build>]` packages the app and a disk image; given
+the Intel build too, it makes one universal app.
