@@ -1845,7 +1845,7 @@ var
 
 implementation
 
-{$IFDEF Darwin}uses mactidy, macserial, macdatadir, macpicture;
+{$IFDEF Darwin}uses maclang, mactidy, macserial, macdatadir, macpicture;
 
 var
   MacContentGraphic: TGraphic = nil; // the picture and background MacContentRow was worked out for
@@ -7148,7 +7148,7 @@ begin
     sndPlaySound(WavFilename, snd_Async or snd_NoDefault);
     {$ENDIF}
     {$IFDEF Darwin}
-    if not MacPlayWav(WavFilename) then ShowMessage('Unable to play WAV file');
+    if not MacPlayWav(WavFilename) then ShowMessage(MacText('WavFailed', 'Unable to play WAV file'));
     {$ENDIF}
     {$IFDEF Unix}{$IFNDEF Darwin}
     begin
@@ -10803,6 +10803,7 @@ begin
   if buffer = 'русский' then buffer:='Russian';
   if buffer = 'Česky' then buffer:='Cesky';
   if buffer = '中文' then buffer:='Chinese';
+  {$IFDEF Darwin}MacSetLanguage(buffer);{$ENDIF} // the Mac code's own words (maclang)
   if (buffer = 'English') or (buffer = 'Nederlands' ) or (buffer = 'Cesky' ) or (buffer = 'Chinese' ) or (buffer = 'Polski' ) or (buffer = 'Russian' ) or (buffer = 'Portugues' ) or (buffer = 'Svenska' )or (buffer = 'Dansk') or (buffer = 'Eesti') or (buffer = 'Deutsch')  or  (buffer = 'Francais') or (buffer = 'Espanol') or (buffer = 'Italiano') or (buffer = 'Magyar')or (buffer = 'Greek')or (buffer = 'Slovensky') then
   begin
     AssignFile(langTxtFile, Filespath+'language/'+buffer) ;
@@ -14826,7 +14827,7 @@ begin  //buzzeron
     sndPlaySound(WavFilename, snd_Async or snd_NoDefault);
     {$ENDIF}
     {$IFDEF Darwin}
-    if not MacPlayWav(WavFilename) then ShowMessage('Unable to play WAV file');
+    if not MacPlayWav(WavFilename) then ShowMessage(MacText('WavFailed', 'Unable to play WAV file'));
     {$ENDIF}
     {$IFDEF Unix}{$IFNDEF Darwin}
     begin
@@ -15389,7 +15390,7 @@ begin
     if ((h= -1) and (arduinoselect1.Checked=true)) then  USBconnect.Caption:=RPIstringg+lanstringg+Cardstring+' v3 '+Connectedstring;
     if ((h<>-1) and (arduinoselect1.Checked=true)) then  USBconnect.Caption:=RPIstringg+lanstringg+Cardstring+' v2.'+inttostr(h)+', v3 '+Connectedstring;
     {$IFDEF Darwin}
-    if PortsMissing<>'' then USBconnect.Caption:='Serial port not found:'+PortsMissing; // Mac: unplugged or wrong port
+    if PortsMissing<>'' then USBconnect.Caption:=MacText('SerialNotFound', 'Serial port not found:')+PortsMissing; // Mac: unplugged or wrong port
     {$ENDIF}
 
   end

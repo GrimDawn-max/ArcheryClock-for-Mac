@@ -19,7 +19,7 @@ procedure MacShutdownButtonState;
 implementation
 
 uses
-  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Forms, Spin, Graphics, Math, macappearance, Countdown;
+  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Forms, Spin, Graphics, Math, LazUTF8, macappearance, maclang, Countdown;
 
 var
   PagesScrollable: Boolean = False; // ScrollablePages has run
@@ -79,8 +79,9 @@ function Capitalised(const S: string): string;
 begin
   Result := S;
   if Copy(Result, 1, 5) = 'am/pm' then Exit; // written in lower case, as a clock shows it
-  if (Result <> '') and (Result[1] in ['a'..'z']) then
-    Result[1] := UpCase(Result[1]);
+  // the first letter, which may be more than one byte ("über", "écran")
+  if Result <> '' then
+    Result := UTF8UpperCase(UTF8Copy(Result, 1, 1)) + UTF8Copy(Result, 2, MaxInt);
 end;
 
 function TitleCase(const S: string): string;
@@ -605,8 +606,8 @@ begin
   // the "Save as startup setting." button sat at the very top, where the title now is: just below it
   F.save.Top := SettingsTitle.Top + SettingsTitle.Height + 2;
   // "005" and "5" are examples of how a seconds countdown is written; say so (Windows has no hint here either)
-  F.zerosec.Hint := 'Show leading zeros: 5 seconds shows as 005';
-  F.nonzerosec.Hint := 'No leading zeros: 5 seconds shows as 5';
+  F.zerosec.Hint := MacText('ZerosHint', 'Show leading zeros: 5 seconds shows as 005');
+  F.nonzerosec.Hint := MacText('NoZerosHint', 'No leading zeros: 5 seconds shows as 5');
   F.zerosec.ShowHint := True;
   F.nonzerosec.ShowHint := True;
   // the pages end where the icon column starts; on Windows they ran on underneath it
