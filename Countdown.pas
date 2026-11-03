@@ -1845,7 +1845,7 @@ var
 
 implementation
 
-{$IFDEF Darwin}uses mactidy, macserial, macdatadir, macpicture;
+{$IFDEF Darwin}uses mactidy, macserial, macdatadir, macpicture, macsettingswin;
 
 var
   MacContentGraphic: TGraphic = nil; // the picture and background MacContentRow was worked out for
@@ -3336,13 +3336,13 @@ end;
 function TCountdownform.MacPictureTop: Integer;
 begin
   Result:=copyright.Top+copyright.Height+2*MacHintHeight;
-  if MacTitleOnTop then Result:=Result+Abs(archeryclock.Font.Height)*85 div 100;
+  if MacTitleOnTop then Result:=Result+Abs(archeryclock.Font.Height)+MacHintHeight div 2;
 end;
 
 // Mac: how far the finals' choose-archer arrows and "Choose" stand above their upstream place, off the icon row
 function TCountdownform.MacFinalsLift: Integer;
 begin
-  Result:=trunc(referencesize*0.04);
+  Result:=trunc(referencesize*0.02);
 end;
 
 // Mac: the hint line's height, worked out from its font (its own Height can lag behind a font change)
@@ -3361,7 +3361,7 @@ var
 begin
   above:=copyright.Top+copyright.Height;
   if MacTitleOnTop and archeryclock.Visible and (archeryclock.Top<=above+2) then
-    above:=archeryclock.Top+Abs(archeryclock.Font.Height)*85 div 100; // the label's letters, not its leading
+    above:=archeryclock.Top+Abs(archeryclock.Font.Height); // below the label's descenders
   below:=0;
   if background1.Visible and (background1.Picture.Width>0) then
   begin
@@ -13568,6 +13568,7 @@ end;
 procedure TCountdownform.timingsettingsClick(Sender: TObject);
   //show timing menu or remove it when pressing the timing button
 begin
+  {$IFDEF Darwin}MacShowTiming; exit;{$ENDIF} // Mac redesign: the timing and sequence window
   manualfollowmenuremove:=false;
   if (timeseqpanel.visible=false)then
   begin
@@ -16201,6 +16202,7 @@ end;
 procedure TCountdownform.settingsClick(Sender: TObject);
 //show or hide the settings menu
 begin
+  {$IFDEF Darwin}MacShowSettings; exit;{$ENDIF} // Mac redesign: the settings window
   manualfollowmenuremove:=false;
   if savesettings.visible=true then
   begin

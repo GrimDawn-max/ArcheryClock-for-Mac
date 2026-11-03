@@ -13,6 +13,9 @@ unit mactidy;
 interface
 
 procedure MacTidyTimingPage;
+{ The timing and settings panels' titles, as the language file gives them. }
+function MacTimingTitle: string;
+function MacSettingsTitle: string;
 
 implementation
 
@@ -577,6 +580,22 @@ begin
 end;
 
 
+
+function MacTimingTitle: string;
+begin
+  if (TimingTitle <> nil) and (TimingTitle.Caption <> '') then
+    Result := TimingTitle.Caption
+  else
+    Result := Countdownform.timeseqpanel.Caption;
+end;
+
+function MacSettingsTitle: string;
+begin
+  if (SettingsTitle <> nil) and (SettingsTitle.Caption <> '') then
+    Result := SettingsTitle.Caption
+  else
+    Result := Countdownform.savesettings.Caption;
+end;
 
 procedure MacTidyTimingPage;
 var
