@@ -28,17 +28,17 @@ The clock screen (the same in both versions):
 
 Archery Clock Mac Modern: Timing and Sequence, then the Screen layout, Sound and Network pages of Settings:
 
-<img src="docs/screenshots/modern-timing.png" alt="Modern: Timing and Sequence, Indoor/Outdoor" height="420">
-<img src="docs/screenshots/modern-screen-layout.png" alt="Modern: Settings, Screen layout" height="420">
-<img src="docs/screenshots/modern-sound.png" alt="Modern: Settings, Sound" height="210">
-<img src="docs/screenshots/modern-network.png" alt="Modern: Settings, Network" height="230">
+<table>
+<tr><td width="50%" valign="top"><img src="docs/screenshots/modern-timing.png" alt="Modern: Timing and Sequence, Indoor/Outdoor" width="100%"></td><td width="50%" valign="top"><img src="docs/screenshots/modern-screen-layout.png" alt="Modern: Settings, Screen layout" width="100%"></td></tr>
+<tr><td width="50%" valign="top"><img src="docs/screenshots/modern-sound.png" alt="Modern: Settings, Sound" width="100%"></td><td width="50%" valign="top"><img src="docs/screenshots/modern-network.png" alt="Modern: Settings, Network" width="100%"></td></tr>
+</table>
 
 Archery Clock Mac Classic: the same, in the panel beside the clock as on Windows:
 
-<img src="docs/screenshots/classic-timing.png" alt="Classic: Timing and Sequence, Indoor/Outdoor" height="420">
-<img src="docs/screenshots/classic-screen-layout.png" alt="Classic: Settings, Screen layout" height="420">
-<img src="docs/screenshots/classic-sound.png" alt="Classic: Settings, Sound" height="140">
-<img src="docs/screenshots/classic-network.png" alt="Classic: Settings, Network" height="230">
+<table>
+<tr><td width="50%" valign="top"><img src="docs/screenshots/classic-timing.png" alt="Classic: Timing and Sequence, Indoor/Outdoor" width="100%"></td><td width="50%" valign="top"><img src="docs/screenshots/classic-screen-layout.png" alt="Classic: Settings, Screen layout" width="100%"></td></tr>
+<tr><td width="50%" valign="top"><img src="docs/screenshots/classic-sound.png" alt="Classic: Settings, Sound" width="100%"></td><td width="50%" valign="top"><img src="docs/screenshots/classic-network.png" alt="Classic: Settings, Network" width="100%"></td></tr>
+</table>
 
 ## Install
 
