@@ -43,6 +43,9 @@ type
   private
     Scroll: TScrollBox;
     Host: TPanel;
+    BottomBar: TPanel;
+    SaveButton: TButton;
+    procedure SaveClick(Sender: TObject);
     procedure WindowResize(Sender: TObject);
     procedure WindowHide(Sender: TObject);
     procedure LayOut;
@@ -229,9 +232,22 @@ var
 begin
   inherited CreateNew(Application);
   F := Countdownform;
-  SetUpWindow(Self, MacTimingTitle, PageMaxWidth + 20, TimingMinHeight + 30);
+  SetUpWindow(Self, MacTimingTitle, PageMaxWidth + 20, TimingMinHeight + 30 + 48); // 48: the save bar
   Constraints.MinWidth := 300;
   Constraints.MinHeight := 300;
+
+  // the timing system is part of the startup setting too, so this window saves as well as the settings window
+  BottomBar := TPanel.Create(Self);
+  BottomBar.Parent := Self;
+  BottomBar.Align := alBottom;
+  BottomBar.Height := 48;
+  BottomBar.BevelOuter := bvNone;
+  SaveButton := TButton.Create(Self);
+  SaveButton.Parent := BottomBar;
+  SaveButton.Font.Height := -14;
+  SaveButton.AutoSize := True;
+  SaveButton.OnClick := @SaveClick;
+
   Scroll := NewScroll(Self);
   Scroll.Color := F.timeseqpanel.Color;
 
@@ -270,9 +286,23 @@ begin
   MacTidyTimingPage;
 end;
 
+procedure TTimingWindow.SaveClick(Sender: TObject);
+begin
+  Countdownform.saveClick(Countdownform.save);
+end;
+
 procedure TTimingWindow.WindowResize(Sender: TObject);
 begin
+  SaveButton.Left := (BottomBar.ClientWidth - SaveButton.Width) div 2;
+  SaveButton.Top := (BottomBar.ClientHeight - SaveButton.Height) div 2;
   LayOut;
+end;
+
+{ The save button's caption, in the language chosen; a button needs no full stop ("Save as startup setting."). }
+function SaveCaption: string;
+begin
+  Result := Trim(Countdownform.save.Caption);
+  if (Result <> '') and (Result[Length(Result)] = '.') then SetLength(Result, Length(Result) - 1);
 end;
 
 procedure MacShowTiming;
@@ -280,6 +310,7 @@ begin
   if TimingWin = nil then TimingWin := TTimingWindow.CreateWindow;
   HidePanels;
   TimingWin.Caption := MacTimingTitle; // the language may have changed
+  TimingWin.SaveButton.Caption := SaveCaption;
   TimingWin.Show;
   Refresh(TimingWin);
   TimingWin.BringToFront;
@@ -449,16 +480,12 @@ end;
 procedure MacShowSettings;
 var
   F: TCountdownform;
-  Cap: string;
 begin
   F := Countdownform;
   if SettingsWin = nil then SettingsWin := TSettingsWindow.CreateWindow;
   HidePanels;
   SettingsWin.Caption := MacSettingsTitle;
-  // a button needs no full stop ("Save as startup setting.")
-  Cap := Trim(F.save.Caption);
-  if (Cap <> '') and (Cap[Length(Cap)] = '.') then SetLength(Cap, Length(Cap) - 1);
-  SettingsWin.SaveButton.Caption := Cap;
+  SettingsWin.SaveButton.Caption := SaveCaption;
   SettingsWin.FillSidebar;
   SettingsWin.Show;
   Refresh(SettingsWin);
