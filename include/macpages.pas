@@ -358,6 +358,21 @@ begin
   PlainInside(NetLinkBox); PlainInside(NetRemoteBox); PlainInside(NetShutdownBox);
 end;
 
+{ ---- Touch screen ---- }
+
+{ Upstream set this page in large type for touch screens; in a settings window it reads like the other pages. }
+procedure StyleTouchScreen;
+var
+  F: TCountdownform;
+begin
+  F := Countdownform;
+  F.Fbutonscreenbox.Font.Height := -14;
+  F.Fbutonscreenbox.SetBounds(Pad, Pad, 400, RowH);
+  F.magnification.Font.Height := -14;
+  F.magnification.Height := 26;
+  LabelledRow(F.MagText, F.magnification, Pad, Pad + RowH + 12, 190, 70);
+end;
+
 { ---- Language ---- }
 
 procedure StyleLanguage;
@@ -384,7 +399,8 @@ begin
   else if Page = F.tabscr then StyleScreenLayout
   else if Page = F.screencolor then StyleScreenColours
   else if Page = F.tabsound then StyleSound
-  else if Page = F.TabNetwork then StyleNetwork;
+  else if Page = F.TabNetwork then StyleNetwork
+  else if Page = F.Touchscreentab then StyleTouchScreen;
 end;
 
 end.
