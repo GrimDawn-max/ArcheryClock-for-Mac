@@ -40801,6 +40801,7 @@ object Countdownform: TCountdownform
             '  Henk Jegers (initial version, Dutch translation).'
             '  Yann Morère (Linux and Raspberry PI support, French '
             '                           translation).'
+            '  Paul Jones (macOS version).'
             '  Marco Magnanelli (Spanish translation).'
             '  Dennis Allerkamp (German translation).'
             '  Eduardo del Piano (Italian Translation)'
@@ -40820,7 +40821,6 @@ object Countdownform: TCountdownform
             '  Peter Holt (PCB design EU).'
             '  Dimitri Brosse (French translation).'
             '  Ziyang Chen (Chinese translation).'
-            '  MAC_PORT_CREDIT (macOS version).'
             ''
             'More info: http://www.archeryclock.com'
           )
