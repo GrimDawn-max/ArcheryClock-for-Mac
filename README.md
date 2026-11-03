@@ -36,8 +36,7 @@ Archery Clock Mac Modern: Timing and Sequence, then the Screen layout, Sound and
 Archery Clock Mac Classic: the same, in the panel beside the clock as on Windows:
 
 <table>
-<tr><td width="50%" valign="top"><img src="docs/screenshots/classic-timing.png" alt="Classic: Timing and Sequence, Indoor/Outdoor" width="100%"></td><td width="50%" valign="top"><img src="docs/screenshots/classic-screen-layout.png" alt="Classic: Settings, Screen layout" width="100%"></td></tr>
-<tr><td width="50%" valign="top"><img src="docs/screenshots/classic-sound.png" alt="Classic: Settings, Sound" width="100%"></td><td width="50%" valign="top"><img src="docs/screenshots/classic-network.png" alt="Classic: Settings, Network" width="100%"></td></tr>
+<tr><td width="50%" valign="top"><img src="docs/screenshots/classic-timing.png" alt="Classic: Timing and Sequence, Indoor/Outdoor" width="100%"></td><td width="50%" valign="top"><img src="docs/screenshots/classic-screen-layout.png" alt="Classic: Settings, Screen layout" width="100%"><br><img src="docs/screenshots/classic-sound.png" alt="Classic: Settings, Sound" width="100%"><br><img src="docs/screenshots/classic-network.png" alt="Classic: Settings, Network" width="100%"></td></tr>
 </table>
 
 ## Install

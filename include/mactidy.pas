@@ -27,6 +27,7 @@ var
 var
   TimingTitle: TLabel = nil;   // the timing panel's title (TidyShootingSystems)
   SettingsTitle: TLabel = nil; // the settings panel's title (TidySettingsPages)
+  ZerosPanel: TPanel = nil;    // holds "005" and "5" beside the minutes / seconds choice (TidySettingsPages)
 
 const
   TextHeight = -14;  // pixels; Windows used -9 and -11, which reads as tiny on a Mac
@@ -35,6 +36,8 @@ const
   RowGap = 5;        // between rows of the same group
   GroupGap = 12;     // between groups
   Margin = 8;
+  OptionH = 26;      // one option in a group of options
+  ZerosOffset = 28;  // where a group of options' first option starts, below the strip a group box keeps for a title
 
 function IsDarkish(Color: TColor): Boolean;
 var
@@ -582,10 +585,44 @@ begin
   end;
 end;
 
+{ A group of options, one per row: the group spreads its options over whatever height it has and squeezes them
+  together when that comes out short ("Sec. (120)" touching "Min. (2:00)"), so they are placed in fixed rows. }
+procedure RoomyOptions(G: TRadioGroup);
+var
+  I: Integer;
+begin
+  G.ChildSizing.Layout := cclNone;
+  G.ClientHeight := G.Items.Count * OptionH + 10;
+  for I := 0 to G.ControlCount - 1 do
+    G.Controls[I].SetBounds(8, 6 + I * OptionH, G.ClientWidth - 12, OptionH);
+end;
+
+{ A tick box or button reads as a label: no full stop at the end (Mac style); "..." stays. }
+function NoFullStop(const S: string): string;
+begin
+  Result := S;
+  if (Length(Result) > 1) and (Result[Length(Result)] = '.') and (Copy(Result, Length(Result) - 2, 3) <> '...') then
+    SetLength(Result, Length(Result) - 1);
+end;
+
+procedure NoFullStops(Root: TWinControl);
+var
+  I: Integer;
+  C: TControl;
+begin
+  for I := 0 to Root.ControlCount - 1 do
+  begin
+    C := Root.Controls[I];
+    if C is TCustomCheckBox then C.Caption := NoFullStop(C.Caption);
+    if C is TWinControl then NoFullStops(TWinControl(C));
+  end;
+end;
+
 procedure TidySettingsPages;
 var
   F: TCountdownform;
   AudioShown: Boolean;
+  I: Integer;
 begin
   F := Countdownform;
   if not PagesScrollable then
@@ -605,6 +642,10 @@ begin
   PanelTitle(F.savesettings, SettingsTitle, F.closeimage2);
   // the "Save as startup setting." button sat at the very top, where the title now is: just below it
   F.save.Top := SettingsTitle.Top + SettingsTitle.Height + 2;
+  F.save.Caption := NoFullStop(F.save.Caption);
+  // tab names start with a capital, as the page headings do ("screen layout" read as unfinished)
+  for I := 0 to F.SettingsTabs.PageCount - 1 do
+    F.SettingsTabs.Pages[I].Caption := Capitalised(Trim(F.SettingsTabs.Pages[I].Caption));
   // "005" and "5" are examples of how a seconds countdown is written; say so (Windows has no hint here either)
   F.zerosec.Hint := MacText('ZerosHint', 'Show leading zeros: 5 seconds shows as 005');
   F.nonzerosec.Hint := MacText('NoZerosHint', 'No leading zeros: 5 seconds shows as 5');
@@ -613,7 +654,38 @@ begin
   // the pages end where the icon column starts; on Windows they ran on underneath it
   F.SettingsTabs.Width := F.iconpanel.Left - F.SettingsTabs.Left - 4;
   F.am24.Top := F.timecheckbox.Top; // its 12/24 choice belongs beside "Time on screen", not "Show hints"
+  RoomyOptions(F.minsec);
+  RoomyOptions(F.am24);
+  RoomyOptions(F.am24_2);
+  // taller now: level with the top of "Actual time / date", so the layout keeps the two on one row
+  F.am24_2.Top := F.Actualtimecheckbox.Top;
+  // Minutes / seconds: a section title, not a question
+  F.newminsecbox.Caption := Trim(F.newminsecbox.Caption);
+  if (F.newminsecbox.Caption <> '') and (F.newminsecbox.Caption[Length(F.newminsecbox.Caption)] = '?') then
+    F.newminsecbox.Caption := Trim(Copy(F.newminsecbox.Caption, 1, Length(F.newminsecbox.Caption) - 1));
+  // "005" and "5" (upstream padded it with spaces to line up on Windows) in a column of their own beside the
+  // counting choice, so the general layout keeps them together, each level with a line of it (set again below)
+  F.zerosec.Caption := Trim(F.zerosec.Caption);
+  F.nonzerosec.Caption := Trim(F.nonzerosec.Caption);
+  if ZerosPanel = nil then
+  begin
+    ZerosPanel := TPanel.Create(F);
+    ZerosPanel.Parent := F.newminsecbox;
+    ZerosPanel.BevelOuter := bvNone;
+    ZerosPanel.ParentColor := True;
+    F.zerosec.Parent := ZerosPanel;
+    F.nonzerosec.Parent := ZerosPanel;
+  end;
+  F.minsec.SetBounds(F.minsec.Left, 4, 200, F.minsec.Height);
+  ZerosPanel.SetBounds(F.minsec.Left + F.minsec.Width + 24, F.minsec.Top, 120, F.minsec.Height);
+  F.zerosec.Top := 0;
+  F.nonzerosec.Top := OptionH;
   TidyOtherPanel(F.tabscr);
+  ZerosPanel.SetBounds(ZerosPanel.Left, F.minsec.Top, 120, F.minsec.Height);
+  F.zerosec.SetBounds(0, ZerosOffset, 100, OptionH);
+  F.nonzerosec.SetBounds(0, ZerosOffset + OptionH, 100, OptionH);
+  NoFullStops(F.SettingsTabs); // every settings page's tick boxes
+  F.showendnrlabel.Caption := NoFullStop(F.showendnrlabel.Caption);
   // the music settings (shown by Control audio) are rows of pictures and buttons that must keep their layout;
   // they are left out the same way whether Control audio was on at start-up or ticked later
   AudioShown := F.audiovolumebox.Visible;
