@@ -164,6 +164,7 @@ end;
 
 const
   ScenarioGap = 8;
+  ScenarioTop = 26; // the first row's titles sit above their boxes
 
 { The width a page is laid out at, for a scrolling area of this width. The scenario page may be wider: its
   boxes stand in columns, as many as fit. }
@@ -191,7 +192,8 @@ begin
   Box := F.ScenarioScrollBox;
   // the page control's width: the page itself only takes it on when it is next laid out
   Box.Width := Max(F.F1Group.Width + 2 * ScenarioGap, F.SettingsTabs.ClientWidth - Box.Left - 8);
-  Cols := Max(1, (Box.Width - 16 - ScenarioGap) div (F.F1Group.Width + ScenarioGap)); // 16: its scroll bar
+  // two across at most, so they read in pairs as in the clock's own order: F1 F2, F3 F4 ... shift-F11 shift-F12
+  Cols := EnsureRange((Box.Width - 16 - ScenarioGap) div (F.F1Group.Width + ScenarioGap), 1, 2); // 16: its scroll bar
   N := 0;
   for I := 1 to 24 do
   begin
@@ -201,7 +203,7 @@ begin
       G := TControl(F.FindComponent('F' + IntToStr(I - 12) + 'Group'));
     if (G = nil) or not G.Visible then Continue;
     G.SetBounds(ScenarioGap + (N mod Cols) * (G.Width + ScenarioGap),
-      ScenarioGap + (N div Cols) * (G.Height + ScenarioGap) - Box.VertScrollBar.Position, G.Width, G.Height);
+      ScenarioTop + (N div Cols) * (G.Height + ScenarioGap) - Box.VertScrollBar.Position, G.Width, G.Height);
     Inc(N);
   end;
 end;
