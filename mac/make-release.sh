@@ -87,7 +87,7 @@ $NAME $VER for Mac ($( [ $KIND = universal ] && echo "Apple silicon and Intel" |
 Install: drag $NAME to Applications.
 
 First time you open it: macOS says it can't check the app for malicious software, because it is not
-signed with a paid Apple developer certificate. Click Done (not Move to Bin), then open
+signed with a paid Apple developer certificate. Click Done (not Move to Bin or Move to Trash), then open
 System Settings > Privacy & Security, scroll down to "$NAME was blocked", click Open Anyway and
 confirm. After that it opens normally.
 
@@ -101,7 +101,7 @@ Problems: email the feedback address on http://www.archeryclock.com, say what yo
 happened, and attach this file if it exists (it lists the errors the clock reported; it is plain text):
   ~/Library/Logs/ArcheryClock.log
 
-Starting over: quit the clock and move the "Archery Clock" folder in Application Support to the Bin.
+Starting over: quit the clock and move the "Archery Clock" folder in Application Support to the Bin (Trash).
 The next time it opens it starts with the default settings (saved scenarios and the slide list go
 too, so keep a copy if you may want them back). To be asked again which display to use, hold Option
 while opening the clock.
