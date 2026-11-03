@@ -1310,6 +1310,9 @@ type
     {$IFDEF Darwin}procedure MacPlaceHints;
     procedure MacHintTop;
     procedure MacFitNextCircle;
+    function MacTitleOnTop: Boolean;
+    function MacPictureTop: Integer;
+    function MacFinalsLift: Integer;
     function MacHintHeight: Integer;{$ENDIF}
     procedure resizewindowTL;
     procedure restorestate;
@@ -3296,7 +3299,7 @@ begin
     bannerpicture.Visible:=false;
     if (archerysystem='fitafin')or ((archerysystem='follow') and (followsystem='2')) then
     begin
-      archeryclock.top:=0
+      archeryclock.top:={$IFDEF Darwin}copyright.Top+copyright.Height{$ELSE}0{$ENDIF} // Mac: under the copyright line, not on it
     end
     else
     begin
@@ -3321,6 +3324,27 @@ begin
   MacHintTop;
 end;
 
+// Mac: in the finals layouts the red "Free / Archery / CountDown / Timer" label sits at the top, under the
+// copyright line, above the hint line
+function TCountdownform.MacTitleOnTop: Boolean;
+begin
+  Result:=(archerysystem='fitafin') or ((archerysystem='follow') and (followsystem='2'));
+end;
+
+// Mac: where a picture may start: below the copyright line, the red label when it is at the top, and the hint
+// line with room above and below it
+function TCountdownform.MacPictureTop: Integer;
+begin
+  Result:=copyright.Top+copyright.Height+2*MacHintHeight;
+  if MacTitleOnTop then Result:=Result+Abs(archeryclock.Font.Height)*85 div 100;
+end;
+
+// Mac: how far the finals' choose-archer arrows and "Choose" stand above their upstream place, off the icon row
+function TCountdownform.MacFinalsLift: Integer;
+begin
+  Result:=trunc(referencesize*0.04);
+end;
+
 // Mac: the hint line's height, worked out from its font (its own Height can lag behind a font change)
 function TCountdownform.MacHintHeight: Integer;
 begin
@@ -3336,6 +3360,8 @@ var
   above, below, drawnheight, t: Integer;
 begin
   above:=copyright.Top+copyright.Height;
+  if MacTitleOnTop and archeryclock.Visible and (archeryclock.Top<=above+2) then
+    above:=archeryclock.Top+Abs(archeryclock.Font.Height)*85 div 100; // the label's letters, not its leading
   below:=0;
   if background1.Visible and (background1.Picture.Width>0) then
   begin
@@ -3580,6 +3606,17 @@ begin
       finalchoose.top:=Countdownform.Height-iconsize-iconsize-(finalchoose.Height); //-(serienr.Height div 2);
       leftstart.top:=Countdownform.Height-iconsize-leftstart.Height;
       rightstart.top:=Countdownform.Height-iconsize-rightstart.Height;
+      {$IFDEF Darwin}
+      // Mac: the arrows, "Choose" and the markers under them sat right on the icon row: lift them clear of it
+      greenleft.top:=greenleft.top-MacFinalsLift;
+      greyleft.top:=greyleft.top-MacFinalsLift;
+      greenright.top:=greenright.top-MacFinalsLift;
+      greyright.top:=greyright.top-MacFinalsLift;
+      serienr.Top:=serienr.Top-MacFinalsLift;
+      finalchoose.top:=finalchoose.top-MacFinalsLift;
+      leftstart.top:=leftstart.top-MacFinalsLift;
+      rightstart.top:=rightstart.top-MacFinalsLift;
+      {$ENDIF}
     end;
     backgroundtimer.Enabled:=true;
   end
@@ -5655,6 +5692,17 @@ begin
   finalchoose.height:=trunc ((referencesize*0.04)*mag);
   finalchoose.left:=trunc (leftmarge+((referencesize*0.45)));
   finalchoose.Font.Height:=trunc ((referencesize*0.03)*mag);
+  {$IFDEF Darwin}
+  // Mac: the box was a fixed width and the Mac's wider lettering clipped "Choose" at both ends: fit the word,
+  // with room either side, centred where the box was
+  Canvas.Font.Assign(finalchoose.Font);
+  if Canvas.TextWidth(finalchoose.Caption)+finalchoose.Font.Height>finalchoose.Width then
+  begin
+    finalchoose.Left:=finalchoose.Left+finalchoose.Width div 2;
+    finalchoose.Width:=Canvas.TextWidth(finalchoose.Caption)+finalchoose.Font.Height;
+    finalchoose.Left:=finalchoose.Left-finalchoose.Width div 2;
+  end;
+  {$ENDIF}
   rightstart.Width:=trunc ((referencesize*0.10)*mag);
   rightstart.constraints.minwidth:=trunc ((referencesize*0.10));
   rightstart.height:=trunc ((referencesize*0.04)*mag);
@@ -6217,6 +6265,25 @@ begin
     iconsize:= trunc (Countdownform.Width/38 *(magnification.value+7)/10) ;
   end;
  // if iconsize > 25 then iconsize:=25*magnification.value div 10;    //But size of the Icons does not need to be bigger than 25.
+  {$IFDEF Darwin}
+  // Mac: in Alternating Finals the traffic lights stand on both sides, but the sizes above allow for one side
+  // (aspect 1.65), so on a 16:10 or 16:9 screen the outer half of each set of lights was off the screen. With
+  // a set each side the clock needs 1.46 times its reference size across (0.23 each side); size it to that.
+  if (archerysystem='fitafin') and (usetraffic.checked=true) then
+  begin
+    if screenwidth > Countdownform.height*1.33*1.46 then
+    begin
+      referencesize:=trunc(Countdownform.height*1.33);
+      topmarge:=0;
+    end
+    else
+    begin
+      referencesize:=trunc(screenwidth/1.46);
+      topmarge:=(trunc(Countdownform.height*1.33)-referencesize) div 2;
+    end;
+    leftmarge:=(screenwidth-referencesize) div 2;
+  end;
+  {$ENDIF}
   //Addapt the size of the copyright header to the references size
   copyright.Font.Height:= trunc ((referencesize*0.02)*mag*mag);
   if Fbutonscreenbox.Checked=false then copyright.top:=0 else copyright.top:=iconsize ;
@@ -6265,11 +6332,14 @@ begin
   end;
   {$IFDEF Darwin}
   // Mac: start the picture below the hint line, with room above and below it, so the hint never sits on it
-  if background1.Top<copyright.Top+copyright.Height+2*MacHintHeight then
+  if background1.Top<MacPictureTop then
   begin
-    background1.Height:=background1.Height-(copyright.Top+copyright.Height+2*MacHintHeight-background1.Top);
-    background1.Top:=copyright.Top+copyright.Height+2*MacHintHeight;
+    background1.Height:=background1.Height-(MacPictureTop-background1.Top);
+    background1.Top:=MacPictureTop;
   end;
+  // in the finals layouts the choose-archer arrows stand along the bottom: end the picture above them
+  if MacTitleOnTop and (background1.Top+background1.Height>Countdownform.Height-iconsize-trunc(referencesize*0.12)-MacFinalsLift) then
+    background1.Height:=Countdownform.Height-iconsize-trunc(referencesize*0.12)-MacFinalsLift-background1.Top;
   {$ENDIF}
 
   if (Length(emergencytext.Caption)>3) then emergencytext.font.height:=trunc ((referencesize*2.0)*mag*mag/(Length(emergencytext.Caption))) else emergencytext.font.height:=trunc ((referencesize*2.0)*mag*mag/4) ;
@@ -6475,6 +6545,20 @@ begin
   greyright.Width:=trunc (referencesize*0.40);
   greyright.height:=trunc (referencesize*0.14);
   greyright.left:=trunc (leftmarge+((referencesize*0.60)));
+  {$IFDEF Darwin}
+  // Mac: the choose-archer arrows at three quarters of their size, so they don't cover the picture above them;
+  // the outer ends stay where they were
+  greenleft.Width:=trunc (referencesize*0.30);
+  greenleft.height:=trunc (referencesize*0.105);
+  greyleft.Width:=greenleft.Width;
+  greyleft.height:=greenleft.height;
+  greenright.Width:=greenleft.Width;
+  greenright.height:=greenleft.height;
+  greenright.left:=trunc (leftmarge+((referencesize*0.70)));
+  greyright.Width:=greenleft.Width;
+  greyright.height:=greenleft.height;
+  greyright.left:=greenright.left;
+  {$ENDIF}
   serienr.Left:=(trunc (referencesize*0.37)+leftmarge);
   serienr.Font.height:=trunc ((referencesize*0.2)*mag);
   serienr.Width:=trunc ((referencesize*0.25)*mag);

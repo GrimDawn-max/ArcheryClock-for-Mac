@@ -19,6 +19,10 @@ implementation
 uses
   SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Forms, Spin, Graphics, Math, macappearance, Countdown;
 
+var
+  TimingTitle: TLabel = nil;   // the timing panel's title (TidyShootingSystems)
+  SettingsTitle: TLabel = nil; // the settings panel's title (TidySettingsPages)
+
 const
   TextHeight = -14;  // pixels; Windows used -9 and -11, which reads as tiny on a Mac
   SpinW = 64;        // number fields: wide and tall enough for three digits at that size
@@ -69,6 +73,7 @@ end;
 function Capitalised(const S: string): string;
 begin
   Result := S;
+  if Copy(Result, 1, 5) = 'am/pm' then Exit; // written in lower case, as a clock shows it
   if (Result <> '') and (Result[1] in ['a'..'z']) then
     Result[1] := UpCase(Result[1]);
 end;
@@ -338,6 +343,29 @@ begin
   Red.Font.Color := clWhite;
 end;
 
+{ A menu panel's title. A group box's caption is drawn faint and see-through on the Mac, over whatever the clock
+  shows behind it, so it moves into a bold label on the panel's own ground, level with the close cross. The
+  caption is taken each time, as the language file sets it. }
+procedure PanelTitle(Box: TGroupBox; var Title: TLabel; Cross: TControl);
+begin
+  if Title = nil then
+  begin
+    Title := TLabel.Create(Box.Owner);
+    Title.Parent := Box;
+  end;
+  if Box.Caption <> '' then
+  begin
+    Title.Caption := Box.Caption;
+    Box.Caption := '';
+  end;
+  Title.Font.Height := TextHeight - 3;
+  Title.Font.Style := [fsBold];
+  Title.Font.Color := clBlack;
+  Title.AutoSize := True;
+  Title.Left := Margin;
+  Title.Top := Cross.Top + (Cross.Height - Title.Height) div 2;
+end;
+
 { The top of the timing panel: the close cross alone in the top right corner, then the five shooting systems
   as a list, one under the other, each picture with its button and caption beside it. Returns the first free
   line below them. }
@@ -360,6 +388,7 @@ begin
   F.FITAFINlabel.Visible := False;
 
   F.closeimage1.SetBounds(F.timeseqpanel.ClientWidth - 29 - 4, 2, 29, 29);
+  PanelTitle(F.timeseqpanel, TimingTitle, F.closeimage1);
   Y := Bottom(F.closeimage1) + 4;
   for I := 0 to 4 do
   begin
@@ -518,6 +547,15 @@ begin
   F.AccesspointGroupBox.Visible := False; // Raspberry Pi access point
   F.RPIinputbox.Visible := False;         // Raspberry Pi GPIO inputs
   F.K8055select.Visible := False;         // Velleman K8055 relay board: Windows-only driver
+  F.MP3_2VLCradiobutton.Visible := False; // a greyed-out "....." placeholder under VLC: no second player exists
+  PanelTitle(F.savesettings, SettingsTitle, F.closeimage2);
+  // the "Save as startup setting." button sat at the very top, where the title now is: just below it
+  F.save.Top := SettingsTitle.Top + SettingsTitle.Height + 2;
+  // "005" and "5" are examples of how a seconds countdown is written; say so (Windows has no hint here either)
+  F.zerosec.Hint := 'Show leading zeros: 5 seconds shows as 005';
+  F.nonzerosec.Hint := 'No leading zeros: 5 seconds shows as 5';
+  F.zerosec.ShowHint := True;
+  F.nonzerosec.ShowHint := True;
   // the pages end where the icon column starts; on Windows they ran on underneath it
   F.SettingsTabs.Width := F.iconpanel.Left - F.SettingsTabs.Left - 4;
   F.am24.Top := F.timecheckbox.Top; // its 12/24 choice belongs beside "Time on screen", not "Show hints"
@@ -545,6 +583,8 @@ var
   F: TCountdownform;
 begin
   F := Countdownform;
+  // Alternating Finals: the individual round's "Timing" box title was bold, the team rounds' plain; plain for all
+  F.groupfinarrow.Font.Style := [];
   // Follow: "At start up" introduces the Left Side / Right Side buttons, so it goes above them, at the left
   F.atstartuplabel.Alignment := taLeftJustify;
   F.atstartuplabel.Top := F.leftsideclientbutton.Top - 20;
