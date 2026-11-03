@@ -26,6 +26,11 @@ Download a disk image from Releases and drag the app to Applications. It is not 
 Apple developer certificate, so the first time: open it, click Done, then System Settings > Privacy &
 Security > Open Anyway.
 
+**Choosing a display:** with more than one display connected (a projector or TV for the archers, say), the
+clock asks at start which one to show the clock on. Tick "Remember my choice" and it opens there without asking
+whenever that display is connected; if it isn't, the clock asks again. Hold Option while opening the clock to be
+asked again. With a single display there is no question: the clock opens on it.
+
 Support: the feedback address on [archeryclock.com](http://www.archeryclock.com); see below for what to send.
 
 ## Settings, problems and starting over
