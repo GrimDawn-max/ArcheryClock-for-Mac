@@ -177,6 +177,10 @@ begin
     if Selected < 0 then
       Selected := 0;
 
+    // development aid (see macsettingswin.MacOpenSettingsFromEnv): no question, the preselected display
+    if GetEnvironmentVariable('AC_OPEN_SETTINGS') <> '' then
+      Exit(Selected);
+
     Result := AskForDisplay(Displays, Selected, Remember);
     if Result >= 0 then
       if Remember then

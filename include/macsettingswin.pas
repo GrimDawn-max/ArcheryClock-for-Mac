@@ -20,12 +20,15 @@ interface
 procedure MacShowTiming;
 { Opens the settings window at the page last shown. }
 procedure MacShowSettings;
+{ Development aid: started with AC_OPEN_SETTINGS set (a settings page's name, or "timing"), the app opens that
+  window at start-up, so the layout can be checked without clicking. Does nothing otherwise. }
+procedure MacOpenSettingsFromEnv;
 
 implementation
 
 uses
   Math, Classes, SysUtils, Types, IniFiles, Controls, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, CocoaAll,
-  Countdown, mactidy, macappearance;
+  Countdown, mactidy, macappearance, macpages;
 
 const
   { A page is laid out at the window's width, but not wider than a comfortable column, nor narrower than the
@@ -71,6 +74,8 @@ type
 var
   TimingWin: TTimingWindow = nil;
   SettingsWin: TSettingsWindow = nil;
+
+procedure StyleShownPage; forward;
 
 { A menu window: floats in front of the full-screen clock, opens centred and large enough for its contents. }
 procedure SetUpWindow(W: TForm; const Title: string; AWidth, AHeight: Integer);
@@ -292,6 +297,7 @@ begin
   Constraints.MinWidth := 420;
   Constraints.MinHeight := 300;
   MacSettingsWindowed := True;
+  MacAfterSettingsTidy := @StyleShownPage;
   Pages := TList.Create;
 
   Sidebar := TListBox.Create(Self);
@@ -357,7 +363,7 @@ begin
   for I := 0 to F.SettingsTabs.PageCount - 1 do
     if F.SettingsTabs.Pages[I].TabVisible then
     begin
-      Sidebar.Items.Add(Trim(F.SettingsTabs.Pages[I].Caption));
+      Sidebar.Items.Add(MacCapitalised(Trim(F.SettingsTabs.Pages[I].Caption)));
       Pages.Add(F.SettingsTabs.Pages[I]);
     end;
 end;
@@ -394,15 +400,19 @@ begin
   Lists[1] := F.BGScrollBox;
   Lists[2] := F.SCRcolScrollBox;
   Tabs := F.SettingsTabs;
+  Tabs.Constraints.MaxHeight := 0;
   Tabs.SetBounds(0, 0, PageWidth(Scroll), Max(Tabs.Height, Scroll.ClientHeight));
-  MacTidySettings;
+  MacTidySettings; // which styles the page shown too (StyleShownPage)
   Page := Tabs.ActivePage;
   Need := 0;
   if Page <> nil then
     for I := 0 to Page.ControlCount - 1 do
       if Page.Controls[I].Visible and not SelfScrolling(Page.Controls[I]) then
         Need := Max(Need, Page.Controls[I].Top + Page.Controls[I].Height);
-  Tabs.Height := Max(Scroll.ClientHeight, Need + 24 + (Tabs.Height - Tabs.ClientHeight));
+  // (with its tabs hidden the page control adds only a thin border round the page)
+  Tabs.Height := Max(Scroll.ClientHeight, Need + 24);
+  // the clock's own resize code sets this height from the clock window's: keep it to what the page needs
+  Tabs.Constraints.MaxHeight := Tabs.Height;
   for I := 0 to High(Lists) do
     if Lists[I].Parent = Page then
       Lists[I].Height := Max(120, Tabs.ClientHeight - Lists[I].Top - 12);
@@ -450,6 +460,33 @@ begin
   Refresh(SettingsWin);
   SettingsWin.ShowPage(SettingsWin.Pages.IndexOf(F.SettingsTabs.ActivePage));
   SettingsWin.BringToFront;
+end;
+
+{ The page shown laid out the Mac way; run after every general layout of the pages (mactidy). }
+procedure StyleShownPage;
+begin
+  if (SettingsWin <> nil) and SettingsWin.Visible then
+    MacStylePage(Countdownform.SettingsTabs.ActivePage);
+end;
+
+procedure MacOpenSettingsFromEnv;
+var
+  Want: string;
+  I: Integer;
+  F: TCountdownform;
+begin
+  Want := GetEnvironmentVariable('AC_OPEN_SETTINGS');
+  if Want = '' then Exit;
+  F := Countdownform;
+  if SameText(Want, 'timing') then
+  begin
+    MacShowTiming;
+    Exit;
+  end;
+  for I := 0 to F.SettingsTabs.PageCount - 1 do
+    if SameText(F.SettingsTabs.Pages[I].Name, Want) then
+      F.SettingsTabs.ActivePage := F.SettingsTabs.Pages[I];
+  MacShowSettings;
 end;
 
 end.

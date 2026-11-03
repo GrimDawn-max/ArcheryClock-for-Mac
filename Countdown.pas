@@ -13405,6 +13405,7 @@ begin
       AlphaBlend := False;
     end;
   end;
+  MacOpenSettingsFromEnv; // development aid, see macsettingswin
   {$ELSE}
   initialize;
   {$ENDIF}

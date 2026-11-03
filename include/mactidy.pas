@@ -21,6 +21,10 @@ function MacTimingTitle: string;
 function MacSettingsTitle: string;
 { The settings pages laid out again (after their width changes). }
 procedure MacTidySettings;
+{ One box's contents laid out again for its width: text sizes, rows, and the box's height fitted to them. }
+procedure MacReflow(Box: TWinControl);
+{ S with a capital first letter. }
+function MacCapitalised(const S: string): string;
 
 var
   { Set by the redesign's settings window: the pages are sized by that window, not beside the icon column. }
@@ -28,6 +32,9 @@ var
   { Set by the redesign's timing window: the panel the timing controls now sit on, measured instead of the
     hidden timing panel (which, without a native view, reports its old size from the form file). }
   MacTimingHost: TWinControl = nil;
+  { Set by the redesign: run after every layout of the settings pages, to lay out the page shown its own way
+    (the general layout runs again on many events and would otherwise undo it). }
+  MacAfterSettingsTidy: procedure = nil;
 
 implementation
 
@@ -598,6 +605,7 @@ begin
   CapitaliseAll(F.tabscen);
   CapitaliseAll(F.screencolor);
   CapitaliseAll(F.tablang);
+  if Assigned(MacAfterSettingsTidy) then MacAfterSettingsTidy;
 end;
 
 
@@ -613,6 +621,16 @@ end;
 procedure MacTidySettings;
 begin
   TidySettingsPages;
+end;
+
+procedure MacReflow(Box: TWinControl);
+begin
+  TidyOtherPanel(Box);
+end;
+
+function MacCapitalised(const S: string): string;
+begin
+  Result := Capitalised(S);
 end;
 
 function MacSettingsTitle: string;
