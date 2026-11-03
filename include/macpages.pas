@@ -165,6 +165,45 @@ begin
   PlainInside(F.BGGroupBox); PlainInside(GeneralBox);
 end;
 
+{ ---- Screen colours ---- }
+
+{ The eight colour schemes as a grid of pictures, each with its button beside it, as many across as fit; then
+  "Adjust colors" and the colour boxes it shows. }
+procedure StyleScreenColours;
+const
+  CellW = 200;
+  CellH = 92;
+var
+  F: TCountdownform;
+  Box: TScrollBox;
+  I, Cols, X, Y: Integer;
+  Pic, Btn: TControl;
+begin
+  F := Countdownform;
+  Box := F.SCRcolScrollBox;
+  Box.BorderStyle := bsNone;
+  Box.VertScrollBar.Position := 0; // laid out from its top
+  Box.Width := Max(2 * CellW + Pad, F.screencolor.ClientWidth - Box.Left);
+  Cols := EnsureRange((Box.Width - Pad - 16) div CellW, 2, 4);
+  for I := 1 to 8 do
+  begin
+    Pic := TControl(F.FindComponent('Image' + IntToStr(I)));
+    Btn := TControl(F.FindComponent('colorscheme' + IntToStr(I)));
+    if (Pic = nil) or (Btn = nil) then Continue;
+    X := Pad + ((I - 1) mod Cols) * CellW;
+    Y := Pad div 2 + ((I - 1) div Cols) * CellH;
+    Btn.SetBounds(X, Y + (Pic.Height - Btn.Height) div 2, Btn.Width, Btn.Height);
+    Pic.SetBounds(X + 28, Y, Pic.Width, Pic.Height);
+  end;
+  Y := Pad div 2 + ((8 + Cols - 1) div Cols) * CellH;
+  F.colorscheme9.Font.Height := -14;
+  F.colorscheme9.AutoSize := True;
+  F.colorscheme9.SetBounds(Pad, Y, F.colorscheme9.Width, F.colorscheme9.Height);
+  F.manualcolorpanel.Top := Y + F.colorscheme9.Height + 8;
+  F.manualcolorpanel.Left := Pad div 2;
+  F.Bevel1.Visible := False; // a divider far below everything, which only lengthened the list
+end;
+
 { ---- Language ---- }
 
 procedure StyleLanguage;
@@ -188,7 +227,8 @@ begin
   if Page = nil then Exit;
   NoFullStops(Page);
   if Page = F.tablang then StyleLanguage
-  else if Page = F.tabscr then StyleScreenLayout;
+  else if Page = F.tabscr then StyleScreenLayout
+  else if Page = F.screencolor then StyleScreenColours;
 end;
 
 end.

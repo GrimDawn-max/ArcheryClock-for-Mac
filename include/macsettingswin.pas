@@ -375,6 +375,11 @@ begin
   Sidebar.ItemIndex := Index;
   Countdownform.SettingsTabs.ActivePage := TTabSheet(Pages[Index]);
   LayOutPage;
+  // a page opens at its top (its own scrolling list included)
+  Countdownform.ScenarioScrollBox.VertScrollBar.Position := 0;
+  Countdownform.BGScrollBox.VertScrollBar.Position := 0;
+  Countdownform.SCRcolScrollBox.VertScrollBar.Position := 0;
+  Scroll.VertScrollBar.Position := 0;
 end;
 
 { The page at the window's width, laid out again for it, and as tall as what it shows: taller than the window,
