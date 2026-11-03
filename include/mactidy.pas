@@ -634,6 +634,19 @@ begin
   CapitaliseAll(F.controltab);
   CapitaliseAll(F.tabscen);
   CapitaliseAll(F.screencolor);
+  // the AB and CD colour lists start at the left edge like the lists above them (upstream indented them)
+  F.ABGroupBox.Left := F.OrColGroupBox.Left;
+  F.CDGroupBox.Left := F.ABGroupBox.Left + F.ABGroupBox.Width + 16;
+  // the touch screen page was set in large type for fingers; in the settings panel it reads like the other pages
+  F.Fbutonscreenbox.Font.Height := TextHeight;
+  F.Fbutonscreenbox.SetBounds(Margin, Margin, F.Fbutonscreenbox.Width, 24);
+  F.MagText.Font.Height := TextHeight;
+  F.MagText.AutoSize := True;
+  F.magnification.Font.Height := TextHeight;
+  F.magnification.SetBounds(F.MagText.Left, F.Fbutonscreenbox.Top + 24 + 12, 70, SpinH);
+  F.MagText.Left := Margin;
+  F.magnification.Left := F.MagText.Left + Max(F.MagText.Width, 120) + 12;
+  F.MagText.Top := F.magnification.Top + (SpinH - F.MagText.Height) div 2;
   CapitaliseAll(F.tablang);
 end;
 
