@@ -6610,7 +6610,9 @@ begin
   closeimage2.BringToFront;
   {$ENDIF}
 
+  {$IFNDEF Darwin} // on a Mac the button sits on the network page (mactidy)
   ShutdownremoteButton.Top:=savesettings.Height-55;
+  {$ENDIF}
   timeseqpanel.Height:=(trunc(Countdownform.Height-iconsize-iconsize));
   blinkredgroupbox.Top:=timeseqpanel.Height-77;
 
@@ -9195,6 +9197,7 @@ end;
 procedure TCountdownform.LANselectChange(Sender: TObject);
 begin
   connectports;
+  {$IFDEF Darwin}MacShutdownButtonState;{$ENDIF}
 end;
 
 procedure TCountdownform.largeimagecheckboxChange(Sender: TObject);
@@ -18966,6 +18969,7 @@ end;
 procedure TCountdownform.initsystemtype;   //change systemtype (Fita, fitafin,etc
 begin
    NETWORK1.Disconnect;
+  {$IFDEF Darwin}MacShutdownButtonState;{$ENDIF} // a following clock has no clients to shut down
 
   serienumber:=1;
   turnnumber:=1;

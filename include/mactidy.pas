@@ -13,6 +13,8 @@ unit mactidy;
 interface
 
 procedure MacTidyTimingPage;
+{ The shut-down button usable only when this clock leads others over the network. }
+procedure MacShutdownButtonState;
 
 implementation
 
@@ -617,6 +619,14 @@ begin
   F.audiovolumebox.Visible := False;
   TidyOtherPanel(F.tabsound);
   F.audiovolumebox.Visible := AudioShown;
+  // upstream kept "shut down the client systems" at the bottom of the settings panel, far from the save button at
+  // its top; it only reaches the clocks that follow this one over the network, so it goes on the network page,
+  // under the box that lets this clock be shut down
+  F.ShutdownremoteButton.Parent := F.RemshutdownCheckBox.Parent;
+  F.ShutdownremoteButton.Left := F.RemshutdownCheckBox.Left;
+  F.ShutdownremoteButton.Top := F.RemshutdownCheckBox.Top + F.RemshutdownCheckBox.Height + 4;
+  F.ShutdownremoteButton.AutoSize := True;
+  MacShutdownButtonState;
   TidyOtherPanel(F.TabNetwork);
   TidyOtherPanel(F.tabprecnt);
   TidyOtherPanel(F.tabEmergency);
@@ -628,6 +638,15 @@ begin
 end;
 
 
+
+{ The shut-down signal goes out only in the network broadcast of a clock that leads. }
+procedure MacShutdownButtonState;
+var
+  F: TCountdownform;
+begin
+  F := Countdownform;
+  F.ShutdownremoteButton.Enabled := F.LANselect.Checked and (archerysystem <> 'follow');
+end;
 
 procedure MacTidyTimingPage;
 var
