@@ -9,3 +9,6 @@ archeryclock26
 link*.res
 linkfiles*.res
 ppas.sh
+# Raspberry Pi hotspot set-up (Wi-Fi name and password): never in the repo
+hostapd.conf
+dhcpcd.conf*
