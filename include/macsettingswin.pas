@@ -379,6 +379,7 @@ begin
   Countdownform.ScenarioScrollBox.VertScrollBar.Position := 0;
   Countdownform.BGScrollBox.VertScrollBar.Position := 0;
   Countdownform.SCRcolScrollBox.VertScrollBar.Position := 0;
+  Countdownform.soundScrollBox.VertScrollBar.Position := 0;
   Scroll.VertScrollBar.Position := 0;
 end;
 
@@ -390,11 +391,11 @@ var
   Tabs: TPageControl;
   Page: TTabSheet;
   I, Need: Integer;
-  Lists: array[0..2] of TControl;
+  Lists: array[0..3] of TControl;
 
   function SelfScrolling(C: TControl): Boolean;
   begin
-    Result := (C = Lists[0]) or (C = Lists[1]) or (C = Lists[2]);
+    Result := (C = Lists[0]) or (C = Lists[1]) or (C = Lists[2]) or (C = Lists[3]);
   end;
 
 begin
@@ -404,6 +405,7 @@ begin
   Lists[0] := F.ScenarioScrollBox;
   Lists[1] := F.BGScrollBox;
   Lists[2] := F.SCRcolScrollBox;
+  Lists[3] := F.soundScrollBox;
   Tabs := F.SettingsTabs;
   Tabs.Constraints.MaxHeight := 0;
   Tabs.SetBounds(0, 0, PageWidth(Scroll), Max(Tabs.Height, Scroll.ClientHeight));

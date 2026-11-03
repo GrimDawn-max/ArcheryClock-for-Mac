@@ -28,6 +28,7 @@ const
 
 var
   GeneralBox: TGroupBox = nil; // Screen layout's "General" section (the loose tick boxes)
+  BuzzerBox: TGroupBox = nil;  // Sound's "Buzzer" section
 
 { A tick box or option button reads as a label: no full stop at the end (Mac style). }
 procedure NoFullStops(Root: TWinControl);
@@ -204,6 +205,85 @@ begin
   F.Bevel1.Visible := False; // a divider far below everything, which only lengthened the list
 end;
 
+{ ---- Sound ---- }
+
+{ A label and its field on one row: the label in a column of LabelW, the field after it, both centred on the
+  row. }
+procedure LabelledRow(Lbl: TLabel; Field: TControl; X, Y, LabelW, FieldW: Integer);
+begin
+  Lbl.AutoSize := True;
+  Lbl.Font.Height := -14;
+  Field.SetBounds(X + LabelW, Y, FieldW, Field.Height);
+  Lbl.SetBounds(X, Y + (Field.Height - Lbl.Height) div 2, Lbl.Width, Lbl.Height);
+end;
+
+procedure StyleSound;
+const
+  PhaseGap = 12;
+var
+  F: TCountdownform;
+  Area: TScrollBox;
+  W, Y, I, ColW: Integer;
+  Phases: array[0..5] of TControl;
+begin
+  F := Countdownform;
+  Area := F.soundScrollBox;
+  Area.BorderStyle := bsNone;
+  W := Min(Area.ClientWidth - 2 * Pad, SectionMax);
+
+  // "Buzzer": the PC speaker tick box, then the sound it makes and its test button on one row
+  if BuzzerBox = nil then
+  begin
+    BuzzerBox := TGroupBox.Create(F);
+    BuzzerBox.Parent := Area;
+    BuzzerBox.Caption := 'Buzzer';
+    F.speaker.Parent := BuzzerBox;
+    F.selectsoundlabel.Parent := BuzzerBox;
+    F.soundselect.Parent := BuzzerBox;
+    F.testsound.Parent := BuzzerBox;
+  end;
+  BuzzerBox.SetBounds(Pad, Pad div 2, W, BuzzerBox.Height);
+  F.speaker.SetBounds(10, 6, W - 20, RowH);
+  LabelledRow(F.selectsoundlabel, F.soundselect, 10, 6 + RowH + 8, 180, 160);
+  F.testsound.AutoSize := True;
+  F.testsound.SetBounds(F.soundselect.Left + F.soundselect.Width + 12, F.soundselect.Top, F.testsound.Width,
+    F.testsound.Height);
+  BuzzerBox.ClientHeight := F.soundselect.Top + F.soundselect.Height + 10;
+  BuzzerBox.Font.Style := [fsBold];
+  PlainInside(BuzzerBox);
+
+  // "Control audio" switches the music settings on; they follow it as a section of their own
+  Y := BuzzerBox.Top + BuzzerBox.Height + SectionGap;
+  F.Controlaudiocheckbox.SetBounds(Pad, Y, W, RowH);
+  Inc(Y, RowH + 8);
+  if F.audiovolumebox.Visible then
+  begin
+    if F.audiovolumebox.Caption = '' then F.audiovolumebox.Caption := 'Music';
+    F.audiovolumebox.Font.Style := [fsBold];
+    PlainInside(F.audiovolumebox);
+    F.audiovolumebox.SetBounds(Pad, Y, W, F.audiovolumebox.Height);
+    F.VLCradiobutton.SetBounds(10, 6, 200, RowH);
+    LabelledRow(F.AudioIPlabel, F.AudioIPedit, 10, 6 + RowH + 8, 200, 180);
+    LabelledRow(F.audioportlabel, F.Audioportnumber, 10, F.AudioIPedit.Top + F.AudioIPedit.Height + 8, 200, 100);
+    F.reconnectbutton.AutoSize := True;
+    F.reconnectbutton.SetBounds(10 + 200, F.Audioportnumber.Top + F.Audioportnumber.Height + 8,
+      F.reconnectbutton.Width, F.reconnectbutton.Height);
+    // the six phases two across, in the order they happen (the emergency last)
+    Phases[0] := F.Audioboxstate5; // before the match starts
+    Phases[1] := F.Audioboxstate1; // retrieving arrows
+    Phases[2] := F.Audioboxstate2; // preparing to shoot
+    Phases[3] := F.Audioboxstate3; // shooting, green
+    Phases[4] := F.Audioboxstate4; // shooting, yellow
+    Phases[5] := F.Audioboxstate6; // emergency stop
+    ColW := (W - 20 - PhaseGap) div 2;
+    Y := F.reconnectbutton.Top + F.reconnectbutton.Height + 16;
+    for I := 0 to 5 do
+      Phases[I].SetBounds(10 + (I mod 2) * (ColW + PhaseGap), Y + (I div 2) * (Phases[I].Height + PhaseGap),
+        Max(ColW, Phases[I].Width), Phases[I].Height);
+    F.audiovolumebox.ClientHeight := Y + 3 * (Phases[0].Height + PhaseGap);
+  end;
+end;
+
 { ---- Language ---- }
 
 procedure StyleLanguage;
@@ -228,7 +308,8 @@ begin
   NoFullStops(Page);
   if Page = F.tablang then StyleLanguage
   else if Page = F.tabscr then StyleScreenLayout
-  else if Page = F.screencolor then StyleScreenColours;
+  else if Page = F.screencolor then StyleScreenColours
+  else if Page = F.tabsound then StyleSound;
 end;
 
 end.
