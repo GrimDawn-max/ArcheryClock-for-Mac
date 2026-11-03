@@ -20,6 +20,26 @@ apart (`{$IFDEF Darwin}` and the `include/mac*.pas` units), so the Windows and L
 Both run on Apple silicon and Intel Macs, and both read and save the same settings
 (`~/Library/Application Support/Archery Clock`), so moving from one to the other keeps everything.
 
+## Screenshots
+
+The clock screen (the same in both versions):
+
+<img src="docs/screenshots/clock.png" alt="The clock screen: red light, P1, next AB" width="800">
+
+Archery Clock Mac Modern: Timing and Sequence, then the Screen layout, Sound and Network pages of Settings:
+
+<img src="docs/screenshots/modern-timing.png" alt="Modern: Timing and Sequence, Indoor/Outdoor" height="420">
+<img src="docs/screenshots/modern-screen-layout.png" alt="Modern: Settings, Screen layout" height="420">
+<img src="docs/screenshots/modern-sound.png" alt="Modern: Settings, Sound" height="210">
+<img src="docs/screenshots/modern-network.png" alt="Modern: Settings, Network" height="230">
+
+Archery Clock Mac Classic: the same, in the panel beside the clock as on Windows:
+
+<img src="docs/screenshots/classic-timing.png" alt="Classic: Timing and Sequence, Indoor/Outdoor" height="420">
+<img src="docs/screenshots/classic-screen-layout.png" alt="Classic: Settings, Screen layout" height="420">
+<img src="docs/screenshots/classic-sound.png" alt="Classic: Settings, Sound" height="140">
+<img src="docs/screenshots/classic-network.png" alt="Classic: Settings, Network" height="230">
+
 ## Install
 
 Download a disk image from Releases and drag the app to Applications. It is not signed with a paid
