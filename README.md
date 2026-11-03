@@ -40,7 +40,7 @@ To open either location: in Finder choose Go > Go to Folder (Shift-Command-G) an
 what you did and what happened, and attach `ArcheryClock.log` if it exists. Open the log first if you like: it is
 plain text, and an error message can name a file on your Mac.
 
-**Starting over:** quit the clock and move the `Archery Clock` folder in Application Support to the Bin. The
+**Starting over:** quit the clock and move the `Archery Clock` folder in Application Support to the Bin (Trash). The
 next time the clock opens it starts with the default settings. Saved scenarios and the slide list go
 with it, so keep a copy of the folder if you may want them back. To be asked again which display to use,
 without resetting anything else, hold Option while opening the clock.
