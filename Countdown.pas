@@ -1307,6 +1307,9 @@ type
     procedure resizewindowpreclock;
     procedure resizewindowfinalturndetails;
     procedure resizewindowlabelsiconsmenu;
+    {$IFDEF Darwin}procedure MacPlaceHints;
+    procedure MacHintTop;
+    function MacHintHeight: Integer;{$ENDIF}
     procedure resizewindowTL;
     procedure restorestate;
     procedure writeaccessdata;
@@ -1838,7 +1841,12 @@ var
 
 implementation
 
-{$IFDEF Darwin}uses mactidy, macserial, macdatadir;{$ENDIF}
+{$IFDEF Darwin}uses mactidy, macserial, macdatadir, macpicture;
+
+var
+  MacContentGraphic: TGraphic = nil; // the picture and background MacContentRow was worked out for
+  MacContentBack: TColor = clNone;
+  MacContentRow: Integer = 0;{$ENDIF}
 
 {$R *.lfm}
 {$IFDEF Windows}       //at this moment only supported for Windows
@@ -3294,7 +3302,67 @@ begin
       archeryclock.top:=Countdownform.height-iconsize-(trunc (referencesize*0.065));
     end;
   end;
+  {$IFDEF Darwin}MacHintTop;{$ENDIF} // Mac: the hint line follows what is now shown
 end;
+
+{$IFDEF Darwin}
+// Mac: the hint line ("Press space bar ...") goes under the copyright line, centred on it, the same on every
+// screen. At the bottom it was jammed between the picture, the red archeryclock.com line and the icons.
+// It takes the copyright line's size; the anchor keeps it centred whatever it says.
+procedure TCountdownform.MacPlaceHints;
+begin
+  nexthelp.Font.Height:=copyright.Font.Height;
+  chooselabel.Font.Height:=copyright.Font.Height;
+  nexthelp.AutoSize:=true;
+  chooselabel.AutoSize:=true;
+  nexthelp.AnchorHorizontalCenterTo(copyright);
+  chooselabel.AnchorHorizontalCenterTo(copyright);
+  MacHintTop;
+end;
+
+// Mac: the hint line's height, worked out from its font (its own Height can lag behind a font change)
+function TCountdownform.MacHintHeight: Integer;
+begin
+  Canvas.Font.Assign(copyright.Font);
+  Result:=Canvas.TextHeight('Ag')+4;
+  if Result<nexthelp.Constraints.MinHeight then Result:=nexthelp.Constraints.MinHeight;
+end;
+
+// Mac: put the hint line halfway between the copyright line and what is shown under it: the picture's content
+// as drawn (the picture is centred in its box and may have a plain border), or the top of the time's digits
+procedure TCountdownform.MacHintTop;
+var
+  above, below, drawnheight, t: Integer;
+begin
+  above:=copyright.Top+copyright.Height;
+  below:=0;
+  if background1.Visible and (background1.Picture.Width>0) then
+  begin
+    drawnheight:=background1.Height;
+    if background1.Picture.Width*background1.Height>background1.Picture.Height*background1.Width then
+      drawnheight:=background1.Width*background1.Picture.Height div background1.Picture.Width;
+    if (background1.Picture.Graphic<>MacContentGraphic) or (Countdownform.Color<>MacContentBack) then
+    begin
+      MacContentGraphic:=background1.Picture.Graphic;
+      MacContentBack:=Countdownform.Color;
+      MacContentRow:=PictureContentTop(MacContentGraphic, MacContentBack);
+    end;
+    below:=background1.Top+(background1.Height-drawnheight) div 2+
+      MacContentRow*drawnheight div background1.Picture.Height;
+  end
+  else if sheetdatetime2label.Visible then
+  begin
+    Canvas.Font.Assign(sheetdatetime2label.Font);
+    below:=sheetdatetime2label.Top+Canvas.TextHeight('0')*24 div 100; // the space above the digits in the line
+  end;
+  t:=above+(below-above-MacHintHeight) div 2;
+  if t<above+2 then t:=above+2;
+  nexthelp.Top:=t;
+  chooselabel.Top:=t;
+  nexthelp.BringToFront; // in front of a picture's border, which can reach up behind it
+  chooselabel.BringToFront;
+end;
+{$ENDIF}
 
 procedure TCountdownform.viewstateone; //State one is depending on yes or no commercialview
 begin
@@ -6112,6 +6180,14 @@ begin
     background1.Height:= screenheight;
     background1.Top:=(Countdownform.height-screenheight)*2 div 3;
   end;
+  {$IFDEF Darwin}
+  // Mac: start the picture below the hint line, with room above and below it, so the hint never sits on it
+  if background1.Top<copyright.Top+copyright.Height+2*MacHintHeight then
+  begin
+    background1.Height:=background1.Height-(copyright.Top+copyright.Height+2*MacHintHeight-background1.Top);
+    background1.Top:=copyright.Top+copyright.Height+2*MacHintHeight;
+  end;
+  {$ENDIF}
 
   if (Length(emergencytext.Caption)>3) then emergencytext.font.height:=trunc ((referencesize*2.0)*mag*mag/(Length(emergencytext.Caption))) else emergencytext.font.height:=trunc ((referencesize*2.0)*mag*mag/4) ;
   emergencytext.left:=leftmarge;
@@ -6611,6 +6687,7 @@ begin
   chooselabel.Top:=Countdownform.Height-iconsize-22;
   nexthelp.Left:=trunc (Countdownform.Width*0.5)-250;
   chooselabel.Left:=trunc (Countdownform.Width*0.5)-250;
+  {$IFDEF Darwin}MacPlaceHints;{$ENDIF}
   {$ENDIF}
   {$IFDEF Darwin}MacTidyTimingPage;{$ENDIF} // Mac: the sizes above are for Windows' group boxes
 
@@ -7994,7 +8071,7 @@ begin
   timevssheet;
   if (imagecount<>-1) and (imagecount<imagesListBox.Items.Count) then  // the list can be empty
   begin
-    if FileExists(imagesListBox.Items.Strings[imagecount])then background1.Picture.LoadFromFile(imagesListBox.Items.Strings[imagecount] );
+    if FileExists(imagesListBox.Items.Strings[imagecount])then background1.Picture.LoadFromFile(imagesListBox.Items.Strings[imagecount] );{$IFDEF Darwin}MacHintTop;{$ENDIF}
   end;
 end;
 
@@ -13050,7 +13127,7 @@ begin
 
   connect_delay.Enabled:=true;
   viewchangmenuitems;
-  if imagesListBox.Items.Count>=1 then if FileExists(imagesListBox.Items.Strings[0])then background1.Picture.LoadFromFile(imagesListBox.Items.Strings[0] );
+  if imagesListBox.Items.Count>=1 then if FileExists(imagesListBox.Items.Strings[0])then background1.Picture.LoadFromFile(imagesListBox.Items.Strings[0] );{$IFDEF Darwin}MacHintTop;{$ENDIF}
   backgroundtimer.Interval:=slidetime.Value*1000;
   if largeimagecheckbox.Checked=true then
   begin
@@ -14607,7 +14684,7 @@ begin  //buzzeron
       if largeimagecheckbox.Checked=true then
       begin
         imagecount:=0;
-        if FileExists(imagesListBox.Items.Strings[imagecount])then background1.Picture.LoadFromFile(imagesListBox.Items.Strings[imagecount] );
+        if FileExists(imagesListBox.Items.Strings[imagecount])then background1.Picture.LoadFromFile(imagesListBox.Items.Strings[imagecount] );{$IFDEF Darwin}MacHintTop;{$ENDIF}
       end
       else imagecount:=-1;
       if (state =1) and ((largeimagecheckbox.Checked) or (Actualtimecheckbox.Checked)) then timevssheet;
@@ -15101,7 +15178,7 @@ begin
   end;
 
   {$ENDIF}
-  if (LANselect.Checked=true)or ((archerysystem='follow')and(LANinput.Checked=true)) then lanstringg:='LAN, ' else lanstringg:='';
+  if (LANselect.Checked=true)or ((archerysystem='follow')and(LANinput.Checked=true)) then lanstringg:='Network (LAN), ' else lanstringg:='';
   if linuxHW='RPI' then RPIstringg:='GPIO, ' else RPIstringg:='';
   if (arduinoselect1.Checked=true) or (arduinoselect2.Checked=true) then
   begin
@@ -15200,6 +15277,8 @@ begin
       inputtimer.enabled:=false;
      {$ENDIF}
       if (RPIstringg='') and (lanstringg='') then USBconnect.Caption:=Cardnotfoundstring else USBconnect.Caption:=RPIstringg+lanstringg;
+      if Copy(USBconnect.Caption, Length(USBconnect.Caption)-1, 2)=', ' then // nothing follows the list: no dangling comma
+        USBconnect.Caption:=Copy(USBconnect.Caption, 1, Length(USBconnect.Caption)-2);
     end
     else
     begin
