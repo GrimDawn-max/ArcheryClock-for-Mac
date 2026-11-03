@@ -5660,6 +5660,9 @@ Begin
   end;
   {$ENDIF}
    if HOSTNAME.caption='' then HOSTNAME.caption:='1.1.1.1';
+  {$IFDEF Darwin} // screenshots for documentation: a made-up address instead of this computer's
+  if GetEnvironmentVariable('AC_DEMO_ADDRESS')<>'' then HOSTNAME.caption:=GetEnvironmentVariable('AC_DEMO_ADDRESS');
+  {$ENDIF}
   // if response='' then RunCommand('/sbin/ifconfig', ['eth0'], response);
  //  if response='' then RunCommand('/sbin/ifconfig', ['wlan1'], response);
  //  if response='' then RunCommand('/sbin/ifconfig', ['eth1'], response);
