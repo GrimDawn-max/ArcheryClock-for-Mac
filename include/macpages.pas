@@ -19,7 +19,7 @@ procedure MacShutdownButtonState;
 implementation
 
 uses
-  Classes, SysUtils, Math, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, Countdown, mactidy, maclang;
+  Classes, SysUtils, Types, Math, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, Countdown, mactidy, maclang;
 
 const
   Pad = 16;          // page margin
@@ -214,33 +214,49 @@ end;
 
 { A label and its field on one row: the label in a column of LabelW, the field after it, both centred on the
   row. }
-{ The label column for these labels: at least MinW, wider when a language's labels need it. }
-function LabelColumn(const Lbls: array of TLabel; MinW: Integer): Integer;
+{ The width and height of this text in the pages' type (-14). Measured, not read back from a label: on the first
+  layout of a new window a label has not sized itself yet. }
+function TextSize(const S: string): TSize;
 var
-  L: TLabel;
   Bmp: TBitmap;
 begin
-  Result := MinW;
   Bmp := TBitmap.Create;
   try
     Bmp.Canvas.Font.Height := -14;
-    for L in Lbls do
-      Result := Max(Result, Bmp.Canvas.TextWidth(L.Caption) + 16);
+    Result := Bmp.Canvas.TextExtent(S);
   finally
     Bmp.Free;
   end;
 end;
 
+{ The label column for these labels: at least MinW, wider when a language's labels need it. }
+function LabelColumn(const Lbls: array of TLabel; MinW: Integer): Integer;
+var
+  L: TLabel;
+begin
+  Result := MinW;
+  for L in Lbls do
+    Result := Max(Result, TextSize(L.Caption).cx + 16);
+end;
+
 procedure LabelledRow(Lbl: TLabel; Field: TControl; X, Y, LabelW, FieldW: Integer);
+var
+  Size: TSize;
 begin
   Lbl.Alignment := taLeftJustify; // upstream right-aligned some, against a field below them
+  Lbl.WordWrap := False; // one line beside its field; a wrapping label re-lays itself when given a width
   Lbl.AutoSize := True;
   Lbl.Font.Height := -14;
-  Lbl.Constraints.MinWidth := 0; // upstream fixed some at 150 pixels, which cuts longer languages off
-  Lbl.Constraints.MaxWidth := 0;
+  // upstream fixed some at 150 pixels, which cuts longer languages off (only touched where set: changing the
+  // constraints re-lays the label, which then ignored the position given to it)
+  if Lbl.Constraints.MaxWidth <> 0 then
+  begin
+    Lbl.Constraints.MinWidth := 0;
+    Lbl.Constraints.MaxWidth := 0;
+  end;
   Field.SetBounds(X + LabelW, Y, FieldW, Field.Height);
-  // its own text's width: some keep the width upstream gave them, too narrow for longer languages
-  Lbl.SetBounds(X, Y + (Field.Height - Lbl.Height) div 2, LabelColumn([Lbl], 0) - 16 + 4, Lbl.Height);
+  Size := TextSize(Lbl.Caption);
+  Lbl.SetBounds(X, Y + (Field.Height - Size.cy) div 2, Size.cx + 4, Size.cy + 2);
 end;
 
 procedure StyleSound;
