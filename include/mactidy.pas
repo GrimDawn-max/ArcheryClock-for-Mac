@@ -17,7 +17,10 @@ procedure MacTidyTimingPage;
 implementation
 
 uses
-  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Forms, Spin, Graphics, Math, macappearance, Countdown;
+  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Forms, Spin, Graphics, Math, macappearance, Countdown;
+
+var
+  PagesScrollable: Boolean = False; // ScrollablePages has run
 
 var
   TimingTitle: TLabel = nil;   // the timing panel's title (TidyShootingSystems)
@@ -538,12 +541,60 @@ end;
 { The settings pages (the menu behind the gear icon). Pages that are forms get the general tidy; pages built
   around pictures (laser pointer diagram, scenarios, screen colours, touch screen) keep their layout. Sections
   for hardware a Mac can't have are hidden. }
+{ C ends at the bottom of what holds it. }
+procedure FitDown(C: TControl);
+begin
+  if (C.Parent <> nil) and (C.Top + C.Height > C.Parent.ClientHeight - 4) then
+    C.Height := Max(60, C.Parent.ClientHeight - C.Top - 4);
+end;
+
+{ Each settings page's controls in a scrolling area of the page, so a page taller than the panel (on a short
+  display, or in the small window) can be scrolled instead of being cut off. Done once; the layout code below
+  then lays the controls out inside it as it did on the page. }
+procedure ScrollablePages;
+var
+  F: TCountdownform;
+  I, J: Integer;
+  Page: TTabSheet;
+  Area: TScrollBox;
+  Kids: array of TControl;
+begin
+  F := Countdownform;
+  for I := 0 to F.SettingsTabs.PageCount - 1 do
+  begin
+    Page := F.SettingsTabs.Pages[I];
+    if Page = F.tabscen then Continue; // the scenario page is one scrolling list of its own
+    SetLength(Kids, Page.ControlCount);
+    for J := 0 to Page.ControlCount - 1 do
+      Kids[J] := Page.Controls[J];
+    Area := TScrollBox.Create(F);
+    Area.Parent := Page;
+    Area.Align := alClient;
+    Area.BorderStyle := bsNone;
+    Area.AutoScroll := True;
+    Area.ParentColor := True;
+    for J := 0 to High(Kids) do
+      Kids[J].Parent := Area;
+    MacVisibleScrollBars(Area);
+  end;
+end;
+
 procedure TidySettingsPages;
 var
   F: TCountdownform;
   AudioShown: Boolean;
 begin
   F := Countdownform;
+  if not PagesScrollable then
+  begin
+    PagesScrollable := True;
+    ScrollablePages;
+  end;
+  // lists that scroll themselves were sized a little taller than the space they sit in, which hid the end of
+  // their scroll bar: fit each to what holds it
+  FitDown(F.ScenarioScrollBox);
+  FitDown(F.BGScrollBox);
+  FitDown(F.SCRcolScrollBox);
   F.AccesspointGroupBox.Visible := False; // Raspberry Pi access point
   F.RPIinputbox.Visible := False;         // Raspberry Pi GPIO inputs
   F.K8055select.Visible := False;         // Velleman K8055 relay board: Windows-only driver
@@ -583,6 +634,10 @@ var
   F: TCountdownform;
 begin
   F := Countdownform;
+  // each shooting system's panel already scrolls: show its scroll bars when it doesn't fit
+  MacVisibleScrollBars(F.FITAScrollBox); MacVisibleScrollBars(F.FitaFinScrollBox);
+  MacVisibleScrollBars(F.onearrowScrollBox); MacVisibleScrollBars(F.manualScrollBox);
+  MacVisibleScrollBars(F.FollowScrollBox);
   // Alternating Finals: the individual round's "Timing" box title was bold, the team rounds' plain; plain for all
   F.groupfinarrow.Font.Style := [];
   // Follow: "At start up" introduces the Left Side / Right Side buttons, so it goes above them, at the left
