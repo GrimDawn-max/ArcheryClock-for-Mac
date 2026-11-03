@@ -12,15 +12,27 @@ unit mactidy;
 
 interface
 
+uses
+  Controls;
+
 procedure MacTidyTimingPage;
 { The timing and settings panels' titles, as the language file gives them. }
 function MacTimingTitle: string;
 function MacSettingsTitle: string;
+{ The settings pages laid out again (after their width changes). }
+procedure MacTidySettings;
+
+var
+  { Set by the redesign's settings window: the pages are sized by that window, not beside the icon column. }
+  MacSettingsWindowed: Boolean = False;
+  { Set by the redesign's timing window: the panel the timing controls now sit on, measured instead of the
+    hidden timing panel (which, without a native view, reports its old size from the form file). }
+  MacTimingHost: TWinControl = nil;
 
 implementation
 
 uses
-  SysUtils, Classes, Controls, StdCtrls, ExtCtrls, Forms, Spin, Graphics, Math, macappearance, Countdown;
+  SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Spin, Graphics, Math, macappearance, Countdown;
 
 var
   TimingTitle: TLabel = nil;   // the timing panel's title (TidyShootingSystems)
@@ -164,9 +176,8 @@ var
     else if C is TCustomComboBox then
     begin
       C.Font.Height := TextHeight;
-      // as wide as the panel allows, so the choice isn't cut off
-      if C.Left + C.Width < Box.ClientWidth - Margin then
-        C.Width := Box.ClientWidth - C.Left - Margin;
+      // as wide as the panel allows, so the choice isn't cut off (and narrower again when the panel is)
+      C.Width := Max(80, Box.ClientWidth - C.Left - Margin);
     end
     else if (C is TLabel) and (TLabel(C).Alignment <> taLeftJustify) then
     begin
@@ -346,6 +357,15 @@ begin
   Red.Font.Color := clWhite;
 end;
 
+{ What the timing controls sit on: the timing panel, or the redesign's window panel in its place. }
+function TimingArea: TWinControl;
+begin
+  if MacTimingHost <> nil then
+    Result := MacTimingHost
+  else
+    Result := Countdownform.timeseqpanel;
+end;
+
 { A menu panel's title. A group box's caption is drawn faint and see-through on the Mac, over whatever the clock
   shows behind it, so it moves into a bold label on the panel's own ground, level with the close cross. The
   caption is taken each time, as the language file sets it. }
@@ -390,7 +410,7 @@ begin
   F.FITAFIN.Caption := F.FITAFINlabel.Caption;
   F.FITAFINlabel.Visible := False;
 
-  F.closeimage1.SetBounds(F.timeseqpanel.ClientWidth - 29 - 4, 2, 29, 29);
+  F.closeimage1.SetBounds(TimingArea.ClientWidth - 29 - 4, 2, 29, 29);
   PanelTitle(F.timeseqpanel, TimingTitle, F.closeimage1);
   Y := Bottom(F.closeimage1) + 4;
   for I := 0 to 4 do
@@ -432,13 +452,13 @@ begin
     F.Blinkphase1CheckBox.Width, F.Blinkphase1CheckBox.Height);
   F.blinkredgroupbox.Font.Height := TextHeight;
   F.blinkredgroupbox.ClientHeight := Bottom(F.Blinkphase1CheckBox) + 4;
-  F.blinkredgroupbox.Width := F.timeseqpanel.ClientWidth - 2 * Margin;
+  F.blinkredgroupbox.Width := TimingArea.ClientWidth - 2 * Margin;
   F.blinkredgroupbox.Left := Margin;
-  F.blinkredgroupbox.Top := F.timeseqpanel.ClientHeight - F.blinkredgroupbox.Height - 4;
+  F.blinkredgroupbox.Top := TimingArea.ClientHeight - F.blinkredgroupbox.Height - 4;
 
   Inc(Top, 18);
   Room := F.blinkredgroupbox.Top - Top - 6;
-  W := F.timeseqpanel.ClientWidth - 2 * Margin;
+  W := TimingArea.ClientWidth - 2 * Margin;
   Place(F.FITAScrollBox);
   Place(F.FitaFinScrollBox);
   Place(F.onearrowScrollBox);
@@ -560,7 +580,8 @@ begin
   F.zerosec.ShowHint := True;
   F.nonzerosec.ShowHint := True;
   // the pages end where the icon column starts; on Windows they ran on underneath it
-  F.SettingsTabs.Width := F.iconpanel.Left - F.SettingsTabs.Left - 4;
+  if not MacSettingsWindowed then
+    F.SettingsTabs.Width := F.iconpanel.Left - F.SettingsTabs.Left - 4;
   F.am24.Top := F.timecheckbox.Top; // its 12/24 choice belongs beside "Time on screen", not "Show hints"
   TidyOtherPanel(F.tabscr);
   // the music settings (shown by Control audio) are rows of pictures and buttons that must keep their layout;
@@ -587,6 +608,11 @@ begin
     Result := TimingTitle.Caption
   else
     Result := Countdownform.timeseqpanel.Caption;
+end;
+
+procedure MacTidySettings;
+begin
+  TidySettingsPages;
 end;
 
 function MacSettingsTitle: string;

@@ -12,6 +12,7 @@ unit macsettingswin;
   never apply. }
 
 {$mode objfpc}{$H+}
+{$modeswitch objectivec1}
 
 interface
 
@@ -23,12 +24,21 @@ procedure MacShowSettings;
 implementation
 
 uses
-  Math, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, Countdown, mactidy, macappearance;
+  Math, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, ComCtrls, Forms, Graphics, CocoaAll, Countdown, mactidy,
+  macappearance;
+
+const
+  { A page is laid out at the window's width, but not wider than a comfortable column, nor narrower than the
+    panel upstream designed it for (below that the window scrolls sideways). }
+  PageMinWidth = 420;
+  PageMaxWidth = 600;
+  TimingMinHeight = 1000; // the timing panel's layout fills the height it gets; below this the window scrolls
 
 type
   { Timing and sequence: the timing panel's contents, filling the window. }
   TTimingWindow = class(TForm)
   private
+    Scroll: TScrollBox;
     Host: TPanel;
     procedure WindowResize(Sender: TObject);
     procedure LayOut;
@@ -40,6 +50,7 @@ type
   TSettingsWindow = class(TForm)
   private
     Sidebar: TListBox;
+    Scroll: TScrollBox;
     BottomBar: TPanel;
     SaveButton: TButton;
     Pages: TList; // the settings page shown for each sidebar line
@@ -48,6 +59,7 @@ type
     procedure SaveClick(Sender: TObject);
     procedure WindowResize(Sender: TObject);
     procedure ShowPage(Index: Integer);
+    procedure LayOutPage;
   public
     constructor CreateWindow;
     destructor Destroy; override;
@@ -59,13 +71,41 @@ var
 
 { A menu window: floats in front of the full-screen clock, opens centred and large enough for its contents. }
 procedure SetUpWindow(W: TForm; const Title: string; AWidth, AHeight: Integer);
+var
+  Area: TRect;
 begin
   W.Caption := Title;
   W.BorderStyle := bsSizeable;
   W.FormStyle := fsStayOnTop;
-  W.Position := poScreenCenter;
-  W.Width := Min(AWidth, Screen.WorkAreaWidth - 80);
-  W.Height := Min(AHeight, Screen.WorkAreaHeight - 60);
+  // on the clock's display, within it
+  Area := Countdownform.Monitor.WorkareaRect;
+  W.Width := Min(AWidth, Area.Right - Area.Left - 40);
+  W.Height := Min(AHeight, Area.Bottom - Area.Top - 40);
+  W.Left := Area.Left + (Area.Right - Area.Left - W.Width) div 2;
+  W.Top := Area.Top + (Area.Bottom - Area.Top - W.Height) div 2;
+end;
+
+{ A scrolling area whose scroll bars show whenever its contents don't fit (macOS otherwise hides them until you
+  scroll, so nothing tells you there is more below). }
+function NewScroll(AOwner: TForm): TScrollBox;
+begin
+  Result := TScrollBox.Create(AOwner);
+  Result.Parent := AOwner;
+  Result.Align := alClient;
+  Result.BorderStyle := bsNone;
+  Result.AutoScroll := True;
+  Result.HandleNeeded;
+  if NSObject(Result.Handle).isKindOfClass(NSScrollView) then
+  begin
+    NSScrollView(Result.Handle).setScrollerStyle(NSScrollerStyleLegacy);
+    NSScrollView(Result.Handle).setAutohidesScrollers(True);
+  end;
+end;
+
+{ The width a page is laid out at, for a scrolling area of this width. }
+function PageWidth(Scroll: TScrollBox): Integer;
+begin
+  Result := EnsureRange(Scroll.ClientWidth, PageMinWidth, PageMaxWidth);
 end;
 
 { The clock-screen panels never show in this version. }
@@ -94,15 +134,16 @@ var
 begin
   inherited CreateNew(Application);
   F := Countdownform;
-  SetUpWindow(Self, MacTimingTitle, 640, 1240);
-  Constraints.MinWidth := 520;
-  Constraints.MinHeight := 600;
+  SetUpWindow(Self, MacTimingTitle, PageMaxWidth + 20, TimingMinHeight + 30);
+  Constraints.MinWidth := 300;
+  Constraints.MinHeight := 300;
+  Scroll := NewScroll(Self);
+  Scroll.Color := F.timeseqpanel.Color;
 
   // the panel's controls move into a panel of this window. The panel itself stays on the clock screen, hidden,
   // and is kept the size of this one, because the layout code measures it.
   Host := TPanel.Create(Self);
-  Host.Parent := Self;
-  Host.Align := alClient;
+  Host.Parent := Scroll;
   Host.BevelOuter := bvNone;
   Host.Color := F.timeseqpanel.Color;
   SetLength(Kids, F.timeseqpanel.ControlCount);
@@ -110,13 +151,14 @@ begin
     Kids[I] := F.timeseqpanel.Controls[I];
   for I := 0 to High(Kids) do
     Kids[I].Parent := Host;
+  MacTimingHost := Host;
   F.closeimage1.Visible := False; // the window's own close button does this
   OnResize := @WindowResize;
 end;
 
 procedure TTimingWindow.LayOut;
 begin
-  Countdownform.timeseqpanel.SetBounds(0, 0, Host.ClientWidth, Host.ClientHeight);
+  Host.SetBounds(0, 0, PageWidth(Scroll), Max(Scroll.ClientHeight, TimingMinHeight));
   MacTidyTimingPage;
 end;
 
@@ -140,13 +182,13 @@ end;
 constructor TSettingsWindow.CreateWindow;
 var
   F: TCountdownform;
-  Content: TPanel;
 begin
   inherited CreateNew(Application);
   F := Countdownform;
-  SetUpWindow(Self, MacSettingsTitle, 1180, 1240);
-  Constraints.MinWidth := 760;
-  Constraints.MinHeight := 560;
+  SetUpWindow(Self, MacSettingsTitle, 220 + PageMaxWidth + 20, 1240);
+  Constraints.MinWidth := 420;
+  Constraints.MinHeight := 300;
+  MacSettingsWindowed := True;
   Pages := TList.Create;
 
   Sidebar := TListBox.Create(Self);
@@ -175,14 +217,11 @@ begin
   F.ShutdownremoteButton.Font.Height := -14;
   F.ShutdownremoteButton.AutoSize := True;
 
-  Content := TPanel.Create(Self);
-  Content.Parent := Self;
-  Content.Align := alClient;
-  Content.BevelOuter := bvNone;
+  Scroll := NewScroll(Self);
 
   // the settings pages: the page control moves in whole, without its row of tabs (the sidebar replaces it)
-  F.SettingsTabs.Parent := Content;
-  F.SettingsTabs.Align := alClient;
+  F.SettingsTabs.Parent := Scroll;
+  F.SettingsTabs.Align := alNone;
   F.SettingsTabs.ShowTabs := False;
 
   OnResize := @WindowResize;
@@ -218,6 +257,29 @@ begin
   if Pages.Count = 0 then Exit;
   Sidebar.ItemIndex := Index;
   Countdownform.SettingsTabs.ActivePage := TTabSheet(Pages[Index]);
+  LayOutPage;
+end;
+
+{ The page at the window's width, laid out again for it, and as tall as what it shows: taller than the window,
+  it scrolls. }
+procedure TSettingsWindow.LayOutPage;
+var
+  Tabs: TPageControl;
+  Page: TTabSheet;
+  I, Need: Integer;
+begin
+  Tabs := Countdownform.SettingsTabs;
+  Tabs.SetBounds(0, 0, PageWidth(Scroll), Max(Tabs.Height, Scroll.ClientHeight));
+  MacTidySettings;
+  Page := Tabs.ActivePage;
+  Need := 0;
+  // the scenario page scrolls its own list: it just fits the window
+  if Page = Countdownform.tabscen then Page := nil;
+  if Page <> nil then
+    for I := 0 to Page.ControlCount - 1 do
+      if Page.Controls[I].Visible then
+        Need := Max(Need, Page.Controls[I].Top + Page.Controls[I].Height);
+  Tabs.Height := Max(Scroll.ClientHeight, Need + 24 + (Tabs.Height - Tabs.ClientHeight));
 end;
 
 procedure TSettingsWindow.SidebarClick(Sender: TObject);
@@ -240,6 +302,7 @@ begin
   Shutdown := Countdownform.ShutdownremoteButton;
   Shutdown.Left := Sidebar.Width + 16;
   Shutdown.Top := (BottomBar.ClientHeight - Shutdown.Height) div 2;
+  if Pages.Count > 0 then LayOutPage;
 end;
 
 procedure MacShowSettings;
