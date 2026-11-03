@@ -40820,6 +40820,7 @@ object Countdownform: TCountdownform
             '  Peter Holt (PCB design EU).'
             '  Dimitri Brosse (French translation).'
             '  Ziyang Chen (Chinese translation).'
+            '  MAC_PORT_CREDIT (macOS version).'
             ''
             'More info: http://www.archeryclock.com'
           )
@@ -55539,7 +55540,7 @@ object Countdownform: TCountdownform
   object tup: TImage
     Left = 560
     Height = 25
-    Hint = 'Pause Timer'
+    Hint = 'Switch to next archer'
     Top = 501
     Width = 25
     OnClick = increaseshooterbuttonClick
@@ -55705,7 +55706,7 @@ object Countdownform: TCountdownform
   object tdown: TImage
     Left = 528
     Height = 25
-    Hint = 'Pause Timer'
+    Hint = 'Switch to previous archer'
     Top = 501
     Width = 25
     OnClick = decreaseshooterbuttonClick
@@ -56292,7 +56293,7 @@ object Countdownform: TCountdownform
   object endup: TImage
     Left = 496
     Height = 25
-    Hint = 'Pause Timer'
+    Hint = 'Switch to next end'
     Top = 501
     Width = 25
     OnClick = increaseseriebuttonClick
@@ -56458,7 +56459,7 @@ object Countdownform: TCountdownform
   object enddown: TImage
     Left = 464
     Height = 25
-    Hint = 'Pause Timer'
+    Hint = 'Switch to previous end'
     Top = 501
     Width = 25
     OnClick = decreaseseriebuttonClick

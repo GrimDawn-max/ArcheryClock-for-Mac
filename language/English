@@ -2,7 +2,7 @@ End
 Arrow
 P
 Turn
-Double ends? (for example on long distances where 2 times 3 arrows  are shot before retrieving them from the target). 
+Double ends? (for example on long distances where 2 times 3 arrows are shot before retrieving them from the target). 
 Seconds Green
 Seconds Orange
 Seconds Red
@@ -16,7 +16,7 @@ Hide Icons.
 Use PC speaker for Buzzer.
 Waiting time.
 Shooting time:
-Shoot off time (per arrow):
+Shoot-off time (per arrow):
 [A] 1 archer per turn 1 turn per end
 [A-B] 1 archer per turn 2 turns per end
 [A-B-C] 1 archer per turn 3 turns per end
@@ -40,7 +40,7 @@ Indoor/Outdoor
 Alternating Finals
 25m1p
 Timing
-Shoot off timing
+Shoot-off timing
 Timing and sequence
 Double time
 Double turns
@@ -103,13 +103,13 @@ Activate Archer D
 Resize
 Close program
   Press space bar or click "Start Timer" button to start the countdown  
-  Choose starting archer by click on an arrow.  
+  Choose starting archer by clicking an arrow.  
 Left side
 Right side
 Match starts in
 select right side archer
 select left side archer
-  Press space bar or click "Next archer" button to finish this turn and move to next turn.    
+  Press space bar or click "Next archer" button to finish this turn and move to the next turn.    
   Press space bar or click "Stop last turn of this end" button to finish this end.    
 Connecting
 Connected
@@ -169,18 +169,18 @@ Name of this computer:
 Use Network (LAN)
 Port number
 USB / Serial
-Serial (arduino)
+Serial (Arduino)
 Top-Bottom
 T
 op
 B
 ottom
-Practise Arrows
+Practice Arrows
 Select
 Broadcast time stamps over LAN network
-Multicast adress:
+Multicast address:
 Network (LAN) settings
-Laserpointer Control
+Laser pointer control
 Page up button
 Page down button
 Play button
@@ -202,9 +202,9 @@ Right field setup
 Next scenario
 Previous scenario
 Shutdown
-1 Arrow Shootoff
-2 Arrows Shootoff 
-3 Arrows Shootoff 
+1-arrow shoot-off
+2-arrow shoot-off 
+3-arrow shoot-off 
 Arrow+red time recover
 Arrow no red time recover
 No action
@@ -215,13 +215,13 @@ dummy
 dummy
 screen colors
 USB / Serial input settings
-GPIO input settings (Raspberry PI only)
+GPIO input settings (Raspberry Pi only)
 Button
 Show
 Primary
 Secondary
 Counting Arrows
-Rotate practise end
+Rotate practice end
 Button Magnification
 Scenarios on screen
 Touch screen
@@ -249,8 +249,8 @@ Prepare shooting.
 Individual round
 Team Round
 Mixed Team Round
-Turns per end during Shoot Off
-Shootoff Time
+Turns per end during shoot-off
+Shoot-off time
 Shutdown remote (Client) system
 Time on screen.
 Background Slides
@@ -268,7 +268,7 @@ Show end number when slides are shown.
 Sound signal when changing archer
 sequence
 Control audio
-IP adress of audio device
+IP address of audio device
 Reconnect
 Retrieve arrows
 Prepare shooting
@@ -313,7 +313,7 @@ Number of ends repeating this sequence
 Control settings
 Keyboard key settings
 Preference
-Pause in between Turns.
+Pause between turns.
 -
 -
 -
