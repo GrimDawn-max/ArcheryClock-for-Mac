@@ -1850,7 +1850,9 @@ implementation
 var
   MacContentGraphic: TGraphic = nil; // the picture and background MacContentRow was worked out for
   MacContentBack: TColor = clNone;
-  MacContentRow: Integer = 0;{$ENDIF}
+  MacContentRow: Integer = 0;
+  MacInitDone: Boolean = False; // FormActivate has run initialize
+{$ENDIF}
 
 {$R *.lfm}
 {$IFDEF Windows}       //at this moment only supported for Windows
@@ -13389,6 +13391,11 @@ var
   fileDesc, fileDesc2: integer;
 begin
   {$IFDEF Darwin}
+  // Mac: once only. The window becomes active again whenever another window closes or the app comes back to the
+  // front, and initialize reloads the settings file (dropping unsaved changes), reconnects the hardware and
+  // waits, which showed as the spinning wheel each time a menu window closed.
+  if MacInitDone then exit;
+  MacInitDone:=True;
   try
     initialize;
   finally
