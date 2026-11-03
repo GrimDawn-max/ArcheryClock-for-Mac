@@ -204,6 +204,9 @@ begin
   F.colorscheme9.SetBounds(Pad, Y, F.colorscheme9.Width, F.colorscheme9.Height);
   F.manualcolorpanel.Top := Y + F.colorscheme9.Height + 8;
   F.manualcolorpanel.Left := Pad div 2;
+  // the AB and CD colour lists start at the left edge like the lists above them (upstream indented them)
+  F.ABGroupBox.Left := F.OrColGroupBox.Left;
+  F.CDGroupBox.Left := F.ABGroupBox.Left + F.ABGroupBox.Width + 16;
   F.Bevel1.Visible := False; // a divider far below everything, which only lengthened the list
 end;
 
