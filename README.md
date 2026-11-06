@@ -61,7 +61,8 @@ written to `~/Library/Logs/ArcheryClock.log`.
 To open either location: in Finder choose Go > Go to Folder (Shift-Command-G) and paste the path.
 
 **Reporting a problem:** email the feedback address on [archeryclock.com](http://www.archeryclock.com), say
-what you did and what happened, and attach `ArcheryClock.log` if it exists. Open the log first if you like: it is
+what you did and what happened, and attach `ArcheryClock.log` if it exists. A problem that only happens on the Mac can
+also be reported here, under Issues. Open the log first if you like: it is
 plain text, and an error message can name a file on your Mac.
 
 **Starting over:** quit the clock and move the `Archery Clock` folder in Application Support to the Bin (Trash). The

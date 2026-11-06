@@ -1,0 +1,58 @@
+name: Problem with the Mac version
+description: Something that goes wrong in Archery Clock for Mac.
+labels: ["mac"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for problems that happen on the Mac. For questions about Archery Clock in general,
+        use the feedback address on [archeryclock.com](http://www.archeryclock.com).
+
+        Issues here are public: don't include your name, email address, network details or anything else private.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Which version
+      options:
+        - Archery Clock Mac Modern
+        - Archery Clock Mac Classic
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      description: Apple menu > About This Mac.
+      placeholder: macOS 26.1
+    validations:
+      required: true
+  - type: dropdown
+    id: chip
+    attributes:
+      label: Mac chip
+      description: Shown as "Chip" or "Processor" in About This Mac.
+      options:
+        - Apple (M1, M2, M3, M4 or later)
+        - Intel
+    validations:
+      required: true
+  - type: textarea
+    id: displays
+    attributes:
+      label: Displays
+      description: How many displays, and which one shows the clock.
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: |
+        The contents of ~/Library/Logs/ArcheryClock.log, if the file exists (Finder > Go > Go to Folder).
+        Read it first: an error message can name a file on your Mac.
+      render: text
