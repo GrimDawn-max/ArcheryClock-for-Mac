@@ -47094,7 +47094,7 @@ object Countdownform: TCountdownform
     Top = 52
     Width = 405
     Alignment = taCenter
-    Caption = '© 1994 - 2021, Henk Jegers.                             2.6.18'
+    Caption = '© 1994 - 2021, Henk Jegers.                             2.6.1.8'
     Font.Color = clGray
     Font.Height = 20
     Font.Name = 'Tahoma'
