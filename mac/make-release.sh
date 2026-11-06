@@ -8,7 +8,7 @@
 set -euo pipefail
 NAME=${1:?app name}; ID=${2:?bundle id}; INTEL=${3:-}
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
-SRC="$ROOT"; OUT="$ROOT/dist"; VER=2.6.18
+SRC="$ROOT"; OUT="$ROOT/dist"; VER=2.6.1.8
 APP="$OUT/$NAME.app"; M="$APP/Contents/MacOS"; R="$APP/Contents/Resources"
 mkdir -p "$OUT"; rm -rf "$APP"
 mkdir -p "$M" "$R"

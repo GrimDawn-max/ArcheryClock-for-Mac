@@ -3,12 +3,16 @@
 A Mac version of [Archery Clock](http://www.archeryclock.com), the countdown timer used at archery matches.
 
 Archery Clock is written by Henk Jegers, who makes the Windows and Linux versions available at
-[archeryclock.com](http://www.archeryclock.com). This Mac version was ported from his 2.6.18. It runs natively on
+[archeryclock.com](http://www.archeryclock.com). This Mac version was ported from his 2.6.1.8. It runs natively on
 Apple silicon and Intel Macs (macOS 11 or later), with no Wine, CrossOver or external monitor needed.
 
 Archery Clock is free software under the GNU General Public License version 3 (`COPYING.txt`). This repository
-holds the full source of the Mac version: Henk Jegers' 2.6.18 source plus the Mac changes. The changes are kept
+holds the full source of the Mac version: Henk Jegers' 2.6.1.8 source plus the Mac changes. The changes are kept
 apart (`{$IFDEF Darwin}` and the `include/mac*.pas` units), so the Windows and Linux builds are unchanged.
+
+Henk's newest Windows and Linux release is 2.6.1.14. Its changes (among them World Archery's 30 seconds per arrow,
+25m1p at 40 seconds and the run-out-of-time sound) are not in the Mac version yet; it will be brought up to date when
+that source is published. What each release changed: [archeryclock.com/software.html](https://www.archeryclock.com/software.html).
 
 ## Two versions
 
